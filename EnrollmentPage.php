@@ -1,3 +1,3 @@
 <?php
-// Testing 123 hello, testing aa
+// you know who else doesnt know how to use github? my mom
 ?>
