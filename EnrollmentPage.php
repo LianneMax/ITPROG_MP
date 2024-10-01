@@ -1,18 +1,11 @@
 <?php
 // PHASE 1  - Client Side
-
-// LOGIN PAGE                              ==>
-// COURSE OFFERINGS PAGE ==>
-// ENROLLMENT PAGE              ==>
+// LOGIN PAGE               ⇒ Justin
+// COURSE OFFERINGS PAGE	⇒ Jer
+// ENROLLMENT PAGE          ⇒ Max, Jer
 // - Functionalities:
 // - Add/drop class
 // - Checkout and confirm
-// VIEW EAF                                   ==>
-
-// PHASE 2 - Server Side
-
-// ADMIN LOGIN PAGE                  ==>
-// CLASS MANAGEMENT PAGE ==>
-// SUMMARY REPORT PAGE       ==>
+// VIEW EAF                 ⇒ Charles
 
 ?>
