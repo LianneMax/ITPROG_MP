@@ -23,7 +23,7 @@
 
         .itmosys-header {
             position: absolute;
-            top: 50px;
+            top: 20px; /* Bring ITmosys closer to the container */
             font-size: 36px;
             font-family: fantasy;
             color: #5b8ba4; /* Same color as buttons */
@@ -37,11 +37,12 @@
             border-radius: 10px;
             box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
             width: 300px;
+            margin-top: 60px; /* Adjust spacing between ITmosys and container */
         }
 
         h2 {
             margin: 0;
-            padding-bottom: 30px; /* Increased space below ENROLLMENT */
+            padding-bottom: 10px;
             color: #333;
             font-family: 'Montserrat', Times New Roman, serif;
         }
@@ -55,10 +56,11 @@
             font-size: 24px;
         }
 
-        /* Line separator below enrollment */
+        /* Line separator placed directly below Enrollment */
         .separator {
             border-top: 2px solid #ccc;
-            margin: 10px 0;
+            margin-top: 40px; /* Add space above the line */
+            margin-bottom: 20px; /* Add space below the line */
         }
 
         button {
@@ -82,14 +84,14 @@
 </head>
 <body>
 
-    <!-- ITmosys Header outside the box -->
+    <!-- ITmosys Header -->
     <h1 class="itmosys-header">ITmosys</h1>
 
     <div class="container">
         <!-- Enrollment header in the top-left of the box -->
         <h2 class="enrollment-header">ENROLLMENT</h2>
 
-        <!-- Line between Enrollment and Buttons -->
+        <!-- Line below the Enrollment header -->
         <div class="separator"></div>
 
         <!-- Buttons stacked on top of each other -->
