@@ -53,7 +53,7 @@
 </head> 
 <body>
     <div class="container">
-        <h1>Enrollment Page</h1>
+        <h1>ENROLLMENT</h1>
         <button onclick="window.location.href='add_class.php'">Add Classes</button>
         <button onclick="window.location.href='drop_class.php'">Remove Classes</button>
 
