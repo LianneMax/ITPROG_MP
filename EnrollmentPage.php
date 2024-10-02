@@ -11,7 +11,7 @@
 
 <html>
 <head>
-    <title>Enrollment Page</title>
+    <title>ENROLLMENT</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -50,14 +50,12 @@
             background-color: #0056b3;
         }
     </style>
-</head>
+</head> 
 <body>
     <div class="container">
         <h1>Enrollment Page</h1>
         <button onclick="window.location.href='add_class.php'">Add Classes</button>
         <button onclick="window.location.href='drop_class.php'">Remove Classes</button>
-
-        <?php echo "PHP is working!"; ?>
 
     </div>
 </body>
