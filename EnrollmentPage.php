@@ -23,7 +23,7 @@
 
         .itmosys-header {
             position: absolute;
-            top: 20px; /* Bring ITmosys closer to the container */
+            top: 10px; /* Reduce the top spacing to make ITmosys closer */
             font-size: 36px;
             font-family: fantasy;
             color: #5b8ba4; /* Same color as buttons */
@@ -37,7 +37,7 @@
             border-radius: 10px;
             box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
             width: 300px;
-            margin-top: 60px; /* Adjust spacing between ITmosys and container */
+            margin-top: 40px; /* Reduced margin-top for closer distance */
         }
 
         h2 {
@@ -69,6 +69,7 @@
             padding: 15px;
             margin: 10px 0;
             font-size: 16px;
+            font-family: "Times New Roman", serif; /* Changed button font */
             border: none;
             border-radius: 5px;
             background-color: #5b8ba4;
