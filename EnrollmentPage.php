@@ -1,76 +1,64 @@
+<?php
+// PHASE 1  - Client Side
+// LOGIN PAGE               ⇒ Justin
+// COURSE OFFERINGS PAGE	⇒ Jer
+// ENROLLMENT PAGE          ⇒ Max, Jer
+// - Functionalities:
+// - Add/drop class
+// - Checkout and confirm
+// VIEW EAF                 ⇒ Charles
+?>
+
 <html>
+<head>
     <title>Enrollment Page</title>
-    
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
         }
         .container {
-            max-width: 900px;
-            margin: auto;
-            background-color: white;
-            padding: 20px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
-        h2, h3 {
             text-align: center;
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin-bottom: 30px;
             color: #333;
         }
-        form {
-            text-align: center;
-            margin: 20px 0;
-        }
-        label {
-            font-weight: bold;
-        }
-        input {
-            padding: 5px;
-            margin: 10px;
-            width: 200px;
-        }
         button {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
+            padding: 15px 30px;
+            margin: 10px;
+            font-size: 16px;
             border: none;
             border-radius: 5px;
+            background-color: #007bff;
+            color: white;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
         button:hover {
             background-color: #0056b3;
-        }
-        .enrolled-classes {
-            margin: 20px 0;
-        }
-        .enrolled-classes ul {
-            list-style: none;
-            padding: 0;
-        }
-        .enrolled-classes li {
-            background-color: #eee;
-            padding: 10px;
-            margin: 5px 0;
-            border-radius: 5px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Enrollment Page</h2>
+        <h1>Enrollment Page</h1>
+        <button onclick="window.location.href='add_class.php'">Add Classes</button>
+        <button onclick="window.location.href='drop_class.php'">Remove Classes</button>
 
-        <form method="POST" action="">
-            <label for="classNbr">Enter Class Number:</label>
-            <input type="text" id="classNbr" name="classNbr" required>
-            <button type="submit" name="add">Add Class</button>
-            <button type="submit" name="drop">Drop Class</button>
-        </form>
+        <?php echo "PHP is working!"; ?>
 
-        <h3>Enrolled Classes</h3>
-        <div class="enrolled-classes">
-        </div>
     </div>
 </body>
 </html>
