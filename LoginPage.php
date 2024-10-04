@@ -13,7 +13,7 @@
             box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
             width: 350px;
             height: 210px;
-            margin-top: 40px; /* Reduced margin-top for closer distance */
+            margin-top: 40px;
         }
 
 
@@ -33,10 +33,10 @@
 
         h1 {
             position: absolute;
-            top: 10px; /* Reduce the top spacing to make ITmosys closer */
+            top: 10px;
             font-size: 36px;
             font-family: fantasy;
-            color: #5b8ba4; /* Same color as buttons */
+            color: #5b8ba4; 
             margin-top: 150px;
             z-index: 1;
         }
@@ -55,8 +55,8 @@
 
         .separator {
             border-top: 2px solid #ccc;
-            margin-top: 40px; /* Add space above the line */
-            margin-bottom: 20px; /* Add space below the line */
+            margin-top: 40px; 
+            margin-bottom: 20px; 
         }
 
         button {
