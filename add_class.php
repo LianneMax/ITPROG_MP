@@ -95,7 +95,7 @@
     // Initiate connection to DB
     $connection = mysqli_connect($server, $username, $password);
 
-    $dbname = "";
+    $dbname = "itmosys_db";
     mysqli_select_db($connection, $dbname);
     ?>    
     
