@@ -91,8 +91,19 @@
     // Initiate connection to DB
     $connection = mysqli_connect($server, $username, $password);
 
+    if(!$connection)
+        die("could not connect".mysqli_connect_error());
+    else echo "CONNECTION TO DB SUCCESSFUL";
+
     $dbname = "itmosys_db";
-    mysqli_select_db($connection, $dbname);
+    // mysqli_select_db($connection, $dbname);
+
+    // $query = "SELECT * FROM $dbname";
+    // $statement = mysqli_query($connection, $query);
+
+    //try to insert ITCMSY1
+    $query = "INSERT INTO $dbname.course_codes (course_code) VALUES ('ITCMSY1')";
+    $statement = mysqli_query($connection, $query);
     ?>    
     
     <!-- ITmosys Header -->
