@@ -105,11 +105,6 @@ CREATE TABLE `students_classes` (
 
 -- --------------------------------------------------------
 
-
---
--- Indexes for dumped tables
---
-
 --
 -- Indexes for table `courses`
 --
@@ -149,26 +144,6 @@ ALTER TABLE `students_classes`
   ADD PRIMARY KEY (`student_id`),
   ADD KEY `fk_students_classes_section_offerings1_idx` (`offering_code`);
 
---
--- Indexes for table `students_users`
---
-ALTER TABLE `students_users`
-  ADD PRIMARY KEY (`user_id`),
-  ADD UNIQUE KEY `username_UNIQUE` (`username`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `students_users`
---
-ALTER TABLE `students_users`
-  MODIFY `user_id` int(8) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- Constraints for dumped tables
---
 
 --
 -- Constraints for table `courses`
