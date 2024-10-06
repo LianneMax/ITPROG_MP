@@ -84,6 +84,14 @@ CREATE TABLE `students` (
   `password` varchar(45) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+INSERT INTO `students` (`student_id`, `student_name`, `password`) VALUES
+(1, 'user1', 'password123'),
+(2, 'user2', 'pass456'),
+(3, 'user3', 'securePwd789'),
+(4, 'user4', 'myPassword2024'),
+(5, 'user5', 'anotherPass543');
+
+
 -- --------------------------------------------------------
 
 --
@@ -97,26 +105,6 @@ CREATE TABLE `students_classes` (
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `students_users`
---
-
-CREATE TABLE `students_users` (
-  `user_id` int(8) UNSIGNED NOT NULL,
-  `username` varchar(50) NOT NULL,
-  `password` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
---
--- Dumping data for table `students_users`
---
-
-INSERT INTO `students_users` (`user_id`, `username`, `password`) VALUES
-(1, 'user1', 'password123'),
-(2, 'user2', 'pass456'),
-(3, 'user3', 'securePwd789'),
-(4, 'user4', 'myPassword2024'),
-(5, 'user5', 'anotherPass543');
 
 --
 -- Indexes for dumped tables
