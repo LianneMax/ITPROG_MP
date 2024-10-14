@@ -25,6 +25,25 @@ CREATE TABLE IF NOT EXISTS `itmosys_db`.`course_codes` (
   PRIMARY KEY (`course_code`))
 ENGINE = InnoDB;
 
+INSERT INTO `course_codes` (`course_code`) VALUES
+(1, 'ITCMSY1');
+(2, 'LBYCMSY');
+(3, 'ITNET01');
+(4, 'LBYITN1');
+(5, 'ITISORG');
+(6, 'ITNET02');
+(7, 'LBYITN2');
+(8, 'ITSECUR');
+
+(9, 'IT-PROG');
+(10, 'ITSYSAD');
+(11, 'LBYSYAD');
+(12, 'ITNET03');
+(13, 'LBYITN3');
+(14, 'ITSRAQA');
+(15, 'ITSYSOP');
+(16, 'ITNET04');
+(17, 'LBYITN4');
 
 -- -----------------------------------------------------
 -- Table `itmosys_db`.`courses`
@@ -44,6 +63,17 @@ CREATE TABLE IF NOT EXISTS `itmosys_db`.`courses` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+INSERT INTO `courses` (`course_code`, `course_title`, `units`, `co_requisite`) VALUES
+(1, 'ITCMSY1', 'LBYCMSY');
+(2, 'LBYCMSY');
+(3, 'ITNET01');
+(4, 'LBYITN1');
+(5, 'ITISORG');
+(6, 'ITNET02');
+(7, 'LBYITN2');
+(8, 'ITSECUR');
+
+(9, 'IT-PROG');
 
 -- -----------------------------------------------------
 -- Table `itmosys_db`.`prerequisites`
@@ -82,6 +112,7 @@ CREATE TABLE IF NOT EXISTS `itmosys_db`.`section_offerings` (
   `enroll_cap` INT(3) UNSIGNED NOT NULL,
   `enrolled_students` INT(3) UNSIGNED NOT NULL,
   `professor` VARCHAR(200) NOT NULL,
+  `room` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`offering_code`),
   INDEX `fk_section_offerings_courses1_idx` (`course_code` ASC),
   CONSTRAINT `fk_section_offerings_courses1`

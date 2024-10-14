@@ -1,7 +1,8 @@
 <html>
 <head>
-    <title>Add Classes</title>
+    <title>COURSE OFFERINGS</title>
     <style>
+       
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 
         body {
@@ -27,7 +28,7 @@
 
         .container {
             position: relative;
-            text-align: left;
+            text-align: center;
             background-color: white;
             padding: 30px;
             border-radius: 10px;
@@ -44,7 +45,7 @@
             font-family: 'Montserrat', Times New Roman, serif;
         }
 
-        .add-class-header {
+        .enrollment-header {
             position: absolute;
             top: 20px;
             left: 20px;
@@ -87,55 +88,29 @@
 
     <div class="container">
         <!-- Enrollment header in the top-left of the box -->
-        <h2 class="add-class-header">Add/Drop Classes Facility</h2>
+        <h2 class="enrollment-header">Course Offerings</h2>
 
         <!-- Line below the Enrollment header -->
         <div class="separator"></div>
 
         <div>
+            <?php
+            echo "<h3><font color='sky blue'>BLUE &emsp;&ensp;</font>Closed Section</h3>";
+            echo "<h3><font color='green'>GREEN &emsp;</font>Open Section</h3>";
+            ?>
+        </div>
+
+        <div>
             <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="get">
-            <label for="offeringCode">Class code to add:</label>
-            <input type='text' code='offeringCode' placeholder="ex: 1234"> <br /><br />
+            <label for="courseCode">Enter course code:</label>
+            <input type='text' code='offeringCode' placeholder="ex: IT-PROG"> <br /><br />
             
             <?php
-            // error_reporting(E_ERROR | E_PARSE);
-            echo $_GET['offeringCode'];
+
             ?>
             </form>
         </div>
-
     </div>
-
-    
-
-    <?php
-        //After turning on SQL on XAMPP, you can manage the DB via this url:
-        // http://localhost/phpmyadmin
-        $server = "localhost";
-        $username = "root"; //will change this later
-        $password = "";
-
-        // Initiate connection to DB
-        $connection = mysqli_connect($server, $username, $password);
-
-        if(!$connection)
-            die("could not connect".mysqli_connect_error());
-        // else echo "CONNECTION TO DB SUCCESSFUL";
-
-        $dbname = "itmosys_db";
-        // mysqli_select_db($connection, $dbname);
-
-        // $query = "SELECT * FROM $dbname";
-        // $statement = mysqli_query($connection, $query);
-
-        //try to insert ITCMSY1
-        // $query = "INSERT INTO $dbname.course_codes (course_code) VALUES ('ITCMSY1')";
-        // $statement = mysqli_query($connection, $query);
-        ?>    
-        
-
-
-
 
 </body>
 </html>

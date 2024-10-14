@@ -95,6 +95,7 @@
         <!-- Buttons stacked on top of each other -->
         <button onclick="window.location.href='add_class.php'">Add Classes</button>
         <button onclick="window.location.href='drop_class.php'">Remove Classes</button>
+        <button onclick="window.location.href='CourseOfferings.php'">Course Offerings</button>
     </div>
 
 </body>
