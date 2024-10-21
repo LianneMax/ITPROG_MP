@@ -1,23 +1,27 @@
-<html>
-<head><title>Login Page</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
 
     <style>
-         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 
-        .container {
-            position: relative;
-            text-align: left;
+        .container { 
+            position: relative; 
+            text-align: left; 
             background-color: white;
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
             width: 350px;
-            height: 210px;
+            height: 310px;
             margin-top: 40px;
         }
 
-
-        body{
+        body {
             background-image: url('for loop justinn.png');
             font-family: 'Montserrat', Times New Roman, serif;
             background-color: #f4f4f4;
@@ -36,7 +40,7 @@
             top: 10px;
             font-size: 36px;
             font-family: fantasy;
-            color: #5b8ba4; 
+            color: #5b8ba4;
             margin-top: 150px;
             z-index: 1;
         }
@@ -52,11 +56,10 @@
             font-size: 24px;
         }
 
-
         .separator {
             border-top: 2px solid #ccc;
-            margin-top: 40px; 
-            margin-bottom: 20px; 
+            margin-top: 40px;
+            margin-bottom: 20px;
         }
 
         button {
@@ -65,7 +68,7 @@
             padding: 15px;
             margin: 10px 0;
             font-size: 16px;
-            font-family: "Times New Roman", serif; /* Changed button font */
+            font-family: "Times New Roman", serif;
             border: none;
             border-radius: 5px;
             background-color: #5b8ba4;
@@ -80,12 +83,12 @@
 
         input[type="text"],
         input[type="password"] {
-            width: 100%; /* Makes the input fields take the full width of the container */
-            padding: 10px; /* Adds padding inside the input fields */
+            width: 100%;
+            padding: 10px;
             margin-top: 5px;
-            border: 1px solid #ccc; /* Adds a border to the input fields */
-            border-radius: 5px; /* Rounds the corners of the input fields */
-            box-sizing: border-box; /* Ensures padding and border are included in the width */
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
             font-family: "Times New Roman", serif;
             font-size: 16px;
         }
@@ -93,32 +96,71 @@
         label {
             font-family: 'Montserrat', Times New Roman, serif;
             margin-top: 10px;
-            display: block; /* Makes sure the label takes up the entire width */
+            display: block;
         }
 
     </style>
 
 </head>
-    <body>
-        
-        <h1>Welcome to ITmosys</h1>
+<body>
 
-        <div class="container">
-            <h2>LOGIN ka na SIS</h2>
-    
-            <div class="separator"></div>
-            
-            <div class="formDiv">
-                <form method="post" action="EnrollmentPage.php">
-                    <label for="username">Username:</label>
-                    <input type="text" id="username" name="username" required>
-                    <br><br>
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" required>
-                    <br><br>
-                    <button type="submit" class="signin">Sign In</button>
-                </form>
-            </div>
+    <h1>Welcome to ITmosys</h1>
+
+    <div class="container">
+        <h2>LOGIN ka na SIS</h2>
+
+        <div class="separator"></div>
+
+        <div class="formDiv">
+            <?php
+            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                // Database connection
+                $servername = "localhost";
+                $username = "root"; // Change if necessary
+                $password = ""; // Change if necessary
+                $dbname = "itmosys_db";
+
+                // Create connection
+                $conn = new mysqli($servername, $username, $password, $dbname);
+
+                // Check connection
+                if ($conn->connect_error) {
+                    die("Connection failed: " . $conn->connect_error);
+                }
+
+                // Fetching form data
+                $student_id = mysqli_real_escape_string($conn, $_POST['student_id']);
+                $pass = mysqli_real_escape_string($conn, $_POST['password']);
+
+                // Query to check if student exists
+                $sql = "SELECT * FROM students WHERE student_id = '$student_id' AND password = '$pass'";
+                $result = $conn->query($sql);
+
+                if ($result->num_rows > 0) {
+                    // Success: Redirect to enrollment page or dashboard
+                    echo "<p>Login successful! Redirecting...</p>";
+                    header("refresh:2;url=EnrollmentPage.php");
+                } else {
+                    // Failure: Show error message
+                    echo "<p style='color:red;'>Invalid student ID or password.</p>";
+                }
+
+                // Close connection
+                $conn->close();
+            }
+            ?>
+
+            <form method="post" action="">
+                <label for="student_id">Student ID:</label>
+                <input type="text" id="student_id" name="student_id" required>
+                <br><br>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+                <br><br>
+                <button type="submit" class="signin">Sign In</button>
+            </form>
         </div>
-    </body>
+    </div>
+
+</body>
 </html>
