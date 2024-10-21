@@ -96,6 +96,7 @@
         <button onclick="window.location.href='add_class.php'">Add Classes</button>
         <button onclick="window.location.href='drop_class.php'">Remove Classes</button>
         <button onclick="window.location.href='CourseOfferings.php'">Course Offerings</button>
+        <button onclick="window.location.href='ViewEAF.php'">View EAF</button>
     </div>
 
 </body>
