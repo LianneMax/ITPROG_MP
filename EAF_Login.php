@@ -86,6 +86,12 @@
     </style>
 
     <?php
+    //After turning on SQL on XAMPP, you can manage the DB via this url:
+        // http://localhost/phpmyadmin
+        $server = "localhost";
+        $username = "root"; //will change this later
+        $password = "";
+        
     // Check if the form is submitted
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Get the student number from the input
