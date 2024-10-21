@@ -1,6 +1,7 @@
 <html>
 <head>
     <title>Add Classes</title>
+    <!-- put template in 1 css file -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 
@@ -32,7 +33,8 @@
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-            width: 1000px;
+            width: 1000px; 
+            /* consistent across all pages */
             height: 500px;
             margin-top: 40px;
         }
@@ -109,6 +111,8 @@
     
 
     <?php
+        //put this in 1 sql config file 
+
         //After turning on SQL on XAMPP, you can manage the DB via this url:
         // http://localhost/phpmyadmin
         $server = "localhost";
