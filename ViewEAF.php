@@ -87,11 +87,17 @@
 
     <?php
     //After turning on SQL on XAMPP, you can manage the DB via this url:
-        // http://localhost/phpmyadmin
-        $server = "localhost";
-        $username = "root"; //will change this later
-        $password = "";
-        
+    // http://localhost/phpmyadmin
+    $server = "localhost";
+    $username = "root"; //will change this later
+    $password = "";
+
+    //Create connection
+    $conn = new mysqli($server, $username, $password);
+
+    $sql = "SELECT id, firstname, lastname FROM MyGuests";
+    $result = $conn->query($sql);
+
     // Check if the form is submitted
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Get the student number from the input
