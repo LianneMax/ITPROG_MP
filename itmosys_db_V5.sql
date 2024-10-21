@@ -222,7 +222,7 @@ COMMIT;
 START TRANSACTION;
 USE `itmosys_db`;
 INSERT INTO `itmosys_db`.`section_offerings` (`offering_code`, `course_code`, `section`, `class_days`, `class_start_time`, `class_end_time`, `enroll_cap`, `enrolled_students`, `professor`, `room`) VALUES (1000, 'ITSECUR', 'S16', 'MH', '18:00', '19:30', 40, 0, 'Keinaz Domingo', 'GK405');
-
+INSERT INTO `itmosys_db`.`section_offerings` (`offering_code`, `course_code`, `section`, `class_days`, `class_start_time`, `class_end_time`, `enroll_cap`, `enrolled_students`, `professor`, `room`) VALUES (1001, 'ITNET01', 'S120', 'TF', '9:15', '10:45', 40, 0, 'Hiroki Asaba', 'GK404');
 COMMIT;
 
 
