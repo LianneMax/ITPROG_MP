@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `itmosys_db`.`prerequisites` (
   `course_code` VARCHAR(7) NOT NULL,
   `prerequisite` VARCHAR(7) NOT NULL,
   PRIMARY KEY (`course_code`, `prerequisite`),
-  INDEX `fk_prerequisites_course_codes1_idx` (`prerequisite` ASC),
+  INDEX `fk_prerequisites_course_codes1_idx` (`prerequisite` ASC) VISIBLE,
   CONSTRAINT `fk_prerequisites_courses1`
     FOREIGN KEY (`course_code`)
     REFERENCES `itmosys_db`.`courses` (`course_code`)
@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS `itmosys_db`.`section_offerings` (
   `professor` VARCHAR(200) NOT NULL,
   `room` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`offering_code`),
-  INDEX `fk_section_offerings_courses1_idx` (`course_code` ASC) ,
+  INDEX `fk_section_offerings_courses1_idx` (`course_code` ASC) VISIBLE,
   CONSTRAINT `fk_section_offerings_courses1`
     FOREIGN KEY (`course_code`)
     REFERENCES `itmosys_db`.`courses` (`course_code`)
@@ -114,8 +114,8 @@ DROP TABLE IF EXISTS `itmosys_db`.`students_classes` ;
 CREATE TABLE IF NOT EXISTS `itmosys_db`.`students_classes` (
   `student_id` INT(8) UNSIGNED NOT NULL,
   `offering_code` INT(4) UNSIGNED NOT NULL,
-  PRIMARY KEY (`student_id`),
-  INDEX `fk_students_classes_section_offerings1_idx` (`offering_code` ASC) ,
+  PRIMARY KEY (`offering_code`),
+  INDEX `fk_students_classes_section_offerings1_idx` (`offering_code` ASC) VISIBLE,
   CONSTRAINT `fk_students_classes_students1`
     FOREIGN KEY (`student_id`)
     REFERENCES `itmosys_db`.`students` (`student_id`)
@@ -221,8 +221,21 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `itmosys_db`;
-INSERT INTO `itmosys_db`.`section_offerings` (`offering_code`, `course_code`, `section`, `class_days`, `class_start_time`, `class_end_time`, `enroll_cap`, `enrolled_students`, `professor`, `room`) VALUES (1000, 'ITSECUR', 'S16', 'MH', '18:00', '19:30', 40, 0, 'Keinaz Domingo', 'GK405');
-INSERT INTO `itmosys_db`.`section_offerings` (`offering_code`, `course_code`, `section`, `class_days`, `class_start_time`, `class_end_time`, `enroll_cap`, `enrolled_students`, `professor`, `room`) VALUES (1001, 'ITNET01', 'S120', 'TF', '9:15', '10:45', 40, 0, 'Hiroki Asaba', 'GK404');
+INSERT INTO `itmosys_db`.`section_offerings` (`offering_code`, `course_code`, `section`, `class_days`, `class_start_time`, `class_end_time`, `enroll_cap`, `enrolled_students`, `professor`, `room`) VALUES (1900, 'IT-PROG', 'S17', 'MH', '18:00', '19:30', 45, 0, 'Naruto', 'Online');
+INSERT INTO `itmosys_db`.`section_offerings` (`offering_code`, `course_code`, `section`, `class_days`, `class_start_time`, `class_end_time`, `enroll_cap`, `enrolled_students`, `professor`, `room`) VALUES (1600, 'ITNET02', 'S16', 'MH', '9:15', '10:45', 20, 0, 'Fritz Flores', 'GK405');
+INSERT INTO `itmosys_db`.`section_offerings` (`offering_code`, `course_code`, `section`, `class_days`, `class_start_time`, `class_end_time`, `enroll_cap`, `enrolled_students`, `professor`, `room`) VALUES (1700, 'LBYITN2', 'S16', 'MH', '11:00', '12:30', 20, 0, 'Fritz Flores', 'GK405');
+INSERT INTO `itmosys_db`.`section_offerings` (`offering_code`, `course_code`, `section`, `class_days`, `class_start_time`, `class_end_time`, `enroll_cap`, `enrolled_students`, `professor`, `room`) VALUES (2000, 'ITSYSAD', 'S10', 'MH', '9:15', '10:45', 45, 0, 'Katrina Solomon', 'GK210');
+INSERT INTO `itmosys_db`.`section_offerings` (`offering_code`, `course_code`, `section`, `class_days`, `class_start_time`, `class_end_time`, `enroll_cap`, `enrolled_students`, `professor`, `room`) VALUES (2100, 'LBYSYAD', 'S10', 'MH', '11:00', '12:30', 45, 0, 'Katrina Solomon', 'GK210');
+INSERT INTO `itmosys_db`.`section_offerings` (`offering_code`, `course_code`, `section`, `class_days`, `class_start_time`, `class_end_time`, `enroll_cap`, `enrolled_students`, `professor`, `room`) VALUES (1500, 'ITISORG', 'S12', 'TF', '9:15', '10:45', 45, 0, 'Sentinel Prime', 'AG1107');
+INSERT INTO `itmosys_db`.`section_offerings` (`offering_code`, `course_code`, `section`, `class_days`, `class_start_time`, `class_end_time`, `enroll_cap`, `enrolled_students`, `professor`, `room`) VALUES (1501, 'ITISORG', 'S13', 'TF', '11:00', '12:30', 45, 0, 'Sentinel Prime', 'AG1107');
+INSERT INTO `itmosys_db`.`section_offerings` (`offering_code`, `course_code`, `section`, `class_days`, `class_start_time`, `class_end_time`, `enroll_cap`, `enrolled_students`, `professor`, `room`) VALUES (1901, 'IT-PROG', 'S18', 'TF', '9:15', '10:45', 45, 0, 'Naruto', 'Online');
+INSERT INTO `itmosys_db`.`section_offerings` (`offering_code`, `course_code`, `section`, `class_days`, `class_start_time`, `class_end_time`, `enroll_cap`, `enrolled_students`, `professor`, `room`) VALUES (1601, 'ITNET02', 'S17', 'MH', '14:30', '16:00', 20, 0, 'Hiroki Asaba', 'GK405');
+INSERT INTO `itmosys_db`.`section_offerings` (`offering_code`, `course_code`, `section`, `class_days`, `class_start_time`, `class_end_time`, `enroll_cap`, `enrolled_students`, `professor`, `room`) VALUES (1701, 'LBYITN2', 'S17', 'MH', '16:00', '17:45', 20, 0, 'Hiroki Asaba', 'GK405');
+INSERT INTO `itmosys_db`.`section_offerings` (`offering_code`, `course_code`, `section`, `class_days`, `class_start_time`, `class_end_time`, `enroll_cap`, `enrolled_students`, `professor`, `room`) VALUES (2001, 'ITSYSAD', 'S11', 'TF', '14:30', '16:00', 45, 0, 'Katrina Solomon', 'GK210');
+INSERT INTO `itmosys_db`.`section_offerings` (`offering_code`, `course_code`, `section`, `class_days`, `class_start_time`, `class_end_time`, `enroll_cap`, `enrolled_students`, `professor`, `room`) VALUES (2101, 'LBYSYAD', 'S11', 'TF', '16:00', '17:45', 45, 0, 'Katrina Solomon', 'GK210');
+INSERT INTO `itmosys_db`.`section_offerings` (`offering_code`, `course_code`, `section`, `class_days`, `class_start_time`, `class_end_time`, `enroll_cap`, `enrolled_students`, `professor`, `room`) VALUES (1800, 'ITSECUR', 'S15', 'W', '9:15', '12:30', 45, 0, 'Keinaz Domingo', 'GK404A');
+INSERT INTO `itmosys_db`.`section_offerings` (`offering_code`, `course_code`, `section`, `class_days`, `class_start_time`, `class_end_time`, `enroll_cap`, `enrolled_students`, `professor`, `room`) VALUES (1801, 'ITSECUR', 'S16', 'S', '9:15', '12:30', 45, 0, 'Keinaz Domingo', 'GK404A');
+
 COMMIT;
 
 
@@ -239,12 +252,14 @@ INSERT INTO `itmosys_db`.`students` (`student_id`, `student_name`, `password`) V
 
 COMMIT;
 
+
 -- -----------------------------------------------------
 -- Data for table `itmosys_db`.`students_classes`
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `itmosys_db`;
-INSERT INTO `students_classes` (`student_id`, `offering_code`) VALUES ('1', '1001');
-INSERT INTO `students_classes` (`student_id`, `offering_code`) VALUES ('2', '1001');
+INSERT INTO `itmosys_db`.`students_classes` (`student_id`, `offering_code`) VALUES (1, 1600);
+INSERT INTO `itmosys_db`.`students_classes` (`student_id`, `offering_code`) VALUES (1, 1700);
 
 COMMIT;
+
