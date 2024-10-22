@@ -11,8 +11,8 @@
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-            width: 350px;
-            height: 210px;
+            width: 700px;
+            height: 300px;
             margin-top: 40px;
         }
 
@@ -28,6 +28,12 @@
             height: 100vh;
             background-color: #f0f0f0;
             position: relative;
+        }
+
+        tr, th, td {
+            border: 1px solid black;
+            border-radius: 10px;
+            padding: 5px;
         }
 
         h1 {
@@ -51,30 +57,10 @@
             font-size: 24px;
         }
 
-
         .separator {
             border-top: 2px solid #ccc;
             margin-top: 40px; 
             margin-bottom: 20px; 
-        }
-
-        button {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            margin: 10px 0;
-            font-size: 16px;
-            font-family: "Times New Roman", serif; /* Changed button font */
-            border: none;
-            border-radius: 5px;
-            background-color: #5b8ba4;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #497285;
         }
 
         label {
@@ -102,7 +88,7 @@
         $student_id = $_SESSION['student_id'];
     }
 
-    $sql = "SELECT s.student_name, c.course_title, so.section, so.class_days, so.class_start_time, so.class_end_time, so.professor, so.room
+    $sql = "SELECT s.student_id, s.student_name, c.course_title, so.section, so.class_days, so.class_start_time, so.class_end_time, so.professor, so.room
             FROM students s
             JOIN students_classes sc ON s.student_id = sc.student_id
             JOIN section_offerings so ON sc.offering_code = so.offering_code
@@ -123,16 +109,37 @@
             <?php
                 echo "<h3>Welcome!</h3>";
                 echo "<h3>Student ID: $student_id</h3>";
-
-                if ($result->num_rows > 0) {
-                    // output data of each row
-                    while($row = $result->fetch_assoc()) {
-                      echo "id: " . $row["student_id"]. " - Name: " . $row["student_name"]."<br>";
-                    }
-                  } else {
-                    echo "0 results";
-                  }
             ?>
+
+            <table>
+                <tr>
+                    <th>Course Title</th>
+                    <th>Section</th>
+                    <th>Class Days</th>
+                    <th>Class Start Time</th>
+                    <th>Class End Time</th>
+                    <th>Professor</th>
+                    <th>Room</th>
+                </tr>
+                <tr>
+                    <?php
+                        if ($result->num_rows > 0) {
+                            // output data of each row
+                            while($row = $result->fetch_assoc()) {
+                    ?>
+                            <td><?php echo $row["course_title"];?></td>
+                            <td><?php echo $row["section"];?></td>
+                            <td><?php echo $row["class_days"];?></td>
+                            <td><?php echo $row["class_start_time"];?></td>
+                            <td><?php echo $row["class_end_time"];?></td>
+                            <td><?php echo $row["professor"];?></td>
+                            <td><?php echo $row["room"];?></td>
+                </tr>
+                <?php
+                            }
+                        }
+                ?>
+            </table>
         </div>
     </body>
 </html>
