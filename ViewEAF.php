@@ -93,16 +93,23 @@
     $server = "localhost";
     $username = "root"; //will change this later
     $password = "";
+    $dbname = "itmosys_db";
 
     //Create connection
-    $conn = new mysqli($server, $username, $password);
-
-    $sql = "SELECT student_id, student_name FROM students";
-    $result = $conn->query($sql);
+    $conn = new mysqli($server, $username, $password, $dbname);
 
     if (isset($_SESSION['student_id'])) {
         $student_id = $_SESSION['student_id'];
     }
+
+    $sql = "SELECT s.student_name, c.course_title, so.section, so.class_days, so.class_start_time, so.class_end_time, so.professor, so.room
+            FROM students s
+            JOIN students_classes sc ON s.student_id = sc.student_id
+            JOIN section_offerings so ON sc.offering_code = so.offering_code
+            JOIN courses c ON so.course_code = c.course_code
+            WHERE s.student_id = '$student_id'";
+
+    $result = $conn->query($sql);
     ?>
 
 </head>
@@ -116,6 +123,15 @@
             <?php
                 echo "<h3>Welcome!</h3>";
                 echo "<h3>Student ID: $student_id</h3>";
+
+                if ($result->num_rows > 0) {
+                    // output data of each row
+                    while($row = $result->fetch_assoc()) {
+                      echo "id: " . $row["student_id"]. " - Name: " . $row["student_name"]."<br>";
+                    }
+                  } else {
+                    echo "0 results";
+                  }
             ?>
         </div>
     </body>

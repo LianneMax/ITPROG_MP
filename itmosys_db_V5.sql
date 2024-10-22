@@ -239,3 +239,12 @@ INSERT INTO `itmosys_db`.`students` (`student_id`, `student_name`, `password`) V
 
 COMMIT;
 
+-- -----------------------------------------------------
+-- Data for table `itmosys_db`.`students_classes`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `itmosys_db`;
+INSERT INTO `students_classes` (`student_id`, `offering_code`) VALUES ('1', '1001');
+INSERT INTO `students_classes` (`student_id`, `offering_code`) VALUES ('2', '1001');
+
+COMMIT;
