@@ -30,10 +30,10 @@
             position: relative;
         }
 
-        tr, th, td {
+        table, th, td {
             border: 1px solid black;
-            border-radius: 10px;
             padding: 5px;
+            border-collapse: collapse;
         }
 
         h1 {
