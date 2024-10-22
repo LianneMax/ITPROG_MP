@@ -86,6 +86,8 @@
     </style>
 
     <?php
+    session_start(); //starts the session
+
     //After turning on SQL on XAMPP, you can manage the DB via this url:
     // http://localhost/phpmyadmin
     $server = "localhost";
@@ -95,16 +97,11 @@
     //Create connection
     $conn = new mysqli($server, $username, $password);
 
-    $sql = "SELECT id, firstname, lastname FROM MyGuests";
+    $sql = "SELECT student_id, student_name FROM students";
     $result = $conn->query($sql);
 
-    // Check if the form is submitted
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        // Get the student number from the input
-        $studentNumber = htmlspecialchars($_POST['student_number']);
-
-        // Display the student number
-        echo "<h3>Entered Student Number: $studentNumber</h2>";
+    if (isset($_SESSION['student_id'])) {
+        $student_id = $_SESSION['student_id'];
     }
     ?>
 
@@ -115,16 +112,11 @@
 
         <div class="container">
             <h2>View Student EAF</h2>
-    
             <div class="separator"></div>
-            
-            <div class="formDiv">
-                <form method="POST" action="">
-                <label for="student_number">Student Number:</label><br>
-                <input type="text" id="student_number" name="student_number" required><br><br>
-                <input type="submit" value="Submit">
-                </form>
-            </div>
+            <?php
+                echo "<h3>Welcome!</h3>";
+                echo "<h3>Student ID: $student_id</h3>";
+            ?>
         </div>
     </body>
 </html>

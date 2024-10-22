@@ -113,6 +113,8 @@
 
         <div class="formDiv">
             <?php
+            session_start(); //starts the session
+
             if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 // Database connection
                 $servername = "localhost";
@@ -131,6 +133,9 @@
                 // Fetching form data
                 $student_id = mysqli_real_escape_string($conn, $_POST['student_id']);
                 $pass = mysqli_real_escape_string($conn, $_POST['password']);
+
+                // Store the student number in a session variable
+                $_SESSION['student_id'] = $student_id;
 
                 // Query to check if student exists
                 $sql = "SELECT * FROM students WHERE student_id = '$student_id' AND password = '$pass'";
