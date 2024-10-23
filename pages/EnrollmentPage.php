@@ -5,8 +5,10 @@
 </head>
 <body>
 
-    <!-- ITmosys Header -->
-    <h1 class="itmosys-header">ITmosys</h1>
+    <!-- Top Panel with ITmosys centered -->
+    <div class="top-panel">
+        <h1 class="itmosys-header">ITmosys</h1>
+    </div>
 
     <div class="enrollment_container">
         <!-- Enrollment header in the top-left of the box -->
@@ -20,7 +22,11 @@
         <button onclick="window.location.href='drop_class.php'">Remove Classes</button>
         <button onclick="window.location.href='CourseOfferings.php'">Course Offerings</button>
         <button onclick="window.location.href='ViewEAF.php'">View EAF</button>
+
+        <!-- Logout button -->
+        <button class="logout-btn" onclick="window.location.href='LogoutPage.php'">Logout</button>
     </div>
 
 </body>
 </html>
+
