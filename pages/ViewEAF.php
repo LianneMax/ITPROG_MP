@@ -30,11 +30,11 @@
 
 </head>
     <body>
-        <link rel="stylesheet" href="assets/css/style.css">
+        <link rel="stylesheet" href="../assets/css/style.css">
         
         <h1 class="itmosys-header">Welcome to ITmosys</h1>
 
-        <div class="container">
+        <div class="viewEAF_container">
             <h2 class="header2">View Student EAF</h2>
             <div class="separator"></div>
             <?php

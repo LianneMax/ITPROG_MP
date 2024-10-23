@@ -1,7 +1,7 @@
 <html>
 <head>
-    <title>Add Classes</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <title>Drop Classes</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
 
@@ -10,19 +10,19 @@
 
     <div class="container">
         <!-- Enrollment header in the top-left of the box -->
-        <h2 class="title-header">Add/Drop Classes Facility</h2>
+        <h2 class="drop-class-header">Add/Drop Classes Facility</h2>
 
         <!-- Line below the Enrollment header -->
         <div class="separator"></div>
 
         <div>
             <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="get">
-            <label for="offeringCode">Class code to add:</label>
+            <label for="offeringCode">Class code to drop:</label>
             <input type='text' code='offeringCode' placeholder="ex: 1234"> <br /><br />
             
             <?php
             // error_reporting(E_ERROR | E_PARSE);
-            // echo $_GET['offeringCode'];
+            echo $_GET['offeringCode'];
             ?>
             </form>
         </div>
@@ -32,8 +32,6 @@
     
 
     <?php
-        //put this in 1 sql config file 
-
         //After turning on SQL on XAMPP, you can manage the DB via this url:
         // http://localhost/phpmyadmin
         $server = "localhost";
@@ -57,10 +55,3 @@
         // $query = "INSERT INTO $dbname.course_codes (course_code) VALUES ('ITCMSY1')";
         // $statement = mysqli_query($connection, $query);
         ?>    
-        
-
-
-
-
-</body>
-</html>
