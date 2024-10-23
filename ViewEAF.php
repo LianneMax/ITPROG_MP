@@ -1,75 +1,5 @@
 <html>
-<head><title>View EAF</title>
-
-    <style>
-         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-
-        .container {
-            position: relative;
-            text-align: left;
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-            width: auto;
-            height: auto;
-            margin-top: 40px;
-        }
-
-
-        body{
-            font-family: 'Montserrat', Times New Roman, serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
-            position: relative;
-        }
-
-        table, th, td {
-            border: 1px solid black;
-            padding: 5px;
-            border-collapse: collapse;
-        }
-
-        h1 {
-            position: absolute;
-            top: 10px;
-            font-size: 36px;
-            font-family: fantasy;
-            color: #5b8ba4; 
-            margin-top: 150px;
-            z-index: 1;
-        }
-
-        h2 {
-            margin: 0;
-            padding-bottom: 10px;
-            color: #333;
-            font-family: 'Montserrat', Times New Roman, serif;
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            font-size: 24px;
-        }
-
-        .separator {
-            border-top: 2px solid #ccc;
-            margin-top: 40px; 
-            margin-bottom: 20px; 
-        }
-
-        label {
-            font-family: 'Montserrat', Times New Roman, serif;
-            margin-top: 10px;
-            display: block; /* Makes sure the label takes up the entire width */
-        }
-
-    </style>
+    <head><title>View EAF</title>
 
     <?php
     session_start(); //starts the session
@@ -100,11 +30,12 @@
 
 </head>
     <body>
+        <link rel="stylesheet" href="assets/css/style.css">
         
-        <h1>Welcome to ITmosys</h1>
+        <h1 class="itmosys-header">Welcome to ITmosys</h1>
 
         <div class="container">
-            <h2>View Student EAF</h2>
+            <h2 class="header2">View Student EAF</h2>
             <div class="separator"></div>
             <?php
                 echo "<h3>Welcome!</h3>";
