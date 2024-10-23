@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `itmosys_db`.`prerequisites` (
   `course_code` VARCHAR(7) NOT NULL,
   `prerequisite` VARCHAR(7) NOT NULL,
   PRIMARY KEY (`course_code`, `prerequisite`),
-  INDEX `fk_prerequisites_course_codes1_idx` (`prerequisite` ASC) VISIBLE,
+  INDEX `fk_prerequisites_course_codes1_idx` (`prerequisite` ASC),
   CONSTRAINT `fk_prerequisites_courses1`
     FOREIGN KEY (`course_code`)
     REFERENCES `itmosys_db`.`courses` (`course_code`)
@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS `itmosys_db`.`section_offerings` (
   `professor` VARCHAR(200) NOT NULL,
   `room` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`offering_code`),
-  INDEX `fk_section_offerings_courses1_idx` (`course_code` ASC) VISIBLE,
+  INDEX `fk_section_offerings_courses1_idx` (`course_code` ASC),
   CONSTRAINT `fk_section_offerings_courses1`
     FOREIGN KEY (`course_code`)
     REFERENCES `itmosys_db`.`courses` (`course_code`)
@@ -115,7 +115,7 @@ CREATE TABLE IF NOT EXISTS `itmosys_db`.`students_classes` (
   `student_id` INT(8) UNSIGNED NOT NULL,
   `offering_code` INT(4) UNSIGNED NOT NULL,
   PRIMARY KEY (`offering_code`, `student_id`),
-  INDEX `fk_students_classes_section_offerings1_idx` (`offering_code` ASC) VISIBLE,
+  INDEX `fk_students_classes_section_offerings1_idx` (`offering_code` ASC),
   CONSTRAINT `fk_students_classes_students1`
     FOREIGN KEY (`student_id`)
     REFERENCES `itmosys_db`.`students` (`student_id`)
