@@ -38,7 +38,7 @@ body {
 
 /* Style for Add Class */
 .addClass_container {
-
+    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center; 
@@ -47,7 +47,7 @@ body {
 
 /* Style for ENROLLMENT page */
 .enrollment_container {
-
+    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center; 
