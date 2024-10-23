@@ -32,12 +32,14 @@ body {
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
     width: 1000px;
     height: 500px;
-    margin-top: 40px;
+    margin-top: 40px; 
+    
 }
 
 /* Style for Add Class */
 .addClass_container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center; 
     text-align: center;
@@ -55,7 +57,7 @@ body {
 button{
     display: block;
     flex: 0 1 auto;
-    width: 200px;
+    width: 500px;
     padding: 15px;
     margin: 10px 0;
     font-size: 16px;
