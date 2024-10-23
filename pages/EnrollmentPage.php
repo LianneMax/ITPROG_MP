@@ -17,15 +17,17 @@
         <!-- Line below the Enrollment header -->
         <div class="separator"></div>
 
+        <div class="enrollment-btn">
         <!-- Buttons stacked on top of each other -->
         <button onclick="window.location.href='add_class.php'">Add Classes</button>
         <button onclick="window.location.href='drop_class.php'">Remove Classes</button>
         <button onclick="window.location.href='CourseOfferings.php'">Course Offerings</button>
         <button onclick="window.location.href='ViewEAF.php'">View EAF</button>
+        </div>
+    </div>
 
         <!-- Logout button -->
         <button class="logout-btn" onclick="window.location.href='LogoutPage.php'">Logout</button>
-    </div>
 
 </body>
 </html>

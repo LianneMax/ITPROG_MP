@@ -17,12 +17,16 @@
     ?>
 </head>
 <body>
-    <!-- ITmosys Header -->
-    <h1 class="itmosys-header">ITmosys</h1>
+
+ 
+        <div class="top-panel">
+                <h1 class="itmosys-header">ITMOSYS</h1>
+        </div>
+
 
     <div class="addClass_container">
         <!-- Title header in the top-left of the box -->
-        <h2 class="title-header">Add Classes</h2>
+        <h2 class="title-header">ADD CLASSES</h2>
 
         <!-- Line below the Title header -->
         <div class="separator"></div>
@@ -67,67 +71,71 @@
 
         <div>
             <!-- Form to add class -->
-            <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+            <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" style="display: flex; align-items: center; gap: 10px;">
                 <label for="offeringCode">Class code to add:</label>
-                <input type="text" name="offeringCode" placeholder="ex: 1234" required> <br /><br />
-                <button type="submit">Add Class</button>
+                <input type="text" name="offeringCode" placeholder="ex: 1234" required>
+                <button type="submit" class="addclass-btn">Add Class</button>
             </form>
         </div>
         
-        <h2 class="h2">Your Current Classes</h2>
-        <table>
-            <tr>
-                <th>Code</th>
-                <th>Class</th>
-                <th>Section</th>
-                <th>Class Days</th>
-                <th>Class Start Time</th>
-                <th>Class End Time</th>
-                <th>Enroll Cap</th>
-                <th>Enrolled</th>
-                <th>Professor</th>
-                <th>Room</th>
-            </tr>
+        <!-- Missing quotation mark fixed here -->
+        <div style="width: 100%; text-align: center;">
+            <h2 class="sub-header">Your Current Classes</h2>
+            <table style="margin: 0 auto; width: 80%;">
+                <tr>
+                    <th>Code</th>
+                    <th>Class</th>
+                    <th>Section</th>
+                    <th>Class Days</th>
+                    <th>Class Start Time</th>
+                    <th>Class End Time</th>
+                    <th>Enroll Cap</th>
+                    <th>Enrolled</th>
+                    <th>Professor</th>
+                    <th>Room</th>
+                </tr>
 
-            <?php
-            // Query to get the currently enrolled classes for the logged-in student
-            $studentID = $_SESSION['student_id']; // Get student ID from session
-            $enrolledClassesQuery = "
-                SELECT so.offering_code, so.course_code, so.section, so.class_days, so.class_start_time, so.class_end_time, 
-                       so.enroll_cap, so.enrolled_students, so.professor, so.room
-                FROM students_classes sc
-                INNER JOIN section_offerings so ON sc.offering_code = so.offering_code
-                WHERE sc.student_id = '$studentID'
-            ";
-            $enrolledResult = mysqli_query($conn, $enrolledClassesQuery);
+                <?php
+                // Query to get the currently enrolled classes for the logged-in student
+                $studentID = $_SESSION['student_id']; // Get student ID from session
+                $enrolledClassesQuery = "
+                    SELECT so.offering_code, so.course_code, so.section, so.class_days, so.class_start_time, so.class_end_time, 
+                           so.enroll_cap, so.enrolled_students, so.professor, so.room
+                    FROM students_classes sc
+                    INNER JOIN section_offerings so ON sc.offering_code = so.offering_code
+                    WHERE sc.student_id = '$studentID'
+                ";
+                $enrolledResult = mysqli_query($conn, $enrolledClassesQuery);
 
-            // Loop through the results and display them in the table
-            if (mysqli_num_rows($enrolledResult) > 0) {
-                while ($row = mysqli_fetch_assoc($enrolledResult)) {
-                    echo "<tr>";
-                    echo "<td><b style='color:green;'>" . $row['offering_code'] . "</b></td>";
-                    echo "<td><b style='color:green;'>" . $row['course_code'] . "</b></td>";
-                    echo "<td><b style='color:green;'>" . $row['section'] . "</b></td>";
-                    echo "<td>" . $row['class_days'] . "</td>";
-                    echo "<td>" . $row['class_start_time'] . "</td>";
-                    echo "<td>" . $row['class_end_time'] . "</td>";
-                    echo "<td>" . $row['enroll_cap'] . "</td>";
-                    echo "<td>" . $row['enrolled_students'] . "</td>";
-                    echo "<td>" . $row['professor'] . "</td>";
-                    echo "<td>" . $row['room'] . "</td>";
-                    echo "</tr>";
+                if (mysqli_num_rows($enrolledResult) > 0) {
+                    while ($row = mysqli_fetch_assoc($enrolledResult)) {
+                        echo "<tr>";
+                        echo "<td><b style='color:green;'>" . $row['offering_code'] . "</b></td>";
+                        echo "<td><b style='color:green;'>" . $row['course_code'] . "</b></td>";
+                        echo "<td><b style='color:green;'>" . $row['section'] . "</b></td>";
+                        echo "<td>" . $row['class_days'] . "</td>";
+                        echo "<td>" . $row['class_start_time'] . "</td>";
+                        echo "<td>" . $row['class_end_time'] . "</td>";
+                        echo "<td>" . $row['enroll_cap'] . "</td>";
+                        echo "<td>" . $row['enrolled_students'] . "</td>";
+                        echo "<td>" . $row['professor'] . "</td>";
+                        echo "<td>" . $row['room'] . "</td>";
+                        echo "</tr>";
+                    }
+                } else {
+                    // Failure Message
+                    echo "<p>Have Not Enrolled Any Classes</p>";
                 }
-            } else {
-                // Failure Message
-                echo "<p>Have Not Enrolled Any Classes</p>";
-            }
 
-            // Close connection
-            $conn->close();
-            ?>
-        </table>
-
+                // Close connection
+                $conn->close();
+                ?>
+            </table>
+        </div>
     </div>
+    <button class="logout-btn" onclick="window.location.href='LogoutPage.php'">Logout</button>
+
 </body>
 </html>
+
 

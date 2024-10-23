@@ -6,28 +6,29 @@ body {
     margin: 0;
     padding: 0;
     display: flex;
-    flex-direction: column;  /* Ensures elements stack vertically */
-    align-items: center;     /* Centers elements horizontally */
+    flex-direction: column;  /* Stacks elements vertically */
+    align-items: center;
+    justify-content: center; /* Centers the content vertically and horizontally */
     height: 100vh;
     position: relative;
 }
 
 /* Top Panel for ITmosys Header */
 .top-panel {
-    width: 100%;              /* Full width of the page */
+    width: 100%;
     background-color: #5b8ba4;
     text-align: center;
-    padding: 20px 0;          /* Padding on top and bottom */
-    position: fixed;          /* Makes it stick to the top of the page */
+    padding: 20px 0; /* Padding on top and bottom */
+    position: fixed;
     top: 0;
     left: 0;
-    z-index: 10;              /* Ensure it stays on top of everything else */
+    z-index: 10; /* Ensures it stays on top */
 }
 
 /* ITmosys Header Styling */
 .itmosys-header {
-    font-size: 36px;
-    font-family: Times New Roman;
+    font-size: 24px;
+    font-family: 'Montserrat';
     color: white;
     margin: 0;
 }
@@ -39,98 +40,90 @@ body {
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-    width: 1000px;
-    height: 500px;
-    margin-top: 100px;  /* Create space from the top panel */
+    width: 700px; /* Adjust container width as necessary */
     text-align: left;
-    justify-content: center;
 }
 
-/* Add Class Container Styling */
 .addClass_container {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
-    text-align: center;
+    align-items: flex-start;  /* Aligns everything to the left */
+    text-align: left;
+    width: 60%;    
+    padding: 20px;
+    box-sizing: border-box;
 }
 
-/* Enrollment Container Styling */
-.enrollment_container {
+/* Form Layout */
+form {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
-    gap: 5px;
-}
-
-/* Course Offerings Page Styling */
-.courseOffer_container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-
-/* View EAF Page Styling */
-.viewEAF_container {
-    width: auto;
-    height: auto;
-}
-
-/* Table Styling */
-table, th, td {
-    border: 1px solid black;
-    padding: 5px;
-    border-collapse: collapse;
-}
-
-/* General Sub-Header Styling */
-.sub-header {
-    margin: 0;
-    padding-bottom: 10px;
-    color: #333;
-    font-family: 'Montserrat', Times New Roman, serif;
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    font-size: 24px;
+    gap: 10px;
 }
 
 /* Title Header Styling */
-.title-header {
-    font-family: 'Montserrat', Times New Roman, serif;
+.title-header, .sub-header{
+    font-family: 'Montserrat';
     color: #333;
     font-size: 24px;
+    margin: 0;
+}
+
+.sub-header {
+    font-size: 16px;
+    text-align: left;
 }
 
 /* Separator Line Styling */
 .separator {
     border-top: 2px solid #ccc;
-    margin-top: 40px;
+    width: 100%;
+    margin-top: 50px; /* Adjust to position separator below the title */
     margin-bottom: 20px;
 }
 
 /* Button Styling */
 button {
-    display: block;
-    width: 500px;
-    padding: 15px;
-    margin: 10px 0;
     font-size: 16px;
-    font-family: "Times New Roman", serif;
-    border: none;
-    border-radius: 5px;
     background-color: #5b8ba4;
     color: white;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    width: 50%;
+    font-family: "Times New Roman", serif;
 }
 
 /* Button Hover Effect */
 button:hover {
     background-color: #497285;
+}
+
+/* Enrollment button container styling */
+.enrollment-btn {
+    display: flex;
+    flex-direction: column; /* Stack the buttons on top of each other */
+    align-items: center; /* Center align the buttons horizontally */
+    gap: 10px; /* Adds space between the buttons */
+    margin: 0 auto; /* Center the button container */
+}
+
+/* Add Class button specific styling (if needed) */
+.addclass-btn {
+    height: 10px; 
+    font-size: 14px;
+    width: 100px; /* Keep this specific size if needed */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    white-space: nowrap;
+    border: none;
+    padding: 10px;
 }
 
 /* Logout Button Styling */
@@ -152,4 +145,35 @@ button:hover {
 /* Logout Button Hover Effect */
 .logout-btn:hover {
     background-color: #703232;
+}
+
+/* Table Styling */
+table {
+    border: 1px solid black;
+    font-size: 14px;  /* Keep the table font size smaller */
+    margin-left: auto;
+    margin-right: auto;
+    padding: 5px;
+    border-collapse: collapse;
+    width: 90%; /* Adjust width as necessary */
+    table-layout: auto; /* Allow the table to adjust column width based on content */
+}
+
+/* Table Header Text Styling */
+th {
+    border: 1px solid black;
+    font-weight: bold; /* Make the header text bold */
+    padding: 8px;      /* Reduce padding to make it smaller */
+    text-align: left;  /* Left-align the header text */
+    font-size: 12px;   /* Smaller header text size */
+    white-space: nowrap; /* Force text to stay in one line */
+}
+
+/* Table Cell Styling */
+td {
+    border: 1px solid black;
+    padding: 5px;
+    text-align: left;  /* Left-align the cell text */
+    font-size: 12px;   /* Smaller text size for the cells */
+    white-space: nowrap; /* Prevent text from wrapping in cells as well */
 }
