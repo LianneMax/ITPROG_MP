@@ -28,12 +28,6 @@
         <div class="separator"></div>
 
         <?php
-            // Initialize feedback message variables
-            $alreadyEnrolled = false;
-            $invalidCode = false;
-            $classAdded = false;
-            $classAddError = "";
-
             // Check if the user is logged in
             if (!isset($_SESSION['student_id'])) {
                 die("Error: Please log in to add a class.");
@@ -58,15 +52,15 @@
                         // Insert the class for the student
                         $insertQuery = "INSERT INTO students_classes (student_id, offering_code) VALUES ('$studentID', '$offeringCode')";
                         if (mysqli_query($conn, $insertQuery)) {
-                            $classAdded = true; // Set success message
+                            echo "<p style='color:green;'>Class added successfully!</p>";
                         } else {
-                            $classAddError = mysqli_error($conn); // Set error message
+                            echo "<p style='color:red;'>Error adding class: " . mysqli_error($conn) . "</p>";
                         }
                     } else {
-                        $alreadyEnrolled = true; // Set already enrolled message
+                        echo "<p style='color:red;'>You are already enrolled in this class.</p>";
                     }
                 } else {
-                    $invalidCode = true; // Set invalid code message
+                    echo "<p style='color:red;'>Invalid offering code. Please try again.</p>";
                 }
             }
         ?>
@@ -76,36 +70,11 @@
             <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
                 <label for="offeringCode">Class code to add:</label>
                 <input type="text" name="offeringCode" placeholder="ex: 1234" required> <br /><br />
-
-                <!-- Display feedback messages here -->
-                <?php
-                    // Show feedback message if form is submitted
-                    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                        // Display error if already enrolled
-                        if ($alreadyEnrolled) {
-                            echo "<p style='color:red;'>You are already enrolled in this class.</p>";
-                        }
-                        // Display error if the course code is invalid
-                        elseif ($invalidCode) {
-                            echo "<p style='color:red;'>Invalid offering code. Please try again.</p>";
-                        }
-                        // Display success message if class added
-                        elseif ($classAdded) {
-                            echo "<p style='color:green;'>Class added successfully!</p>";
-                        }
-                        // Display general error message if there's an issue
-                        elseif ($classAddError) {
-                            echo "<p style='color:red;'>Error adding class: " . $classAddError . "</p>";
-                        }
-                    }
-                ?>
-
-                <!-- Submit button -->
                 <button type="submit">Add Class</button>
             </form>
         </div>
         
-        <h2 class="subtitle-header">Your Current Classes</h2>
+        <h2 class="h2">Your Current Classes</h2>
         <table>
             <tr>
                 <th>Code</th>
@@ -149,15 +118,16 @@
                     echo "</tr>";
                 }
             } else {
-                //Failure Message
-                echo "<p style='color:red;'>No Class Found</p>";
+                // Failure Message
+                echo "<p>Have Not Enrolled Any Classes</p>";
             }
 
-                // Close connection
-                $conn->close();
+            // Close connection
+            $conn->close();
             ?>
         </table>
 
     </div>
 </body>
 </html>
+
