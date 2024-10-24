@@ -58,6 +58,7 @@
             if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['courseCode'])) {
                 // Fetching form data
                 $courseCode = mysqli_real_escape_string($conn, $_POST['courseCode']);
+                $courseCode = strtoupper($courseCode);
 
                 // Store the offering code in a session variable
                 $_SESSION['offeringCode'] = $courseCode;

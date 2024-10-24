@@ -2,56 +2,153 @@
 <head>
     <title>Drop Classes</title>
     <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/navigation.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <?php
+        include "../includes/dbconfig.php";
+        session_start(); // Start the session
+
+        // Create connection
+        $conn = new mysqli($servername, $username, $password, $dbname);
+
+        // Check connection
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
+    ?>
 </head>
 <body>
 
-    <!-- ITmosys Header -->
-    <h1 class="itmosys-header">ITmosys</h1>
-
-    <div class="container">
-        <!-- Enrollment header in the top-left of the box -->
-        <h2 class="drop-class-header">Add/Drop Classes Facility</h2>
-
-        <!-- Line below the Enrollment header -->
-        <div class="separator"></div>
-
-        <div>
-            <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="get">
-            <label for="offeringCode">Class code to drop:</label>
-            <input type='text' code='offeringCode' placeholder="ex: 1234"> <br /><br />
-            
-            <?php
-            // error_reporting(E_ERROR | E_PARSE);
-            echo $_GET['offeringCode'];
-            ?>
-            </form>
-        </div>
-
+    <!-- Hamburger Menu -->
+    <div id="hamburger" class="hamburger">
+        <i class="fas fa-bars"></i>
     </div>
 
-    
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+        <h2 style="margin-top: 50px">ENROLLMENT</h2>
+        <div class="separator"></div>
 
-    <?php
-        //After turning on SQL on XAMPP, you can manage the DB via this url:
-        // http://localhost/phpmyadmin
-        $server = "localhost";
-        $username = "root"; //will change this later
-        $password = "";
+        <a href="add_class.php"><i class="fas fa-plus-circle"></i> Add Class</a>
+        <a href="drop_class.php"><i class="fas fa-minus-circle"></i> Drop Class</a>
+        <a href="CourseOfferings.php"><i class="fas fa-shopping-basket"></i> Course Offerings</a>
+        <a href="ViewEAF.php"><i class="fas fa-calendar-alt"></i> View EAF</a>
+        
+        <div class="separator"></div>
+        <button class="logout-btn" onclick="window.location.href='LogoutPage.php'">
+            <i class="fas fa-sign-out-alt"></i>
+        </button>
+    </div>
 
-        // Initiate connection to DB
-        $connection = mysqli_connect($server, $username, $password);
+    <div class="top-panel">
+        <h1 class="itmosys-header">ITmosys</h1>
+    </div>
 
-        if(!$connection)
-            die("could not connect".mysqli_connect_error());
-        // else echo "CONNECTION TO DB SUCCESSFUL";
 
-        $dbname = "itmosys_db";
-        // mysqli_select_db($connection, $dbname);
+    <!-- Main Content -->
+    <div class="content">
+        <div class="addClass_container">
+            <h2 class="title-header">DROP CLASSES</h2>
+            <div class="separator"></div>
 
-        // $query = "SELECT * FROM $dbname";
-        // $statement = mysqli_query($connection, $query);
+            <?php
+                if (!isset($_SESSION['student_id'])) {
+                    die("Error: Please log in to add a class.");
+                }
 
-        //try to insert ITCMSY1
-        // $query = "INSERT INTO $dbname.course_codes (course_code) VALUES ('ITCMSY1')";
-        // $statement = mysqli_query($connection, $query);
-        ?>    
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                    $offeringCode = mysqli_real_escape_string($conn, $_POST['offeringCode']);
+                    $studentID = $_SESSION['student_id'];
+
+                    $offeringQuery = "SELECT * FROM section_offerings WHERE offering_code = '$offeringCode'";
+                    $result = mysqli_query($conn, $offeringQuery);
+
+                    if (mysqli_num_rows($result) > 0) {
+                        $checkEnrollmentQuery = "SELECT * FROM students_classes WHERE student_id = '$studentID' AND offering_code = '$offeringCode'";
+                        $enrollmentResult = mysqli_query($conn, $checkEnrollmentQuery);
+
+                        //if there's a record of that class code, DELETE
+                        if (mysqli_num_rows($enrollmentResult) > 0) {
+                            $deleteQuery = "DELETE FROM students_classes WHERE student_id = '$studentID' AND offering_code = '$offeringCode' ";
+                            if (mysqli_query($conn, $deleteQuery)) {
+                                echo "<p style='color:green;'>Class dropped!</p>";
+                            } else {
+                                echo "<p style='color:red;'>Error dropping class: " . mysqli_error($conn) . "</p>";
+                            }
+                        } 
+                        else {
+                            echo "<p style='color:red;'>No classes to drop.</p>";
+                        }
+                    } else {
+                        echo "<p style='color:red;'>Invalid offering code. Please try again.</p>";
+                    }
+                }
+            ?>
+
+            <div>
+                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" style="display: flex; align-items: center; gap: 10px;">
+                    <label for="offeringCode">Class code to DROP:</label>
+                    <input type="text" name="offeringCode" placeholder="ex: 1234" required>
+                    <button type="submit" class="addclass-btn">Drop Class</button>
+                </form>
+            </div>
+
+            <div style="width: 100%; text-align: center;">
+                <h2 class="sub-header">Your Current Classes</h2>
+                <table style="margin: 0 auto; width: 80%;">
+                    <tr>
+                        <th>Code</th>
+                        <th>Class</th>
+                        <th>Section</th>
+                        <th>Class Days</th>
+                        <th>Class Start Time</th>
+                        <th>Class End Time</th>
+                        <th>Enroll Cap</th>
+                        <th>Enrolled</th>
+                        <th>Professor</th>
+                        <th>Room</th>
+                    </tr>
+
+                    <?php
+                    $studentID = $_SESSION['student_id'];
+                    $enrolledClassesQuery = "
+                        SELECT so.offering_code, so.course_code, so.section, so.class_days, so.class_start_time, so.class_end_time, 
+                               so.enroll_cap, so.enrolled_students, so.professor, so.room
+                        FROM students_classes sc
+                        INNER JOIN section_offerings so ON sc.offering_code = so.offering_code
+                        WHERE sc.student_id = '$studentID'
+                    ";
+                    $enrolledResult = mysqli_query($conn, $enrolledClassesQuery);
+
+                    if (mysqli_num_rows($enrolledResult) > 0) {
+                        while ($row = mysqli_fetch_assoc($enrolledResult)) {
+                            echo "<tr>";
+                            echo "<td><b style='color:green;'>" . $row['offering_code'] . "</b></td>";
+                            echo "<td><b style='color:green;'>" . $row['course_code'] . "</b></td>";
+                            echo "<td><b style='color:green;'>" . $row['section'] . "</b></td>";
+                            echo "<td>" . $row['class_days'] . "</td>";
+                            echo "<td>" . $row['class_start_time'] . "</td>";
+                            echo "<td>" . $row['class_end_time'] . "</td>";
+                            echo "<td>" . $row['enroll_cap'] . "</td>";
+                            echo "<td>" . $row['enrolled_students'] . "</td>";
+                            echo "<td>" . $row['professor'] . "</td>";
+                            echo "<td>" . $row['room'] . "</td>";
+                            echo "</tr>";
+                        }
+                    } else {
+                        echo "<p>Have Not Enrolled Any Classes</p>";
+                    }
+
+                    $conn->close();
+                    ?>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="../includes/main.js"></script>
+</body>
+</html>
+
+
