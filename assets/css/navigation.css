@@ -12,53 +12,68 @@ body {
 /* Sidebar Styling */
 .sidebar {
     height: 100%;
-    width: 250px;
+    width: 5rem; /* Compact size for large screens */
     position: fixed;
     top: 0;
-    left: -250px; /* Initially hidden */
-    background-color: #547e94;
+    left: 0;
+    background-color: #5b8ba4; /* Same color as the top panel */
     padding-top: 20px;
-    transition: 0.3s ease;
+    transition: width 600ms ease;
     z-index: 1000;
-    border-top-right-radius: 30px; /* Increased curvature */
-    border-bottom-right-radius: 30px; /* Increased curvature */
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+    overflow: hidden; /* Hide content when collapsed */
 }
 
-.sidebar h2 {
-    color: white;
-    text-align: center;
-    margin-bottom: 20px;
+.sidebar:hover {
+    width: 16rem;
 }
 
-/* Separator Styling */
-.separator {
-    border-bottom: 1px solid white;
-    margin: 10px 0;
-}
-
-/* Sidebar Link Styling */
 .sidebar a {
-    display: flex; /* Use flexbox for alignment */
-    align-items: center; /* Aligns the icons and text vertically */
-    justify-content: flex-start; /* Aligns the content to the left */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
     padding: 15px;
     text-decoration: none;
     font-size: 18px;
-    color: white;
+    color: white; /* Default text color is white */
     transition: 0.3s;
-    text-align: left;
-    border-radius: 50px; /* Make buttons more rounded */
+    border-radius: 10px; /* Less round default */
+    width: 100%; /* Ensures full width */
 }
 
 .sidebar a i {
-    margin-right: 10px; /* Adds space between the icon and the text */
-    font-size: 20px;
+    margin-right: 10px;
+    font-size: 22px;
+    width: 25px; /* Added width to ensure icons are aligned properly */
+    text-align: center; /* Centers the icon in its space */
+    color: white; /* Default icon color is white */
 }
 
-/* Hover effect for sidebar links */
 .sidebar a:hover {
-    background-color: #497285;
-    border-radius: 50px; /* Circular hover effect */
+    background-color: white;
+    color: #5b8ba4; /* Change icon and link text color to dark blue on hover */
+    border-radius: 10px; /* Less rounded corners on hover */
+}
+
+/* Sidebar hover effects for text */
+.sidebar:hover a .link-text {
+    display: inline;
+    margin-left: 1rem;
+    color: white; /* Default text color is white */
+}
+
+.sidebar a:hover .link-text {
+    color: #476f84; /* Dark blue text on hover */
+}
+
+/* Change icon color to dark blue on hover */
+.sidebar a:hover i {
+    color: #476f84; /* Dark blue icon color */
+}
+
+.link-text {
+    display: none;
 }
 
 /* Hamburger Menu */
@@ -66,20 +81,15 @@ body {
     color: white;
     position: fixed;
     top: 15px;
-    left: 15px;
+    left: 25px; /* Adjusted to move it more to the right */
     font-size: 30px;
     cursor: pointer;
     z-index: 1001;
 }
 
-/* Sidebar Active State */
-.sidebar.active {
-    left: 0;
-}
-
-/* Content shifts when sidebar is open */
+/* Content shifts when sidebar expands */
 .content.shifted {
-    margin-left: 250px;
+    margin-left: 16rem; /* Adjusted to match expanded sidebar */
     transition: margin-left 0.3s ease;
 }
 
@@ -93,19 +103,36 @@ body {
     color: white;
     border: none;
     padding: 10px 20px;
-    border-radius: 30px; /* More rounded logout button */
+    border-radius: 10px; /* Less round corners */
     cursor: pointer;
     display: flex;
-    align-items: center; /* Centers the icon and text */
-    justify-content: center; /* Centers the icon and text horizontally */
+    align-items: center;
+    justify-content: center;
     transition: background-color 0.3s ease;
+    width: 80%; /* Adjust width of the logout button */
 }
 
 .logout-btn i {
-    margin-right: 8px; /* Adds space between the icon and text */
+    margin-right: 8px;
+    font-size: 22px;
+    width: 25px; /* Consistent width with other icons */
+    text-align: center;
+    color: white; /* Default icon color */
 }
 
 .logout-btn:hover {
     background-color: #703232;
-    border-radius: 50px; /* Circular hover effect for logout button */
+    border-radius: 10px; /* Less rounded hover */
 }
+
+/* Change logout icon color on hover */
+.logout-btn:hover i {
+    color: #481f1f; /* Darker icon color on hover */
+}
+
+/* Change logout text color on hover */
+.logout-btn:hover .link-text {
+    color: #703232; /* Dark blue text on hover for logout */
+}
+
+

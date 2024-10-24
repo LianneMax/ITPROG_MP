@@ -6,17 +6,16 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
         <?php
-        session_start(); //starts the session
+        include "../includes/dbconfig.php";
+        session_start(); // Start the session
 
-        //After turning on SQL on XAMPP, you can manage the DB via this url:
-        // http://localhost/phpmyadmin
-        $server = "localhost";
-        $username = "root"; //will change this later
-        $password = "";
-        $dbname = "itmosys_db";
+        // Create connection
+        $conn = new mysqli($servername, $username, $password, $dbname);
 
-        //Create connection
-        $conn = new mysqli($server, $username, $password, $dbname);
+        // Check connection
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
 
         //assigns the student ID number of the current session
         if (isset($_SESSION['student_id'])) {
@@ -56,31 +55,42 @@
     </head>
     <body>
         
-    <!-- Hamburger Menu -->
-    <div id="hamburger" class="hamburger">
-        <i class="fas fa-bars"></i>
-    </div>
+<!-- Hamburger Menu -->
+<div id="hamburger" class="hamburger">
+    <i class="fas fa-bars"></i>
+</div>
 
-    <!-- Sidebar -->
-    <div id="sidebar" class="sidebar">
-        <h2 style="margin-top: 50px">ENROLLMENT</h2>
-        <div class="separator"></div>
+<!-- Sidebar -->
+<div id="sidebar" class="sidebar">
+    <div class="separator" style="margin-top: 50px"></div>
+    <a href="add_class.php">
+        <i class="fas fa-plus-circle"></i>
+        <span class="link-text">Add Class</span>
+    </a>
+    <a href="drop_class.php">
+        <i class="fas fa-minus-circle"></i>
+        <span class="link-text">Drop Class</span>
+    </a>
+    <a href="CourseOfferings.php">
+        <i class="fas fa-shopping-basket"></i>
+        <span class="link-text">Course Offerings</span>
+    </a>
+    <a href="ViewEAF.php">
+        <i class="fas fa-calendar-alt"></i>
+        <span class="link-text">View EAF</span>
+    </a>
+    <div class="separator" style="margin-top: 10px"></div>
+    <!-- Logout Button -->
+    <button class="logout-btn" onclick="window.location.href='LogoutPage.php'">
+        <i class="fas fa-sign-out-alt"></i>
+        <span class="link-text">Logout</span>
+    </button>
+</div>
 
-        <a href="add_class.php"><i class="fas fa-plus-circle"></i> Add Class</a>
-        <a href="drop_class.php"><i class="fas fa-minus-circle"></i> Drop Class</a>
-        <a href="CourseOfferings.php"><i class="fas fa-shopping-basket"></i> Course Offerings</a>
-        <a href="ViewEAF.php"><i class="fas fa-calendar-alt"></i> View EAF</a>
-        
-        <div class="separator"></div>
-        <button class="logout-btn" onclick="window.location.href='LogoutPage.php'">
-            <i class="fas fa-sign-out-alt"></i>
-        </button>
-    </div>
-
-    <div class="top-panel">
-        <!-- ITmosys Header -->
-        <h1 class="itmosys-header">ITmosys</h1>
-    </div>    
+<!-- Top Panel -->
+<div class="top-panel">
+    <h1 class="itmosys-header">ITmosys</h1>
+</div>
 
     <div class="content">
         <div class="viewEAF_container">
@@ -147,7 +157,6 @@
             </form>
         </div>
     </div>
-    
         <script src="../includes/main.js"></script>
     </body>
 </html>

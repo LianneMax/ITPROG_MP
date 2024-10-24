@@ -3,25 +3,22 @@ document.addEventListener("DOMContentLoaded", function () {
     const sidebar = document.getElementById('sidebar');
     const content = document.querySelector('.content');
 
-    // Function to open the sidebar
-    function openSidebar() {
-        sidebar.classList.add('active');
+    // Function to expand the sidebar
+    function expandSidebar() {
+        sidebar.classList.add('expanded');
         content.classList.add('shifted');
     }
 
-    // Function to close the sidebar
-    function closeSidebar() {
-        sidebar.classList.remove('active');
+    // Function to collapse the sidebar
+    function collapseSidebar() {
+        sidebar.classList.remove('expanded');
         content.classList.remove('shifted');
     }
 
-    // Ensure these elements exist on the page before adding event listeners
-    if (hamburger && sidebar && content) {
-        // Open sidebar when hovering over hamburger or sidebar
-        hamburger.addEventListener('mouseenter', openSidebar);
-        sidebar.addEventListener('mouseenter', openSidebar);
+    // Open sidebar when hovering over hamburger or sidebar
+    hamburger.addEventListener('mouseenter', expandSidebar);
+    sidebar.addEventListener('mouseenter', expandSidebar);
 
-        // Close sidebar only when leaving the sidebar
-        sidebar.addEventListener('mouseleave', closeSidebar);
-    }
+    // Close sidebar when mouse leaves sidebar
+    sidebar.addEventListener('mouseleave', collapseSidebar);
 });
