@@ -20,8 +20,8 @@ body {
     padding-top: 20px;
     transition: 0.3s ease;
     z-index: 1000;
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
+    border-top-right-radius: 30px; /* Increased curvature */
+    border-bottom-right-radius: 30px; /* Increased curvature */
 }
 
 .sidebar h2 {
@@ -47,6 +47,7 @@ body {
     color: white;
     transition: 0.3s;
     text-align: left;
+    border-radius: 50px; /* Make buttons more rounded */
 }
 
 .sidebar a i {
@@ -57,6 +58,7 @@ body {
 /* Hover effect for sidebar links */
 .sidebar a:hover {
     background-color: #497285;
+    border-radius: 50px; /* Circular hover effect */
 }
 
 /* Hamburger Menu */
@@ -91,11 +93,12 @@ body {
     color: white;
     border: none;
     padding: 10px 20px;
-    border-radius: 5px;
+    border-radius: 30px; /* More rounded logout button */
     cursor: pointer;
     display: flex;
     align-items: center; /* Centers the icon and text */
     justify-content: center; /* Centers the icon and text horizontally */
+    transition: background-color 0.3s ease;
 }
 
 .logout-btn i {
@@ -104,5 +107,5 @@ body {
 
 .logout-btn:hover {
     background-color: #703232;
+    border-radius: 50px; /* Circular hover effect for logout button */
 }
-
