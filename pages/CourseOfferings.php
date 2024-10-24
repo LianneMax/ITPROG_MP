@@ -5,7 +5,6 @@
     <link rel="stylesheet" href="../assets/css/navigation.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     
-    
     <?php
         include "../includes/dbconfig.php";
         session_start(); //starts the session
@@ -17,8 +16,6 @@
         if ($conn->connect_error) {
             die("Connection failed: " . $conn->connect_error);
         }
-
-
     ?>
 </head>
 <body>
@@ -46,19 +43,18 @@
 
     <div class="top-panel">
         <h1 class="itmosys-header">ITmosys</h1>
-    </div>    <!-- ITmosys Header -->
+    </div> 
 
-<div class="courseOffer_container">
-        <!-- Title header in the top-left of the box -->
-        <h2 class="title-header">Course Offerings</h2>
-    
+    <!-- Main Content -->
+    <div class="content">
+        <div class="courseOffer_container">
+            <!-- Title header in the top-left of the box -->
+            <h2 class="title-header">Course Offerings</h2>
 
-        <!-- Line below the Title header -->
-        <div class="separator"></div>
+            <!-- Line below the Title header -->
+            <div class="separator"></div>
 
-
-
-        <?php
+            <?php
             if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['courseCode'])) {
                 // Fetching form data
                 $courseCode = mysqli_real_escape_string($conn, $_POST['courseCode']);
@@ -93,11 +89,8 @@
 
                     while($row = $result->fetch_assoc()){
                     ?>
-                        <?php if($row["enrolled_students"] != $row["enroll_cap"])
-                                $color = 'green';
-                        
-                            else
-                                $color = '#00bfff';
+                        <?php 
+                        $color = ($row["enrolled_students"] != $row["enroll_cap"]) ? 'green' : '#00bfff';
                         ?>
                         <td><?php echo "<font color=$color><b>".$row["offering_code"]."</b></font>";?></td>
                         <td><?php echo "<font color=$color><b>".$row["course_code"]."</b></font>";?></td>
@@ -109,7 +102,6 @@
                         <td><?php echo $row["enrolled_students"];?></td>
                         <td><?php echo $row["professor"];?></td>
                         <td><?php echo $row["room"];?></td>
-
                         </tr>
 
                     <?php
@@ -118,35 +110,27 @@
                     </table>
                     
                 <?php
-                    
                 } else {
                     // Failure: Show error message
                     echo "<p style='color:red;'>No $courseCode offerings available.</p>";
                 }
-                
-                // Close connection
                 $conn->close();
             }
-        ?>
-
-        <div>
-            <?php
-            echo "<h3><font color='#00bfff'>BLUE &emsp;&ensp;</font>Closed Section</h3>";
-            echo "<h3><font color='green'>GREEN &emsp;</font>Open Section</h3>";
             ?>
+
+            <div>
+                <h3><font color='#00bfff'>BLUE &emsp;&ensp;</font>Closed Section</h3>
+                <h3><font color='green'>GREEN &emsp;</font>Open Section</h3>
+            </div>
+
+            <div>
+                <form method="post" action="" class="courseOffering-form">
+                    <label for="courseCode">Enter course code:</label>
+                    <input type="text" name="courseCode" placeholder="ex: IT-PROG">
+                    <button type="submit" onclick="showTable()" class="courseOffering-button">Search</button>
+                </form>
+            </div>
         </div>
-
-        <div>
-    <form method="post" action="" class="courseOffering-form">
-        <label for="courseCode">Enter course code:</label>
-        <input type="text" name="courseCode" placeholder="ex: IT-PROG">
-        <button type="submit" onclick="showTable()" class="courseOffering-button">Search</button>
-    </form>
-
-
-        </div>
-
-        
     </div>
 
     <script>
@@ -159,3 +143,4 @@
 
 </body>
 </html>
+

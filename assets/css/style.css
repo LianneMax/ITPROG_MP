@@ -50,7 +50,7 @@ body {
     justify-content: center;
     align-items: center; 
     text-align: center;
-    width: 40%;
+    width: 95%;
     padding: 20px;
 }   
 
@@ -68,6 +68,16 @@ body {
     align-items: flex-start;
     text-align: left;
     width: 95%;    
+    padding: 20px;
+}
+
+.viewEAF_container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: left; 
+    text-align: left;
+    width: 95%;
     padding: 20px;
 }
 

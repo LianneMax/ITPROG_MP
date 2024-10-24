@@ -1,5 +1,8 @@
 <html>
     <head><title>View EAF</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/navigation.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <?php
     session_start(); //starts the session
@@ -47,10 +50,33 @@
 
 </head>
     <body>
-        <link rel="stylesheet" href="../assets/css/style.css">
         
-        <h1 class="itmosys-header">Welcome to ITmosys</h1>
+    <!-- Hamburger Menu -->
+    <div id="hamburger" class="hamburger">
+        <i class="fas fa-bars"></i>
+    </div>
 
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+        <h2 style="margin-top: 50px">ENROLLMENT</h2>
+        <div class="separator"></div>
+
+        <a href="add_class.php"><i class="fas fa-plus-circle"></i> Add Class</a>
+        <a href="drop_class.php"><i class="fas fa-minus-circle"></i> Drop Class</a>
+        <a href="CourseOfferings.php"><i class="fas fa-shopping-basket"></i> Course Offerings</a>
+        <a href="ViewEAF.php"><i class="fas fa-calendar-alt"></i> View EAF</a>
+        
+        <div class="separator"></div>
+        <button class="logout-btn" onclick="window.location.href='LogoutPage.php'">
+            <i class="fas fa-sign-out-alt"></i>
+        </button>
+    </div>
+
+    <div class="top-panel">
+        <h1 class="itmosys-header">ITmosys</h1>
+    </div>    <!-- ITmosys Header -->
+
+    <div class="content">
         <div class="viewEAF_container">
             <h2 class="header2">View Student EAF</h2>
             <div class="separator"></div>
@@ -93,5 +119,8 @@
 
 
         </div>
+    </div>
+    
+        <script src="../includes/main.js"></script>
     </body>
 </html>
