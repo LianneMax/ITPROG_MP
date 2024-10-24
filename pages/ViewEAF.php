@@ -17,10 +17,12 @@
     //Create connection
     $conn = new mysqli($server, $username, $password, $dbname);
 
+    //assigns the student ID number of the current session
     if (isset($_SESSION['student_id'])) {
         $student_id = $_SESSION['student_id'];
     }
 
+    //getting the current enrolled subjects of the student
     $sql = "SELECT s.student_id, s.student_name, c.course_title, c.units, so.section, so.class_days, so.class_start_time, so.class_end_time, so.professor, so.room
     FROM students s
     JOIN students_classes sc ON s.student_id = sc.student_id
@@ -33,18 +35,21 @@
     // Initialize sum variable
     $sum = null;
 
-    if (isset($_POST['getSum'])) {
-        // SQL query to get the sum of the column
-        $sql = "SELECT SUM(units) AS total_sum FROM numbers_table";
-        $result = $conn->query($sql);
+    $sql_sum = "SELECT SUM(c.units) AS total_sum
+                FROM students s
+                JOIN students_classes sc ON s.student_id = sc.student_id
+                JOIN section_offerings so ON sc.offering_code = so.offering_code
+                JOIN courses c ON so.course_code = c.course_code
+                WHERE s.student_id = '$student_id'";
 
-        if ($result->num_rows > 0) {
-            // Fetch result
-            $row = $result->fetch_assoc();
-            $sum = $row['total_sum'];
-        } else {
-            $sum = 0;
-        }
+    $result_sum = $conn->query($sql_sum);
+
+    if ($result_sum->num_rows > 0) {
+        // Fetch result
+        $row = $result_sum->fetch_assoc();
+        $sum = $row['total_sum'];
+    } else {
+        $sum = 0;
     }
     ?>
 
@@ -81,7 +86,7 @@
             <h2 class="header2">View Student EAF</h2>
             <div class="separator"></div>
             <?php
-                echo "<h3>Welcome!</h3>";
+                echo "<h2>Welcome!</h2>";
                 echo "<h3>Student ID: $student_id</h3>";
             ?>
 
@@ -115,6 +120,10 @@
                             }
                         }
                 ?>
+                <tr>
+                    <td colspan="7">Total Units:</td>
+                    <td><?php echo "$sum";?></td>
+                </tr>
             </table>
 
 
