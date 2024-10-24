@@ -2,6 +2,9 @@
 <head>
     <title>COURSE OFFERINGS</title>
     <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/navigation.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
     
     <?php
         include "../includes/dbconfig.php";
@@ -20,12 +23,35 @@
 </head>
 <body>
 
-    <!-- ITmosys Header -->
-    <h1 class="itmosys-header">ITmosys</h1>
+    <!-- Hamburger Menu -->
+    <div id="hamburger" class="hamburger">
+        <i class="fas fa-bars"></i>
+    </div>
 
-    <div class="courseOffer_container">
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+        <h2 style="margin-top: 50px">ENROLLMENT</h2>
+        <div class="separator"></div>
+
+        <a href="add_class.php"><i class="fas fa-plus-circle"></i> Add Class</a>
+        <a href="drop_class.php"><i class="fas fa-minus-circle"></i> Drop Class</a>
+        <a href="CourseOfferings.php"><i class="fas fa-shopping-basket"></i> Course Offerings</a>
+        <a href="ViewEAF.php"><i class="fas fa-calendar-alt"></i> View EAF</a>
+        
+        <div class="separator"></div>
+        <button class="logout-btn" onclick="window.location.href='LogoutPage.php'">
+            <i class="fas fa-sign-out-alt"></i>
+        </button>
+    </div>
+
+    <div class="top-panel">
+        <h1 class="itmosys-header">ITmosys</h1>
+    </div>    <!-- ITmosys Header -->
+
+<div class="courseOffer_container">
         <!-- Title header in the top-left of the box -->
         <h2 class="title-header">Course Offerings</h2>
+    
 
         <!-- Line below the Title header -->
         <div class="separator"></div>
@@ -111,11 +137,11 @@
         </div>
 
         <div>
-        <form method="post" action="">
-            <label for="courseCode">Enter course code:</label>
-            <input type='text' name='courseCode' placeholder="ex: IT-PROG"> <br /><br />
-            <button type="submit" onclick="showTable()" class="search">Search</button>
-        </form>
+    <form method="post" action="" class="courseOffering-form">
+        <label for="courseCode">Enter course code:</label>
+        <input type="text" name="courseCode" placeholder="ex: IT-PROG">
+        <button type="submit" onclick="showTable()" class="courseOffering-button">Search</button>
+    </form>
 
 
         </div>
@@ -128,5 +154,8 @@
             document.getElementById("table").style.display = "table";
         }
     </script>
+
+    <script src="../includes/main.js"></script>
+
 </body>
 </html>

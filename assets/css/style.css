@@ -44,15 +44,31 @@ body {
     text-align: left;
 }
 
+.courseOffer_container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; 
+    text-align: center;
+    width: 40%;
+    padding: 20px;
+}   
+
+.courseOffer_container h2.title-header {
+    align-self: flex-start; 
+    text-align: left;        
+    width: 100%;            
+    margin-left: 0;                       
+}
+
 .addClass_container {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: flex-start;  /* Aligns everything to the left */
+    align-items: flex-start;
     text-align: left;
-    width: 60%;    
+    width: 95%;    
     padding: 20px;
-    box-sizing: border-box;
 }
 
 /* Form Layout */
@@ -62,25 +78,44 @@ form {
     gap: 10px;
 }
 
+.courseOffering-form {
+    display: flex;
+    flex-direction: column; /* Stack input and button vertically */
+    align-items: flex-start; /* Align form elements to the left */
+    gap: 10px;
+    width: 100%; /* Adjust width of the form */
+}
+
+.courseOffering-form input[type="text"] {
+    width: 100%; /* Full-width input field */
+    padding: 8px;
+    font-size: 14px;
+}
+
 /* Title Header Styling */
 .title-header, .sub-header{
     font-family: 'Montserrat';
     color: #333;
     font-size: 24px;
     margin: 0;
+    text-align: left;
 }
 
 .sub-header {
+    margin-top: 40px;
     font-size: 16px;
     text-align: left;
 }
 
 /* Separator Line Styling */
-.separator {
-    border-top: 2px solid #ccc;
-    width: 100%;
-    margin-top: 50px; /* Adjust to position separator below the title */
-    margin-bottom: 20px;
+.separator { 
+    border-top: 2px solid #ccc; 
+    display: flex; 
+    width: 95%; 
+    margin-bottom: 10px;
+    margin: 10px auto; /* Centers the separator horizontally */
+    justify-content: center;
+
 }
 
 /* Button Styling */
@@ -103,27 +138,28 @@ button:hover {
     background-color: #497285;
 }
 
+.courseOffering-button {
+    width: 300px;
+}
+
 /* Enrollment button container styling */
 .enrollment-btn {
     display: flex;
-    flex-direction: column; /* Stack the buttons on top of each other */
-    align-items: center; /* Center align the buttons horizontally */
-    gap: 10px; /* Adds space between the buttons */
-    margin: 0 auto; /* Center the button container */
+    flex-direction: column; 
+    align-items: center; 
+    gap: 10px; 
+    margin: 0 auto; 
 }
 
 /* Add Class button specific styling (if needed) */
 .addclass-btn {
     height: 10px; 
     font-size: 14px;
-    width: 100px; /* Keep this specific size if needed */
+    width: 100px; 
     display: flex;
     justify-content: center;
     align-items: center;
-    text-align: center;
     white-space: nowrap;
-    border: none;
-    padding: 10px;
 }
 
 /* Logout Button Styling */
@@ -136,7 +172,6 @@ button:hover {
     font-size: 16px;
     background-color: #a34849;
     color: white;
-    border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;

@@ -1,0 +1,108 @@
+/* General Body Styling */
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: -250px; /* Initially hidden */
+    background-color: #547e94;
+    padding-top: 20px;
+    transition: 0.3s ease;
+    z-index: 1000;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.sidebar h2 {
+    color: white;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Separator Styling */
+.separator {
+    border-bottom: 1px solid white;
+    margin: 10px 0;
+}
+
+/* Sidebar Link Styling */
+.sidebar a {
+    display: flex; /* Use flexbox for alignment */
+    align-items: center; /* Aligns the icons and text vertically */
+    justify-content: flex-start; /* Aligns the content to the left */
+    padding: 15px;
+    text-decoration: none;
+    font-size: 18px;
+    color: white;
+    transition: 0.3s;
+    text-align: left;
+}
+
+.sidebar a i {
+    margin-right: 10px; /* Adds space between the icon and the text */
+    font-size: 20px;
+}
+
+/* Hover effect for sidebar links */
+.sidebar a:hover {
+    background-color: #497285;
+}
+
+/* Hamburger Menu */
+.hamburger {
+    color: white;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    font-size: 30px;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+/* Sidebar Active State */
+.sidebar.active {
+    left: 0;
+}
+
+/* Content shifts when sidebar is open */
+.content.shifted {
+    margin-left: 250px;
+    transition: margin-left 0.3s ease;
+}
+
+/* Logout Button Styling */
+.logout-btn {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #a34849;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center; /* Centers the icon and text */
+    justify-content: center; /* Centers the icon and text horizontally */
+}
+
+.logout-btn i {
+    margin-right: 8px; /* Adds space between the icon and text */
+}
+
+.logout-btn:hover {
+    background-color: #703232;
+}
+
