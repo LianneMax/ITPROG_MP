@@ -57,107 +57,177 @@
     <h1 class="itmosys-header">ITmosys</h1>
 </div>
 
+<!-- Main Content -->
+<div class="content">
+    <div class="addClass_container">
+        <h2 class="title-header">ADD CLASSES</h2>
+        <div class="separator"></div>
 
-    <!-- Main Content -->
-    <div class="content">
-        <div class="addClass_container">
-            <h2 class="title-header">ADD CLASSES</h2>
-            <div class="separator"></div>
+        <?php
+            if (!isset($_SESSION['student_id'])) {
+                die("Error: Please log in to add a class.");
+            }
 
-            <?php
-                if (!isset($_SESSION['student_id'])) {
-                    die("Error: Please log in to add a class.");
-                }
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                $offeringCode = mysqli_real_escape_string($conn, $_POST['offeringCode']);
+                $studentID = $_SESSION['student_id'];
 
-                if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                    $offeringCode = mysqli_real_escape_string($conn, $_POST['offeringCode']);
-                    $studentID = $_SESSION['student_id'];
+                // Get the course code and enrollment details
+                $offeringQuery = "
+                    SELECT course_code, enroll_cap, enrolled_students 
+                    FROM section_offerings 
+                    WHERE offering_code = '$offeringCode'
+                ";
+                $result = mysqli_query($conn, $offeringQuery);
 
-                    $offeringQuery = "SELECT * FROM section_offerings WHERE offering_code = '$offeringCode'";
-                    $result = mysqli_query($conn, $offeringQuery);
+                if (mysqli_num_rows($result) > 0) {
+                    $offering = mysqli_fetch_assoc($result);
+                    $courseCode = $offering['course_code'];
+                    $enrollCap = $offering['enroll_cap'];
+                    $enrolledStudents = $offering['enrolled_students'];
 
-                    if (mysqli_num_rows($result) > 0) {
-                        $checkEnrollmentQuery = "SELECT * FROM students_classes WHERE student_id = '$studentID' AND offering_code = '$offeringCode'";
-                        $enrollmentResult = mysqli_query($conn, $checkEnrollmentQuery);
+                    // Check if class is full
+                    if ($enrolledStudents >= $enrollCap) {
+                        echo "<p style='color:red;'>This class is full. Please choose another class.</p>";
+                    } else {
+                        // Check for prerequisites
+                        $prerequisiteQuery = "
+                            SELECT prerequisite 
+                            FROM prerequisites 
+                            WHERE course_code = '$courseCode'
+                        ";
+                        $prerequisiteResult = mysqli_query($conn, $prerequisiteQuery);
 
-                        if (mysqli_num_rows($enrollmentResult) == 0) {
-                            $insertQuery = "INSERT INTO students_classes (student_id, offering_code) VALUES ('$studentID', '$offeringCode')";
-                            if (mysqli_query($conn, $insertQuery)) {
-                                echo "<p style='color:green;'>Class added successfully!</p>";
-                            } else {
-                                echo "<p style='color:red;'>Error adding class: " . mysqli_error($conn) . "</p>";
+                        $canEnroll = true;
+                        $failedPrerequisite = false;
+
+                        // Check if prerequisites are met
+                        if (mysqli_num_rows($prerequisiteResult) > 0) {
+                            while ($prerequisite = mysqli_fetch_assoc($prerequisiteResult)) {
+                                $prerequisiteCode = $prerequisite['prerequisite'];
+
+                                // Check if student has taken and passed the prerequisite
+                                $prerequisiteCheckQuery = "
+                                    SELECT grade 
+                                    FROM past_enrollments 
+                                    WHERE student_id = '$studentID' AND course_code = '$prerequisiteCode'
+                                ";
+                                $prerequisiteCheckResult = mysqli_query($conn, $prerequisiteCheckQuery);
+
+                                if (mysqli_num_rows($prerequisiteCheckResult) == 0) {
+                                    $canEnroll = false;
+                                    echo "<p style='color:red;'>You have not taken the prerequisite course: $prerequisiteCode.</p>";
+                                } else {
+                                    $grade = mysqli_fetch_assoc($prerequisiteCheckResult)['grade'];
+                                    if ($grade == 0) {
+                                        $failedPrerequisite = true;
+                                        echo "<p style='color:red;'>You have failed the prerequisite course: $prerequisiteCode. You cannot enroll in this corequisite until you pass the prerequisite.</p>";
+                                        $canEnroll = false;
+                                    }
+                                }
                             }
-                        } else {
-                            echo "<p style='color:red;'>You are already enrolled in this class.</p>";
                         }
-                    } else {
-                        echo "<p style='color:red;'>Invalid offering code. Please try again.</p>";
+
+                        // Proceed if prerequisites are met and class is not full
+                        if ($canEnroll && !$failedPrerequisite) {
+                            $checkEnrollmentQuery = "
+                                SELECT * 
+                                FROM students_classes 
+                                WHERE student_id = '$studentID' AND offering_code = '$offeringCode'
+                            ";
+                            $enrollmentResult = mysqli_query($conn, $checkEnrollmentQuery);
+
+                            if (mysqli_num_rows($enrollmentResult) == 0) {
+                                // Enroll student and update enrolled count
+                                $insertQuery = "
+                                    INSERT INTO students_classes (student_id, offering_code) 
+                                    VALUES ('$studentID', '$offeringCode')
+                                ";
+                                if (mysqli_query($conn, $insertQuery)) {
+                                    // Update enrolled count
+                                    $updateEnrollmentQuery = "
+                                        UPDATE section_offerings 
+                                        SET enrolled_students = enrolled_students + 1 
+                                        WHERE offering_code = '$offeringCode'
+                                    ";
+                                    mysqli_query($conn, $updateEnrollmentQuery);
+
+                                    echo "<p style='color:green;'>Class added successfully!</p>";
+                                } else {
+                                    echo "<p style='color:red;'>Error adding class: " . mysqli_error($conn) . "</p>";
+                                }
+                            } else {
+                                echo "<p style='color:red;'>You are already enrolled in this class.</p>";
+                            }
+                        }
                     }
+                } else {
+                    echo "<p style='color:red;'>Invalid offering code. Please try again.</p>";
                 }
-            ?>
+            }
+        ?>
 
-            <div>
-                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" style="display: flex; align-items: center; gap: 10px;">
-                    <label for="offeringCode">Class code to add:</label>
-                    <input type="text" name="offeringCode" placeholder="ex: 1234" required>
-                    <button type="submit" class="addclass-btn">Add Class</button>
-                </form>
-            </div>
+        <div>
+            <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" style="display: flex; align-items: center; gap: 10px;">
+                <label for="offeringCode">Class code to add:</label>
+                <input type="text" name="offeringCode" placeholder="ex: 1234" required>
+                <button type="submit" class="addclass-btn">Add Class</button>
+            </form>
+        </div>
 
-            <div style="width: 100%; text-align: center;">
-                <h2 class="sub-header">Your Current Classes</h2>
-                <table style="margin: 0 auto; width: 80%;">
-                    <tr>
-                        <th>Code</th>
-                        <th>Class</th>
-                        <th>Section</th>
-                        <th>Class Days</th>
-                        <th>Class Start Time</th>
-                        <th>Class End Time</th>
-                        <th>Enroll Cap</th>
-                        <th>Enrolled</th>
-                        <th>Professor</th>
-                        <th>Room</th>
-                    </tr>
+        <div style="width: 100%; text-align: center;">
+            <h2 class="sub-header">Your Current Classes</h2>
+            <table style="margin: 0 auto; width: 80%;">
+                <tr>
+                    <th>Code</th>
+                    <th>Class</th>
+                    <th>Section</th>
+                    <th>Class Days</th>
+                    <th>Class Start Time</th>
+                    <th>Class End Time</th>
+                    <th>Enroll Cap</th>
+                    <th>Enrolled</th>
+                    <th>Professor</th>
+                    <th>Room</th>
+                </tr>
 
-                    <?php
-                    $studentID = $_SESSION['student_id'];
-                    $enrolledClassesQuery = "
-                        SELECT so.offering_code, so.course_code, so.section, so.class_days, so.class_start_time, so.class_end_time, 
-                               so.enroll_cap, so.enrolled_students, so.professor, so.room
-                        FROM students_classes sc
-                        INNER JOIN section_offerings so ON sc.offering_code = so.offering_code
-                        WHERE sc.student_id = '$studentID'
-                    ";
-                    $enrolledResult = mysqli_query($conn, $enrolledClassesQuery);
+                <?php
+                $studentID = $_SESSION['student_id'];
+                $enrolledClassesQuery = "
+                    SELECT so.offering_code, so.course_code, so.section, so.class_days, so.class_start_time, so.class_end_time, 
+                           so.enroll_cap, so.enrolled_students, so.professor, so.room
+                    FROM students_classes sc
+                    INNER JOIN section_offerings so ON sc.offering_code = so.offering_code
+                    WHERE sc.student_id = '$studentID'
+                ";
+                $enrolledResult = mysqli_query($conn, $enrolledClassesQuery);
 
-                    if (mysqli_num_rows($enrolledResult) > 0) {
-                        while ($row = mysqli_fetch_assoc($enrolledResult)) {
-                            echo "<tr>";
-                            echo "<td><b style='color:green;'>" . $row['offering_code'] . "</b></td>";
-                            echo "<td><b style='color:green;'>" . $row['course_code'] . "</b></td>";
-                            echo "<td><b style='color:green;'>" . $row['section'] . "</b></td>";
-                            echo "<td>" . $row['class_days'] . "</td>";
-                            echo "<td>" . $row['class_start_time'] . "</td>";
-                            echo "<td>" . $row['class_end_time'] . "</td>";
-                            echo "<td>" . $row['enroll_cap'] . "</td>";
-                            echo "<td>" . $row['enrolled_students'] . "</td>";
-                            echo "<td>" . $row['professor'] . "</td>";
-                            echo "<td>" . $row['room'] . "</td>";
-                            echo "</tr>";
-                        }
-                    } else {
-                        echo "<p>Have Not Enrolled Any Classes</p>";
+                if (mysqli_num_rows($enrolledResult) > 0) {
+                    while ($row = mysqli_fetch_assoc($enrolledResult)) {
+                        echo "<tr>";
+                        echo "<td><b style='color:green;'>" . $row['offering_code'] . "</b></td>";
+                        echo "<td><b style='color:green;'>" . $row['course_code'] . "</b></td>";
+                        echo "<td><b style='color:green;'>" . $row['section'] . "</b></td>";
+                        echo "<td>" . $row['class_days'] . "</td>";
+                        echo "<td>" . $row['class_start_time'] . "</td>";
+                        echo "<td>" . $row['class_end_time'] . "</td>";
+                        echo "<td>" . $row['enroll_cap'] . "</td>";
+                        echo "<td>" . $row['enrolled_students'] . "</td>";
+                        echo "<td>" . $row['professor'] . "</td>";
+                        echo "<td>" . $row['room'] . "</td>";
+                        echo "</tr>";
                     }
+                } else {
+                    echo "<p>Have Not Enrolled Any Classes</p>";
+                }
 
-                    $conn->close();
-                    ?>
-                </table>
-            </div>
+                $conn->close();
+                ?>
+            </table>
         </div>
     </div>
-    <script src="../includes/main.js"></script>
+</div>
+<script src="../includes/main.js"></script>
 </body>
 </html>
-
 
