@@ -1,59 +1,59 @@
 <html>
-    <head><title>View EAF</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="stylesheet" href="../assets/css/navigation.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <head>
+        <title>View EAF</title>
+        <link rel="stylesheet" href="../assets/css/style.css">
+        <link rel="stylesheet" href="../assets/css/navigation.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-    <?php
-    session_start(); //starts the session
+        <?php
+        session_start(); //starts the session
 
-    //After turning on SQL on XAMPP, you can manage the DB via this url:
-    // http://localhost/phpmyadmin
-    $server = "localhost";
-    $username = "root"; //will change this later
-    $password = "";
-    $dbname = "itmosys_db";
+        //After turning on SQL on XAMPP, you can manage the DB via this url:
+        // http://localhost/phpmyadmin
+        $server = "localhost";
+        $username = "root"; //will change this later
+        $password = "";
+        $dbname = "itmosys_db";
 
-    //Create connection
-    $conn = new mysqli($server, $username, $password, $dbname);
+        //Create connection
+        $conn = new mysqli($server, $username, $password, $dbname);
 
-    //assigns the student ID number of the current session
-    if (isset($_SESSION['student_id'])) {
-        $student_id = $_SESSION['student_id'];
-    }
+        //assigns the student ID number of the current session
+        if (isset($_SESSION['student_id'])) {
+            $student_id = $_SESSION['student_id'];
+        }
 
-    //getting the current enrolled subjects of the student
-    $sql = "SELECT s.student_id, s.student_name, c.course_title, c.units, so.section, so.class_days, so.class_start_time, so.class_end_time, so.professor, so.room
-    FROM students s
-    JOIN students_classes sc ON s.student_id = sc.student_id
-    JOIN section_offerings so ON sc.offering_code = so.offering_code
-    JOIN courses c ON so.course_code = c.course_code
-    WHERE s.student_id = '$student_id'";
+        //getting the current enrolled subjects of the student
+        $sql = "SELECT s.student_id, s.student_name, c.course_title, c.units, so.section, so.class_days, so.class_start_time, so.class_end_time, so.professor, so.room
+        FROM students s
+        JOIN students_classes sc ON s.student_id = sc.student_id
+        JOIN section_offerings so ON sc.offering_code = so.offering_code
+        JOIN courses c ON so.course_code = c.course_code
+        WHERE s.student_id = '$student_id'";
 
-    $result = $conn->query($sql);
+        $result = $conn->query($sql);
 
-    // Initialize sum variable
-    $sum = null;
+        // Initialize sum variable
+        $sum = null;
 
-    $sql_sum = "SELECT SUM(c.units) AS total_sum
-                FROM students s
-                JOIN students_classes sc ON s.student_id = sc.student_id
-                JOIN section_offerings so ON sc.offering_code = so.offering_code
-                JOIN courses c ON so.course_code = c.course_code
-                WHERE s.student_id = '$student_id'";
+        $sql_sum = "SELECT SUM(c.units) AS total_sum
+                    FROM students s
+                    JOIN students_classes sc ON s.student_id = sc.student_id
+                    JOIN section_offerings so ON sc.offering_code = so.offering_code
+                    JOIN courses c ON so.course_code = c.course_code
+                    WHERE s.student_id = '$student_id'";
 
-    $result_sum = $conn->query($sql_sum);
+        $result_sum = $conn->query($sql_sum);
 
-    if ($result_sum->num_rows > 0) {
-        // Fetch result
-        $row = $result_sum->fetch_assoc();
-        $sum = $row['total_sum'];
-    } else {
-        $sum = 0;
-    }
-    ?>
-
-</head>
+        if ($result_sum->num_rows > 0) {
+            // Fetch result
+            $row = $result_sum->fetch_assoc();
+            $sum = $row['total_sum'];
+        } else {
+            $sum = 0;
+        }
+        ?>
+    </head>
     <body>
         
     <!-- Hamburger Menu -->
@@ -78,8 +78,9 @@
     </div>
 
     <div class="top-panel">
+        <!-- ITmosys Header -->
         <h1 class="itmosys-header">ITmosys</h1>
-    </div>    <!-- ITmosys Header -->
+    </div>    
 
     <div class="content">
         <div class="viewEAF_container">
@@ -126,7 +127,24 @@
                 </tr>
             </table>
 
+            <!-- Enrollment Confirmation button -->
+            <div class="separator"></div>
 
+            <?php
+                if (isset($_POST['confirmEnrollment'])) {
+                    if ($sum <= 18) {
+                        echo "You have confirmed your enrollment.";
+                    } else {
+                        echo "Your total units exceed the limit of 18 units. Please adjust your enrolled courses.";
+                    }
+                }
+            ?>
+
+            <form method="post">
+                <button type="submit" name="confirmEnrollment" class="login_button">
+                    Confirm your Enrollment here:
+                </button>
+            </form>
         </div>
     </div>
     
