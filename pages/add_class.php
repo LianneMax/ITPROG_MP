@@ -90,74 +90,94 @@
                     if ($enrolledStudents >= $enrollCap) {
                         echo "<p style='color:red;'>This class is full. Please choose another class.</p>";
                     } else {
-                        // Check for prerequisites
-                        $prerequisiteQuery = "
-                            SELECT prerequisite 
-                            FROM prerequisites 
-                            WHERE course_code = '$courseCode'
+                        // Check if student has already passed the course
+                        $alreadyTakenQuery = "
+                            SELECT grade 
+                            FROM past_enrollments 
+                            WHERE student_id = '$studentID' AND course_code = '$courseCode'
                         ";
-                        $prerequisiteResult = mysqli_query($conn, $prerequisiteQuery);
+                        $alreadyTakenResult = mysqli_query($conn, $alreadyTakenQuery);
 
-                        $canEnroll = true;
-                        $failedPrerequisite = false;
+                        if (mysqli_num_rows($alreadyTakenResult) > 0) {
+                            $grade = mysqli_fetch_assoc($alreadyTakenResult)['grade'];
+                            if ($grade > 0) {
+                                // Student passed the course already
+                                echo "<p style='color:red;'>You have already passed this course and cannot re-enroll.</p>";
+                            } else {
+                                // If student failed the course, allow re-enrollment in the course itself
+                                $canEnroll = true;
+                            }
+                        } else {
+                            // Check for prerequisites
+                            $prerequisiteQuery = "
+                                SELECT prerequisite 
+                                FROM prerequisites 
+                                WHERE course_code = '$courseCode'
+                            ";
+                            $prerequisiteResult = mysqli_query($conn, $prerequisiteQuery);
 
-                        // Check if prerequisites are met
-                        if (mysqli_num_rows($prerequisiteResult) > 0) {
-                            while ($prerequisite = mysqli_fetch_assoc($prerequisiteResult)) {
-                                $prerequisiteCode = $prerequisite['prerequisite'];
+                            $canEnroll = true;
+                            $failedPrerequisite = false;
 
-                                // Check if student has taken and passed the prerequisite
-                                $prerequisiteCheckQuery = "
-                                    SELECT grade 
-                                    FROM past_enrollments 
-                                    WHERE student_id = '$studentID' AND course_code = '$prerequisiteCode'
-                                ";
-                                $prerequisiteCheckResult = mysqli_query($conn, $prerequisiteCheckQuery);
+                            // Check if prerequisites are met
+                            if (mysqli_num_rows($prerequisiteResult) > 0) {
+                                while ($prerequisite = mysqli_fetch_assoc($prerequisiteResult)) {
+                                    $prerequisiteCode = $prerequisite['prerequisite'];
 
-                                if (mysqli_num_rows($prerequisiteCheckResult) == 0) {
-                                    $canEnroll = false;
-                                    echo "<p style='color:red;'>You have not taken the prerequisite course: $prerequisiteCode.</p>";
-                                } else {
-                                    $grade = mysqli_fetch_assoc($prerequisiteCheckResult)['grade'];
-                                    if ($grade == 0) {
-                                        $failedPrerequisite = true;
-                                        echo "<p style='color:red;'>You have failed the prerequisite course: $prerequisiteCode. You cannot enroll in this corequisite until you pass the prerequisite.</p>";
+                                    // Check if student has taken and passed the prerequisite
+                                    $prerequisiteCheckQuery = "
+                                        SELECT grade 
+                                        FROM past_enrollments 
+                                        WHERE student_id = '$studentID' AND course_code = '$prerequisiteCode'
+                                    ";
+                                    $prerequisiteCheckResult = mysqli_query($conn, $prerequisiteCheckQuery);
+
+                                    if (mysqli_num_rows($prerequisiteCheckResult) == 0) {
                                         $canEnroll = false;
+                                        echo "<p style='color:red;'>You have not taken the prerequisite course: $prerequisiteCode.</p>";
+                                    } else {
+                                        $prerequisiteGrade = mysqli_fetch_assoc($prerequisiteCheckResult)['grade'];
+                                        if ($prerequisiteGrade == 0) {
+                                            // If they failed the prerequisite, they must retake it before adding the corequisite
+                                            $failedPrerequisite = true;
+                                            echo "<p style='color:red;'>You have failed the prerequisite course: $prerequisiteCode. You cannot enroll in this course until you pass the prerequisite.</p>";
+                                            $canEnroll = false;
+                                        }
                                     }
                                 }
                             }
-                        }
 
-                        // Proceed if prerequisites are met and class is not full
-                        if ($canEnroll && !$failedPrerequisite) {
-                            $checkEnrollmentQuery = "
-                                SELECT * 
-                                FROM students_classes 
-                                WHERE student_id = '$studentID' AND offering_code = '$offeringCode'
-                            ";
-                            $enrollmentResult = mysqli_query($conn, $checkEnrollmentQuery);
-
-                            if (mysqli_num_rows($enrollmentResult) == 0) {
-                                // Enroll student and update enrolled count
-                                $insertQuery = "
-                                    INSERT INTO students_classes (student_id, offering_code) 
-                                    VALUES ('$studentID', '$offeringCode')
+                            // Proceed if prerequisites are met and class is not full
+                            if ($canEnroll && !$failedPrerequisite) {
+                                $checkEnrollmentQuery = "
+                                    SELECT * 
+                                    FROM students_classes 
+                                    WHERE student_id = '$studentID' AND offering_code = '$offeringCode'
                                 ";
-                                if (mysqli_query($conn, $insertQuery)) {
-                                    // Update enrolled count
-                                    $updateEnrollmentQuery = "
-                                        UPDATE section_offerings 
-                                        SET enrolled_students = enrolled_students + 1 
-                                        WHERE offering_code = '$offeringCode'
-                                    ";
-                                    mysqli_query($conn, $updateEnrollmentQuery);
+                                $enrollmentResult = mysqli_query($conn, $checkEnrollmentQuery);
 
-                                    echo "<p style='color:green;'>Class added successfully!</p>";
+                                if (mysqli_num_rows($enrollmentResult) == 0) {
+                                    // Enroll student and update enrolled count
+                                    $insertQuery = "
+                                        INSERT INTO students_classes (student_id, offering_code) 
+                                        VALUES ('$studentID', '$offeringCode')
+                                    ";
+                                    if (mysqli_query($conn, $insertQuery)) {
+                                        // Update enrolled count
+                                        $updateEnrollmentQuery = "
+                                            UPDATE section_offerings 
+                                            SET enrolled_students = enrolled_students + 1 
+                                            WHERE offering_code = '$offeringCode'
+                                        ";
+                                        mysqli_query($conn, $updateEnrollmentQuery);
+
+                                        echo "<p style='color:green;'>Class added successfully!</p>";
+                                    } else {
+                                        echo "<p style='color:red;'>Error adding class: " . mysqli_error($conn) . "</p>";
+                                    }
                                 } else {
-                                    echo "<p style='color:red;'>Error adding class: " . mysqli_error($conn) . "</p>";
+                                    echo "<p style='color:red;'>You are already enrolled in this class.</p>";
                                 }
-                            } else {
-                                echo "<p style='color:red;'>You are already enrolled in this class.</p>";
                             }
                         }
                     }
@@ -230,4 +250,3 @@
 <script src="../includes/main.js"></script>
 </body>
 </html>
-
