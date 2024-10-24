@@ -94,15 +94,32 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table `itmosys_db`.`id_numbers`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `itmosys_db`.`id_numbers` ;
+
+CREATE TABLE IF NOT EXISTS `itmosys_db`.`id_numbers` (
+  `id_number` INT(8) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id_number`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table `itmosys_db`.`students`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `itmosys_db`.`students` ;
 
 CREATE TABLE IF NOT EXISTS `itmosys_db`.`students` (
   `student_id` INT(8) UNSIGNED NOT NULL,
-  `student_name` VARCHAR(200) NOT NULL,
-  `password` VARCHAR(45) NULL,
-  PRIMARY KEY (`student_id`))
+  `student_lastname` VARCHAR(100) NOT NULL,
+  `student_firstname` VARCHAR(45) NOT NULL,
+  `password` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`student_id`),
+  CONSTRAINT `fk_students_id_numbers1`
+    FOREIGN KEY (`student_id`)
+    REFERENCES `itmosys_db`.`id_numbers` (`id_number`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
@@ -114,6 +131,7 @@ DROP TABLE IF EXISTS `itmosys_db`.`students_classes` ;
 CREATE TABLE IF NOT EXISTS `itmosys_db`.`students_classes` (
   `student_id` INT(8) UNSIGNED NOT NULL,
   `offering_code` INT(4) UNSIGNED NOT NULL,
+  `grade` DECIMAL(2,1) NULL,
   PRIMARY KEY (`offering_code`, `student_id`),
   INDEX `fk_students_classes_section_offerings1_idx` (`offering_code` ASC),
   CONSTRAINT `fk_students_classes_students1`
@@ -124,6 +142,49 @@ CREATE TABLE IF NOT EXISTS `itmosys_db`.`students_classes` (
   CONSTRAINT `fk_students_classes_section_offerings1`
     FOREIGN KEY (`offering_code`)
     REFERENCES `itmosys_db`.`section_offerings` (`offering_code`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `itmosys_db`.`admins`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `itmosys_db`.`admins` ;
+
+CREATE TABLE IF NOT EXISTS `itmosys_db`.`admins` (
+  `admin_id` INT(8) UNSIGNED NOT NULL,
+  `admin_lastname` VARCHAR(100) NOT NULL,
+  `admin_firstname` VARCHAR(100) NOT NULL,
+  `password` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`admin_id`),
+  CONSTRAINT `fk_admins_id_numbers1`
+    FOREIGN KEY (`admin_id`)
+    REFERENCES `itmosys_db`.`id_numbers` (`id_number`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `itmosys_db`.`past_enrollments`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `itmosys_db`.`past_enrollments` ;
+
+CREATE TABLE IF NOT EXISTS `itmosys_db`.`past_enrollments` (
+  `student_id` INT(8) UNSIGNED NOT NULL,
+  `course_code` VARCHAR(7) NOT NULL,
+  `grade` DECIMAL(2,1) NOT NULL,
+  PRIMARY KEY (`student_id`, `course_code`, `grade`),
+  INDEX `fk_past_enrollments_courses1_idx` (`course_code` ASC) ,
+  CONSTRAINT `fk_past_enrollments_students1`
+    FOREIGN KEY (`student_id`)
+    REFERENCES `itmosys_db`.`students` (`student_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_past_enrollments_courses1`
+    FOREIGN KEY (`course_code`)
+    REFERENCES `itmosys_db`.`courses` (`course_code`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -240,15 +301,34 @@ COMMIT;
 
 
 -- -----------------------------------------------------
+-- Data for table `itmosys_db`.`id_numbers`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `itmosys_db`;
+INSERT INTO `itmosys_db`.`id_numbers` (`id_number`) VALUES (1);
+INSERT INTO `itmosys_db`.`id_numbers` (`id_number`) VALUES (2);
+INSERT INTO `itmosys_db`.`id_numbers` (`id_number`) VALUES (3);
+INSERT INTO `itmosys_db`.`id_numbers` (`id_number`) VALUES (4);
+INSERT INTO `itmosys_db`.`id_numbers` (`id_number`) VALUES (5);
+INSERT INTO `itmosys_db`.`id_numbers` (`id_number`) VALUES (21);
+INSERT INTO `itmosys_db`.`id_numbers` (`id_number`) VALUES (22);
+INSERT INTO `itmosys_db`.`id_numbers` (`id_number`) VALUES (23);
+INSERT INTO `itmosys_db`.`id_numbers` (`id_number`) VALUES (24);
+INSERT INTO `itmosys_db`.`id_numbers` (`id_number`) VALUES (25);
+
+COMMIT;
+
+
+-- -----------------------------------------------------
 -- Data for table `itmosys_db`.`students`
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `itmosys_db`;
-INSERT INTO `itmosys_db`.`students` (`student_id`, `student_name`, `password`) VALUES (1, 'user1', 'password123');
-INSERT INTO `itmosys_db`.`students` (`student_id`, `student_name`, `password`) VALUES (2, 'user2', 'pass456');
-INSERT INTO `itmosys_db`.`students` (`student_id`, `student_name`, `password`) VALUES (3, 'user3', 'securePwd789');
-INSERT INTO `itmosys_db`.`students` (`student_id`, `student_name`, `password`) VALUES (4, 'user4', 'myPassword2024');
-INSERT INTO `itmosys_db`.`students` (`student_id`, `student_name`, `password`) VALUES (5, 'user5', 'anotherPass543');
+INSERT INTO `itmosys_db`.`students` (`student_id`, `student_lastname`, `student_firstname`, `password`) VALUES (1, 'Lee', 'Justin', 'password123');
+INSERT INTO `itmosys_db`.`students` (`student_id`, `student_lastname`, `student_firstname`, `password`) VALUES (2, 'Ang', 'Jeremiah', 'pass456');
+INSERT INTO `itmosys_db`.`students` (`student_id`, `student_lastname`, `student_firstname`, `password`) VALUES (3, 'Balbastro', 'Lianne', 'securePwd789');
+INSERT INTO `itmosys_db`.`students` (`student_id`, `student_lastname`, `student_firstname`, `password`) VALUES (4, 'Duelas', 'Charles', 'myPassword2024');
+INSERT INTO `itmosys_db`.`students` (`student_id`, `student_lastname`, `student_firstname`, `password`) VALUES (5, 'Pax', 'Orion', 'anotherPass543');
 
 COMMIT;
 
@@ -258,8 +338,37 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `itmosys_db`;
-INSERT INTO `itmosys_db`.`students_classes` (`student_id`, `offering_code`) VALUES (1, 1600);
-INSERT INTO `itmosys_db`.`students_classes` (`student_id`, `offering_code`) VALUES (1, 1700);
+INSERT INTO `itmosys_db`.`students_classes` (`student_id`, `offering_code`, `grade`) VALUES (1, 1600, NULL);
+INSERT INTO `itmosys_db`.`students_classes` (`student_id`, `offering_code`, `grade`) VALUES (1, 1700, NULL);
+
+COMMIT;
+
+
+-- -----------------------------------------------------
+-- Data for table `itmosys_db`.`admins`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `itmosys_db`;
+INSERT INTO `itmosys_db`.`admins` (`admin_id`, `admin_lastname`, `admin_firstname`, `password`) VALUES (21, 'Trion', 'Alpha', 'password123');
+INSERT INTO `itmosys_db`.`admins` (`admin_id`, `admin_lastname`, `admin_firstname`, `password`) VALUES (22, 'Prime', 'Megatronus', 'pass456');
+INSERT INTO `itmosys_db`.`admins` (`admin_id`, `admin_lastname`, `admin_firstname`, `password`) VALUES (23, 'Lopez', 'Jason', 'securePwd789');
+INSERT INTO `itmosys_db`.`admins` (`admin_id`, `admin_lastname`, `admin_firstname`, `password`) VALUES (24, 'Reynolds', 'Ryan', 'myPassword2024');
+INSERT INTO `itmosys_db`.`admins` (`admin_id`, `admin_lastname`, `admin_firstname`, `password`) VALUES (25, 'Jackman', 'Hugh', 'anotherPass543');
+
+COMMIT;
+
+
+-- -----------------------------------------------------
+-- Data for table `itmosys_db`.`past_enrollments`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `itmosys_db`;
+INSERT INTO `itmosys_db`.`past_enrollments` (`student_id`, `course_code`, `grade`) VALUES (1, 'ITNET01', 3.5);
+INSERT INTO `itmosys_db`.`past_enrollments` (`student_id`, `course_code`, `grade`) VALUES (1, 'LBYITN1', 3.5);
+INSERT INTO `itmosys_db`.`past_enrollments` (`student_id`, `course_code`, `grade`) VALUES (1, 'ITSECUR', 0);
+INSERT INTO `itmosys_db`.`past_enrollments` (`student_id`, `course_code`, `grade`) VALUES (1, 'ITSECUR', 4);
+INSERT INTO `itmosys_db`.`past_enrollments` (`student_id`, `course_code`, `grade`) VALUES (2, 'ITNET01', 4);
+INSERT INTO `itmosys_db`.`past_enrollments` (`student_id`, `course_code`, `grade`) VALUES (2, 'LBYITN1', 4);
 
 COMMIT;
 
