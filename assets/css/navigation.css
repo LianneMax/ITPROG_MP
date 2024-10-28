@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
 /* General Body Styling */
 body {
     font-family: 'Montserrat', sans-serif;
@@ -9,128 +11,127 @@ body {
     overflow-x: hidden;
 }
 
+/*Content Styling */
+.content.shifted {
+    margin-left: 250px;
+    margin-left: 16rem;
+    transition: margin-left 0.3s ease;
+}
+
 /* Sidebar Styling */
 .sidebar {
-    height: 100%;
-    width: 5rem; /* Compact size for large screens */
+    height: 100vh;
+    width: 80px; 
     position: fixed;
     top: 0;
     left: 0;
-    background-color: #5b8ba4; /* Same color as the top panel */
+    background-color: #5b8ba4;
     padding-top: 20px;
-    transition: width 600ms ease;
+    transition: width 0.6s ease;
     z-index: 1000;
     border-top-right-radius: 30px;
     border-bottom-right-radius: 30px;
-    overflow: hidden; /* Hide content when collapsed */
+    overflow: hidden;
 }
 
 .sidebar:hover {
-    width: 16rem;
+    width: 18rem; /* Expand width */
 }
 
-.sidebar a {
+.sidebar {
+    background-color: #5b8ba4;
+}
+
+/* Sidebar Button Styling */
+.sidebar-btn {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    padding: 15px;
-    text-decoration: none;
-    font-size: 18px;
-    color: white; /* Default text color is white */
+    padding: 15px 20px;
+    font-size: 20px;
+    color: white;
+    background: none;
+    border: none;
+    width: 90%;
+    cursor: pointer;
     transition: 0.3s;
-    border-radius: 10px; /* Less round default */
-    width: 100%; /* Ensures full width */
+    margin: 10px auto;
+    border-radius: 8px;
+    text-align: left;
 }
 
-.sidebar a i {
-    margin-right: 10px;
-    font-size: 22px;
-    width: 25px; /* Added width to ensure icons are aligned properly */
-    text-align: center; /* Centers the icon in its space */
-    color: white; /* Default icon color is white */
+.sidebar-btn i {
+    font-size: 30px; /* Larger icon size */
+    color: white;
+    margin-right: 15px;
 }
 
-.sidebar a:hover {
-    background-color: white;
-    color: #5b8ba4; /* Change icon and link text color to dark blue on hover */
-    border-radius: 10px; /* Less rounded corners on hover */
+.sidebar-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #f4f4f4;
 }
 
-/* Sidebar hover effects for text */
-.sidebar:hover a .link-text {
+.sidebar:hover .link-text {
     display: inline;
-    margin-left: 1rem;
-    color: white; /* Default text color is white */
+    margin-left: 10px;
 }
 
-.sidebar a:hover .link-text {
-    color: #476f84; /* Dark blue text on hover */
-}
-
-/* Change icon color to dark blue on hover */
-.sidebar a:hover i {
-    color: #476f84; /* Dark blue icon color */
-}
-
+/* Initially hide text */
 .link-text {
     display: none;
+    white-space: nowrap;
 }
 
-/* Hamburger Menu */
 .hamburger {
     color: white;
     position: fixed;
     top: 15px;
-    left: 25px; 
+    left: 25px;
     font-size: 30px;
     cursor: pointer;
     z-index: 1001;
 }
 
-/* Content shifts when sidebar expands */
-.content.shifted {
-    margin-left: 16rem; /* Adjusted to match expanded sidebar */
-    transition: margin-left 0.3s ease;
-}
-
 /* Logout Button Styling */
 .logout-btn {
     position: absolute;
-    bottom: 50px;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
     background-color: #a34849;
     color: white;
     border: none;
-    padding: 10px 20px;
-    border-radius: 10px; /* Less round corners */
+    padding: 12px 20px;
+    border-radius: 8px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.3s ease;
-    width: 80%; /* Adjust width of the logout button */
+    transition: background-color 0.3s ease, width 0.6s ease;
+    width: 90%;
+    white-space: nowrap;
 }
 
 .logout-btn i {
-    margin-right: 8px;
-    font-size: 22px;
-    width: 25px; /* Consistent width with other icons */
-    text-align: center;
-    color: white; /* Default icon color */
+    font-size: 28px;
+    color: white;
+    margin-right: 10px;
+}
+
+.sidebar:hover .logout-btn .link-text {
+    display: inline;
 }
 
 .logout-btn:hover {
     background-color: #703232;
-    border-radius: 10px; /* Less rounded hover */
 }
 
-/* Change logout icon color on hover */
 .logout-btn:hover i {
-    color: #481f1f; /* Darker icon color on hover */
+    color: #481f1f;
 }
 
-/* Change logout text color on hover */
 .logout-btn:hover .link-text {
-    color: #703232; /* Dark blue text on hover for logout */
+    color: #f4f4f4;
 }
+
+

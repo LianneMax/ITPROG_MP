@@ -129,7 +129,7 @@ form {
 }
 
 /* Button Styling */
-button {
+.main-button {
     font-size: 16px;
     background-color: #5b8ba4;
     color: white;
@@ -139,12 +139,12 @@ button {
     border: none;
     border-radius: 5px;
     padding: 10px;
-    width: 50%;
+    width: 100%;
     font-family: "Times New Roman", serif;
 }
 
 /* Button Hover Effect */
-button:hover {
+.main-button:hover {
     background-color: #497285;
 }
 
