@@ -81,7 +81,7 @@ body {
     color: white;
     position: fixed;
     top: 15px;
-    left: 25px; /* Adjusted to move it more to the right */
+    left: 25px; 
     font-size: 30px;
     cursor: pointer;
     z-index: 1001;
@@ -134,5 +134,3 @@ body {
 .logout-btn:hover .link-text {
     color: #703232; /* Dark blue text on hover for logout */
 }
-
-

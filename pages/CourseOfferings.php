@@ -48,7 +48,6 @@
     <!-- Logout Button -->
     <button class="logout-btn" onclick="window.location.href='LogoutPage.php'">
         <i class="fas fa-sign-out-alt"></i>
-        <span class="link-text">Logout</span>
     </button>
 </div>
 
