@@ -144,6 +144,24 @@
                 if (isset($_POST['confirmEnrollment'])) {
                     if ($sum <= 18) {
                         echo "You have confirmed your enrollment.";
+
+                        // SQL query to insert records from student_classes to past_classes
+                        $copyQuery = "INSERT INTO past_classes (student_id, class_id, enrollment_date)
+                        SELECT student_id, class_id, enrollment_date
+                        FROM student_classes
+                        WHERE student_id = ?";
+
+                        // Prepare statement
+                        $stmt = $conn->prepare($copyQuery);
+                        $stmt->bind_param("i", $student_id);  // Binding the student ID to the query
+
+                        if ($stmt->execute()) {
+                        echo "Subjects successfully moved to past_classes.";
+                        } else {
+                        echo "Error moving subjects: " . $stmt->error;
+                        }
+
+                        $stmt->close();
                     } else {
                         echo "Your total units exceed the limit of 18 units. Please adjust your enrolled courses.";
                     }
