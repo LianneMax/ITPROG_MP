@@ -25,7 +25,7 @@
         // Initialize a variable to track enrollment confirmation
         $enrollmentConfirmed = false;
 
-        //get the current enrolled class schedule of the student
+
         $sql = "SELECT s.student_id, s.student_lastname, s.student_firstname, c.course_title, c.units, so.section, so.class_days,
                 so.class_start_time, so.class_end_time, so.professor, so.room
                 FROM students AS s
@@ -39,7 +39,6 @@
         // Initialize sum variable
         $sum = null;
 
-        // Get the sum of all the units
         $sql_sum = "SELECT SUM(c.units) AS total_sum
                     FROM students s
                     JOIN students_classes sc ON s.student_id = sc.student_id
@@ -56,18 +55,20 @@
         } else {
             $sum = 0;
         }
-
-        // Only proceed if the total units (sum) are less than or equal to 18
-        if ($sum<=18) {
-            // SQL query to insert records from student_classes to past_classes
-            $copyQuery = "
-            INSERT INTO past_enrollments (student_id, course_code, date_enrolled, section, class_days, class_start_time, class_end_time, professor, room, grade)
-            SELECT sc.student_id, so.course_code, CURDATE() AS date_enrolled, so.section, so.class_days, so.class_start_time, so.class_end_time, so.professor, so.room, NULL AS grade
-            FROM students_classes AS sc
-            INNER JOIN section_offerings AS so ON sc.offering_code = so.offering_code
-            WHERE sc.student_id = $student_id";
-
-            // Prepare statement
+            
+        // Check if the confirm enrollment button is pressed
+        if (isset($_POST['confirmEnrollment']))
+            // Only proceed if the total units (sum) are less than or equal to 18
+            if ($sum<=18) {
+                // SQL query to insert records from student_classes to past_classes
+                $copyQuery = "
+                INSERT INTO past_enrollments (student_id, course_code, date_enrolled, section, class_days, class_start_time, class_end_time, professor, room, grade)
+                SELECT sc.student_id, so.course_code, CURDATE() AS date_enrolled, so.section, so.class_days, so.class_start_time, so.class_end_time, so.professor, so.room, NULL AS grade
+                FROM students_classes AS sc
+                INNER JOIN section_offerings AS so ON sc.offering_code = so.offering_code
+                WHERE sc.student_id = $student_id";
+            
+                // Prepare statement
             $stmt = $conn->prepare($copyQuery);
 
             // Execute the statement
@@ -78,8 +79,6 @@
                 // If execution fails, print error message
                 echo "Error moving subjects: " . $stmt->error;
             }
-
-            $stmt->close();
         }
         ?>
     </head>
