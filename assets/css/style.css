@@ -161,8 +161,9 @@ form {
     margin: 0 auto; 
 }
 
-/* Add Class button specific styling (if needed) */
+/* Add Class*/
 .addclass-btn {
+    
     height: 10px; 
     font-size: 14px;
     width: 100px; 
@@ -178,11 +179,9 @@ form {
     bottom: 20px;
     right: 20px;
     width: 150px;
-    padding: 10px;
     font-size: 16px;
     background-color: #a34849;
     color: white;
-    border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }

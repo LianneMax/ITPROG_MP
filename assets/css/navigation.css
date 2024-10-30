@@ -11,9 +11,8 @@ body {
     overflow-x: hidden;
 }
 
-/*Content Styling */
+/* Content Styling */
 .content.shifted {
-    margin-left: 250px;
     margin-left: 16rem;
     transition: margin-left 0.3s ease;
 }
@@ -32,14 +31,11 @@ body {
     border-top-right-radius: 30px;
     border-bottom-right-radius: 30px;
     overflow: hidden;
+    font-family: Times New Roman;
 }
 
 .sidebar:hover {
     width: 18rem; /* Expand width */
-}
-
-.sidebar {
-    background-color: #5b8ba4;
 }
 
 /* Sidebar Button Styling */
@@ -58,6 +54,7 @@ body {
     margin: 10px auto;
     border-radius: 8px;
     text-align: left;
+    font-family: Times New Roman;
 }
 
 .sidebar-btn i {
@@ -80,6 +77,7 @@ body {
 .link-text {
     display: none;
     white-space: nowrap;
+    font-family: Times New Roman;
 }
 
 .hamburger {
@@ -133,5 +131,6 @@ body {
 .logout-btn:hover .link-text {
     color: #f4f4f4;
 }
+
 
 

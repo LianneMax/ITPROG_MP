@@ -142,7 +142,7 @@
                 <form method="post" action="" class="courseOffering-form">
                     <label for="courseCode">Enter course code:</label>
                     <input type="text" name="courseCode" placeholder="ex: IT-PROG">
-                    <button type="submit" onclick="showTable()" class="courseOffering-button">Search</button>
+                    <button type="submit" onclick="showTable()" class="main-button courseOffering-button">Search</button>
                 </form>
             </div>
         </div>

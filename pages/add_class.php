@@ -194,7 +194,7 @@
             <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" style="display: flex; align-items: center; gap: 10px;">
                 <label for="offeringCode">Class code to add:</label>
                 <input type="text" name="offeringCode" placeholder="ex: 1234" required>
-                <button type="submit" class="addclass-btn">Add Class</button>
+                <button type="submit" class="main-button addclass-btn">Add Class</button> 
             </form>
         </div>
 
