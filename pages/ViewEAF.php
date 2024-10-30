@@ -57,10 +57,11 @@
         }
             
         // Check if the confirm enrollment button is pressed
-        if (isset($_POST['confirmEnrollment']))
+        if (isset($_POST['confirmEnrollment'])) {
             // Only proceed if the total units (sum) are less than or equal to 18
             if ($sum<=18) {
                 // SQL query to insert records from student_classes to past_classes
+                // Insert new classes that aren't in past_enrollments, skipping duplicates
                 $copyQuery = "
                 INSERT INTO past_enrollments (student_id, course_code, date_enrolled, section, class_days, class_start_time, class_end_time, professor, room, grade)
                 SELECT sc.student_id, so.course_code, CURDATE() AS date_enrolled, so.section, so.class_days, so.class_start_time, so.class_end_time, so.professor, so.room, NULL AS grade
@@ -69,17 +70,44 @@
                 WHERE sc.student_id = $student_id";
             
                 // Prepare statement
-            $stmt = $conn->prepare($copyQuery);
+                $stmt = $conn->prepare($copyQuery);
 
-            // Execute the statement
-            if ($stmt->execute()) {
-                // Set enrollmentConfirmed to true on successful enrollment
-                $enrollmentConfirmed = true;
-            } else {
-                // If execution fails, print error message
-                echo "Error moving subjects: " . $stmt->error;
+                // Execute the statement
+                if ($stmt->execute()) {
+                    // Set enrollmentConfirmed to true on successful enrollment
+                    $enrollmentConfirmed = true;
+                } else {
+                    // If execution fails, print error message
+                    echo "Error moving subjects: " . $stmt->error;
+                }
             }
         }
+
+        // Sync past_enrollments with current classes if enrollment is already confirmed
+        if ($enrollmentConfirmed || isset($_SESSION['enrollment_confirmed'])) {
+            $_SESSION['enrollment_confirmed'] = true;
+
+            // Insert new classes that aren't in past_enrollments
+            $insertQuery = "
+            INSERT INTO past_enrollments (student_id, course_code, date_enrolled, section, class_days, class_start_time, class_end_time, professor, room, grade)
+            SELECT sc.student_id, so.course_code, CURDATE() AS date_enrolled, so.section, so.class_days, so.class_start_time, so.class_end_time, so.professor, so.room, NULL AS grade
+            FROM students_classes AS sc
+            INNER JOIN section_offerings AS so ON sc.offering_code = so.offering_code
+            LEFT JOIN past_enrollments AS pe ON sc.student_id = pe.student_id AND so.course_code = pe.course_code
+            WHERE sc.student_id = $student_id AND pe.course_code IS NULL";
+            
+            $conn->query($insertQuery);
+
+            // Remove dropped classes from past_enrollments
+            $deleteQuery = "
+            DELETE pe FROM past_enrollments AS pe
+            LEFT JOIN students_classes AS sc ON pe.student_id = sc.student_id
+            INNER JOIN section_offerings AS so ON pe.course_code = so.course_code AND sc.offering_code = so.offering_code
+            WHERE pe.student_id = $student_id AND sc.offering_code IS NULL";
+
+            $conn->query($deleteQuery);
+        }
+        
         ?>
     </head>
     <body>
