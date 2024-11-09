@@ -4,10 +4,9 @@
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/navigation.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
     <?php
         include "../includes/dbconfig.php";
-        session_start(); // Start the session
+        session_start();
 
         // Create connection
         $conn = new mysqli($servername, $username, $password, $dbname);
@@ -27,8 +26,7 @@
 
 <!-- Sidebar -->
 <div id="sidebar" class="sidebar">
-        <div class="separator" style="margin-top: 50px;"></div>
-    <!-- Sidebar Buttons -->
+    <div class="separator" style="margin-top: 50px;"></div>
     <button class="sidebar-btn" onclick="window.location.href='add_class.php'">
         <i class="fas fa-plus-circle"></i>
         <span class="link-text">Add Class</span>
@@ -53,7 +51,6 @@
         <i class="fas fa-sign-out-alt"></i>
     </button>
 </div>
-
 
 <!-- Top Panel -->
 <div class="top-panel">
@@ -104,12 +101,10 @@
                         if (mysqli_num_rows($alreadyTakenResult) > 0) {
                             $grade = mysqli_fetch_assoc($alreadyTakenResult)['grade'];
                             if ($grade > 0) {
-                                // Student passed the course already
                                 echo "<p style='color:red;'>You have already passed this course and cannot re-enroll.</p>";
                             } else {
-                                // If student failed the course, allow re-enrollment in the course itself
                                 $canEnroll = true;
-                            }
+                            }   
                         } else {
                             // Check for prerequisites
                             $prerequisiteQuery = "
@@ -120,7 +115,6 @@
                             $prerequisiteResult = mysqli_query($conn, $prerequisiteQuery);
 
                             $canEnroll = true;
-                            $failedPrerequisite = false;
 
                             // Check if prerequisites are met
                             if (mysqli_num_rows($prerequisiteResult) > 0) {
@@ -138,20 +132,20 @@
                                     if (mysqli_num_rows($prerequisiteCheckResult) == 0) {
                                         $canEnroll = false;
                                         echo "<p style='color:red;'>You have not taken the prerequisite course: $prerequisiteCode.</p>";
+                                        break;
                                     } else {
                                         $prerequisiteGrade = mysqli_fetch_assoc($prerequisiteCheckResult)['grade'];
-                                        if ($prerequisiteGrade == 0) {
-                                            // If they failed the prerequisite, they must retake it before adding the corequisite
-                                            $failedPrerequisite = true;
-                                            echo "<p style='color:red;'>You have failed the prerequisite course: $prerequisiteCode. You cannot enroll in this course until you pass the prerequisite.</p>";
+                                        if ($prerequisiteGrade < 1.0) {
                                             $canEnroll = false;
+                                            echo "<p style='color:red;'>You have failed the prerequisite course: $prerequisiteCode. You cannot enroll in this course until you pass the prerequisite.</p>";
+                                            break;
                                         }
                                     }
                                 }
                             }
 
                             // Proceed if prerequisites are met and class is not full
-                            if ($canEnroll && !$failedPrerequisite) {
+                            if ($canEnroll) {
                                 $checkEnrollmentQuery = "
                                     SELECT * 
                                     FROM students_classes 
@@ -250,6 +244,8 @@
         </div>
     </div>
 </div>
-    <script src="../includes/main.js"></script>
+<script src="../includes/main.js"></script>
 </body>
 </html>
+
+
