@@ -86,6 +86,15 @@
                         if (mysqli_num_rows($enrollmentResult) > 0) {
                             $deleteQuery = "DELETE FROM students_classes WHERE student_id = '$studentID' AND offering_code = '$offeringCode' ";
                             if (mysqli_query($conn, $deleteQuery)) {
+                                //UPDATE enrolled students count
+                                $updateEnrollmentQuery = "
+                                UPDATE section_offerings 
+                                SET enrolled_students = enrolled_students - 1
+                                WHERE offering_code = '$offeringCode'
+                                ";
+                            mysqli_query($conn, $updateEnrollmentQuery);
+
+                            echo "<p style='color:green;'>Class added successfully!</p>";
                                 echo "<p style='color:green;'>Class dropped!</p>";
                             } else {
                                 echo "<p style='color:red;'>Error dropping class: " . mysqli_error($conn) . "</p>";
