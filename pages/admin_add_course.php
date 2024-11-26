@@ -1,3 +1,14 @@
+<!-- 
+    admin_add_course.php
+    Upload XML files to this page (for adding new courses)
+
+    Last updated: November 26, 2024, 4:01PM by Jeremiah Ang
+
+    TODO: Fix User interface (Pls put UI elements in one include file, to avoid copy pasting sidebars, buttons, etc)
+          Sidebar must contain admin-specific options
+          Find a way to efficiently implement "Add Profs" & "Add Offerings"
+ -->
+
 <html>
 <head>
     <title>Admin | Add Course</title>

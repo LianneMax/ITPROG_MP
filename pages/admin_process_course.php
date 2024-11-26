@@ -1,3 +1,13 @@
+<!-- 
+    admin_process_course.php
+    This page inserts the XML File Contents if valid 
+
+    Last updated: November 26, 2024, 4:00PM by Jeremiah Ang
+
+    TODO: Fix User interface (Pls put UI elements in one include file, to avoid copy pasting sidebars, buttons, etc)
+          Sidebar must contain admin-specific options
+ -->
+
     <?php
         include "../includes/dbconfig.php";
         session_start();
