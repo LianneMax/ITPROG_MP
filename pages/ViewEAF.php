@@ -17,15 +17,20 @@
             die("Connection failed: " . $conn->connect_error);
         }
 
-        //assigns the student ID number of the current session
+        // Assigns the student ID number of the current session
         if (isset($_SESSION['student_id'])) {
             $student_id = $_SESSION['student_id'];
         }
 
-        // Initialize a variable to track enrollment confirmation
-        $enrollmentConfirmed = false;
+        // Initialize enrollmentConfirmed session variable if not already set
+        if (!isset($_SESSION['enrollment_confirmed'])) {
+            $_SESSION['enrollment_confirmed'] = false; // No confirmation by default
+        }
 
+        // Initialize a variable to track if a new class has been added
+        $newClassAdded = isset($_SESSION['new_class_added']) ? $_SESSION['new_class_added'] : false;
 
+        // SQL to get current enrollments
         $sql = "SELECT s.student_id, s.student_lastname, s.student_firstname, c.course_title, c.units, so.section, so.class_days,
                 so.class_start_time, so.class_end_time, so.professor, so.room
                 FROM students AS s
@@ -39,6 +44,7 @@
         // Initialize sum variable
         $sum = null;
 
+        // SQL to get total units
         $sql_sum = "SELECT SUM(c.units) AS total_sum
                     FROM students s
                     JOIN students_classes sc ON s.student_id = sc.student_id
@@ -55,38 +61,42 @@
         } else {
             $sum = 0;
         }
-            
-        // Check if the confirm enrollment button is pressed
-        if (isset($_POST['confirmEnrollment'])) {
-            // Only proceed if the total units (sum) are less than or equal to 18
-            if ($sum<=18) {
-                // SQL query to insert records from student_classes to past_classes
-                // Insert new classes that aren't in past_enrollments, skipping duplicates
-                $copyQuery = "
-                INSERT INTO past_enrollments (student_id, course_code, date_enrolled, section, class_days, class_start_time, class_end_time, professor, room, grade)
-                SELECT sc.student_id, so.course_code, CURDATE() AS date_enrolled, so.section, so.class_days, so.class_start_time, so.class_end_time, so.professor, so.room, NULL AS grade
-                FROM students_classes AS sc
-                INNER JOIN section_offerings AS so ON sc.offering_code = so.offering_code
-                WHERE sc.student_id = $student_id";
-            
-                // Prepare statement
-                $stmt = $conn->prepare($copyQuery);
 
-                // Execute the statement
-                if ($stmt->execute()) {
-                    // Set enrollmentConfirmed to true on successful enrollment
-                    $enrollmentConfirmed = true;
-                } else {
-                    // If execution fails, print error message
-                    echo "Error moving subjects: " . $stmt->error;
-                }
+        if ($sum <= 18) {
+            // SQL query to insert records from student_classes to past_classes
+            // Insert into past_enrollments, but ignore duplicates
+            $copyQuery = "
+            INSERT IGNORE INTO past_enrollments (student_id, course_code, date_enrolled, section, class_days, class_start_time, class_end_time, professor, room, grade)
+            SELECT sc.student_id, so.course_code, CURDATE() AS date_enrolled, so.section, so.class_days, so.class_start_time, so.class_end_time, so.professor, so.room, NULL AS grade
+            FROM students_classes AS sc
+            INNER JOIN section_offerings AS so ON sc.offering_code = so.offering_code
+            WHERE sc.student_id = $student_id";
+
+            $stmt = $conn->prepare($copyQuery);
+
+            // Execute the statement
+            if ($stmt->execute()) {
+                // Set enrollmentConfirmed to true on successful enrollment
+                $_SESSION['enrollment_confirmed'] = true;
+                    
+                // Reset new class added flag after confirmation
+                $_SESSION['new_class_added'] = false;
+            } else {
+                // If execution fails, print error message
+                echo "Error moving subjects: " . $stmt->error;
             }
+        } else {
+            echo "<p>Your total units exceed the limit of 18 units. Please adjust your enrolled courses.</p>";
+        }
+
+        // Add new class logic (after the student adds a class)
+        if (isset($_POST['addClass'])) {
+            // Assuming new class is added here (the logic for adding a class to `students_classes` would go here)
+            $_SESSION['new_class_added'] = true;
         }
 
         // Sync past_enrollments with current classes if enrollment is already confirmed
-        if ($enrollmentConfirmed || isset($_SESSION['enrollment_confirmed'])) {
-            $_SESSION['enrollment_confirmed'] = true;
-
+        if (isset($_SESSION['enrollment_confirmed'])) {
             // Insert new classes that aren't in past_enrollments
             $insertQuery = "
             INSERT INTO past_enrollments (student_id, course_code, date_enrolled, section, class_days, class_start_time, class_end_time, professor, room, grade)
@@ -95,20 +105,29 @@
             INNER JOIN section_offerings AS so ON sc.offering_code = so.offering_code
             LEFT JOIN past_enrollments AS pe ON sc.student_id = pe.student_id AND so.course_code = pe.course_code
             WHERE sc.student_id = $student_id AND pe.course_code IS NULL";
-            
+
             $conn->query($insertQuery);
 
-            // Remove dropped classes from past_enrollments
-            $deleteQuery = "
-            DELETE pe FROM past_enrollments AS pe
-            LEFT JOIN students_classes AS sc ON pe.student_id = sc.student_id
-            INNER JOIN section_offerings AS so ON pe.course_code = so.course_code AND sc.offering_code = so.offering_code
-            WHERE pe.student_id = $student_id AND sc.offering_code IS NULL";
+            // Remove dropped subjects from past_enrollments
+            // If the student drops a class (it no longer exists in students_classes), remove it from past_enrollments
+            $dropQuery = "
+            DELETE pe 
+            FROM past_enrollments pe
+            LEFT JOIN students_classes sc ON pe.student_id = sc.student_id
+            INNER JOIN section_offerings so ON sc.offering_code = so.offering_code
+            WHERE pe.student_id = $student_id 
+            AND NOT EXISTS (
+                SELECT 1
+                FROM students_classes sc_check
+                INNER JOIN section_offerings so_check ON sc_check.offering_code = so_check.offering_code
+                WHERE sc_check.student_id = $student_id
+                AND so_check.course_code = pe.course_code
+            )";
 
-            $conn->query($deleteQuery);
+            $conn->query($dropQuery);
         }
-        
         ?>
+
     </head>
     <body>
         
@@ -198,24 +217,11 @@
 
                 <div class="separator"></div>
 
-                <?php
-                    if (isset($_POST['confirmEnrollment'])) {
-                        if ($sum <= 18) {
-                            echo "<p>You have confirmed your enrollment.</p>";
-                        } else {
-                            echo "<p>Your total units exceed the limit of 18 units. Please adjust your enrolled courses.</p>";
-                        }
-                    }
-                ?>
-
-                <?php if (!$enrollmentConfirmed): ?>
-                    <!-- Show the button only if enrollment is not confirmed -->
-                    <form method="post">
-                        <button type="submit" name="confirmEnrollment" class="login_button">
-                            Confirm your Enrollment here:
-                        </button>
-                    </form>
+                <!-- Display confirmation status message -->
+                <?php if ($_SESSION['enrollment_confirmed']): ?>
+                    <p>You have confirmed your enrollment.</p>
                 <?php endif; ?>
+
             </div>
         </div>
         <script src="../includes/main.js"></script>
