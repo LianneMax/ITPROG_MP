@@ -4,8 +4,10 @@
 
     Last updated: November 26, 2024, 4:00PM by Jeremiah Ang
 
-    TODO: Fix User interface (Pls put UI elements in one include file, to avoid copy pasting sidebars, buttons, etc)
-          Sidebar must contain admin-specific options
+    TODO: 
+        **Polish SQL Error handling**
+        Fix User interface (Pls put UI elements in one include file, to avoid copy pasting sidebars, buttons, etc)
+        Sidebar must contain admin-specific options
  -->
 
     <?php
