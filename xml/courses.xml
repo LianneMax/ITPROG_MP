@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE courses [
+    <!ELEMENT courses (course+)>
+    <!ELEMENT course (course_title, units, co_requisite?, prerequisite*)>
+    <!ELEMENT course_title (#PCDATA)>
+    <!ELEMENT units (#PCDATA)>
+    <!ELEMENT co_requisite (#PCDATA)>
+    <!ELEMENT prerequisite (#PCDATA)>
+
+<!-- course_code should use any string value and must be required. -->
+    <!ATTLIST course course_code CDATA #REQUIRED>
+]>
+
+<courses>
+    <course course_code="PRC-IT0">
+        <course_title>IT Practicum Orientation</course_title>
+        <units>0</units>
+    </course>
+
+    <course course_code="ITPLANN">
+        <course_title>IT System Planning</course_title>
+        <units>3</units>
+        <prerequisite>ITSYSOP</prerequisite>
+	<prerequisite>ITSRAQA</prerequisite>
+    </course>
+
+</courses>
