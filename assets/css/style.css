@@ -16,7 +16,7 @@ body {
 /* Top Panel for ITmosys Header */
 .top-panel {
     width: 100%;
-    background-color: #5b8ba4;
+    background-color: #507c93;
     text-align: center;
     padding: 20px 0; /* Padding on top and bottom */
     position: fixed;
@@ -328,3 +328,4 @@ td {
     width: 100%; /* Full width of the parent container */
 }
 /* End of Login CSS */
+

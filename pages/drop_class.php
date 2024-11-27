@@ -55,7 +55,7 @@
 </div>
 
 <!-- Top Panel -->
-<div class="top-panel">
+<div class="top-panel" style="background-color: #507c93;">
     <h1 class="itmosys-header">ITmosys</h1>
 </div>
 

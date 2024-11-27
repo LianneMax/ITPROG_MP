@@ -6,9 +6,9 @@
 <body>
 
     <!-- Top Panel with ITmosys centered -->
-    <div class="top-panel">
-        <h1 class="itmosys-header">ITmosys</h1>
-    </div>
+    <div class="top-panel" style="background-color: #507c93;">
+    <h1 class="itmosys-header">ITmosys</h1>
+</div>
 
     <div class="enrollment_container">
         <!-- Enrollment header in the top-left of the box -->
