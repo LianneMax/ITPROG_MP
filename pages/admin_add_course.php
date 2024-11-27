@@ -2,11 +2,12 @@
     admin_add_course.php
     Upload XML files to this page (for adding new courses)
 
-    Last updated: November 26, 2024, 4:01PM by Jeremiah Ang
+    Last updated: November 28, 2024 by Lianne Balbastro
 
-    TODO: Fix User interface (Pls put UI elements in one include file, to avoid copy pasting sidebars, buttons, etc)
-          Sidebar must contain admin-specific options
-          Find a way to efficiently implement "Add Profs" & "Add Offerings"
+    TODO: 
+        DONE - Fix User interface (Pls put UI elements in one include file, to avoid copy pasting sidebars, buttons, etc)
+        DONE - Sidebar must contain admin-specific options
+        PENDING - Find a way to efficiently implement "Add Profs" & "Add Offerings"
  -->
 
 <html>
@@ -14,7 +15,7 @@
     <title>Admin | Add Courses</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/navigation.css">
-    <link rel="stylesheet" href="../assets/css/admin.css"> <!-- Admin-specific CSS -->
+    <link rel="stylesheet" href="../assets/css/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
