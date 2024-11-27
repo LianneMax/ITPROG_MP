@@ -1,0 +1,154 @@
+/* Sidebar specific styles for admin */
+.sidebar.admin-sidebar {
+    background-color: #b39f92; 
+}
+
+.sidebar.admin-sidebar .sidebar-btn {
+    color: white;
+}
+
+.sidebar.admin-sidebar .sidebar-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #f4f4f4;
+}
+
+/* Logout Button Styling */
+.sidebar.admin-sidebar .logout-btn {
+    background-color: #a34849; 
+    color: white;
+}
+
+.sidebar.admin-sidebar .logout-btn:hover {
+    background-color: #703232;
+}
+
+/* Top Bar for Admin Page */
+.top-panel.admin-top-panel {
+    background-color: #a79488; 
+    color: white;
+    padding: 20px 0;
+    text-align: center; 
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Button Styling for Admin */
+.main-button.admin-button {
+    background-color: #a79488; 
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 450px;
+    transition: background-color 0.3s ease;
+}
+
+.main-button.admin-button:hover {
+    background-color: #7b6659; 
+}
+
+/* File Input Container Styling */
+.file-input-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.file-input-container label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    color: #333;
+}
+
+.file-input-container input[type="file"] {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    color: #333;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.file-input-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap; 
+}
+
+.file-input-container input[type="file"] {
+    flex: 1; 
+    min-width: 150px; 
+}
+
+.file-input-container button {
+    flex: 0;
+}
+
+/* Container Styling */
+.container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 1000px;
+    margin: 20px auto;
+}
+
+/* Success and Error Messages */
+.success-message {
+    color: #3b7849;
+    font-weight: bold;
+    font-family: 'Montserrat', sans-serif;
+    margin-bottom: 10px;
+}
+
+.error-message {
+    color: #a34849;
+    font-weight: bold;
+    font-family: 'Montserrat', sans-serif;
+    margin-bottom: 10px;
+}
+
+/* Table Styling */
+.styled-table {
+    border-collapse: collapse;
+    margin: 20px auto;
+    font-size: 14px;
+    width: 100%;
+    max-width: 1000px;
+    font-family: 'Montserrat', sans-serif;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.styled-table th,
+.styled-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+.styled-table th {
+    background-color: #846553; /* Header background */
+    color: white;
+    font-weight: bold;
+}
+
+.styled-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.styled-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.styled-table td {
+    color: #333;
+}
+
+
