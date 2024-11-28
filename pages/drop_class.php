@@ -1,3 +1,13 @@
+<!-- 
+        
+    This page allows the user to drop classes they've added to cart
+
+    Last updated: November 28, 2024, 4:58PM by Jeremiah Ang
+    Fixed updating of enrolled students count when dropping (Line 98 - 115)
+
+    TODO: 
+        (For checking) Fix dropping of class sql error
+ -->
 <html>
 <head>
     <title>Drop Classes</title>
@@ -86,15 +96,22 @@
                         if (mysqli_num_rows($enrollmentResult) > 0) {
                             $deleteQuery = "DELETE FROM students_classes WHERE student_id = '$studentID' AND offering_code = '$offeringCode' ";
                             if (mysqli_query($conn, $deleteQuery)) {
-                                //UPDATE enrolled students count
+
+                                //UPDATE enrolled students count, IF enrolled count is 0, do not - 1
+                                //Fixed 11/28/2024, 4:57PM
                                 $updateEnrollmentQuery = "
                                 UPDATE section_offerings 
-                                SET enrolled_students = enrolled_students - 1
+                                SET enrolled_students = CASE
+                                    WHEN enrolled_students > 0 THEN enrolled_students - 1
+                                    ELSE enrolled_students
+                                END
                                 WHERE offering_code = '$offeringCode'
                                 ";
-                            mysqli_query($conn, $updateEnrollmentQuery);
 
-                            echo "<p style='color:green;'>Class added successfully!</p>";
+                                //If the query is not successful, display error
+                                mysqli_query($conn, $updateEnrollmentQuery);
+                                    // echo "<p style='color:red;'>Error dropping class: " . mysqli_error($conn) . "</p>";
+
                                 echo "<p style='color:green;'>Class dropped!</p>";
                             } else {
                                 echo "<p style='color:red;'>Error dropping class: " . mysqli_error($conn) . "</p>";
