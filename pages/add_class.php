@@ -25,7 +25,7 @@
 </div>
 
 <!-- Sidebar -->
-<div id="sidebar" class="sidebar">
+<div id="sidebar" class="sidebar" style="background-color: #5b8ba4;">
     <div class="separator" style="margin-top: 50px;"></div>
     <button class="sidebar-btn" onclick="window.location.href='add_class.php'">
         <i class="fas fa-plus-circle"></i>
@@ -47,7 +47,7 @@
     <div class="separator" style="margin-top: 10px;"></div>
 
     <!-- Logout Button -->
-    <button class="logout-btn" onclick="window.location.href='LogoutPage.php'">
+    <button class="logout-btn" style="background-color: #a34849;" onclick="window.location.href='LogoutPage.php'">
         <i class="fas fa-sign-out-alt"></i>
     </button>
 </div>
@@ -65,7 +65,7 @@
 
         <?php
             if (!isset($_SESSION['student_id'])) {
-                die("Error: Please log in to add a class.");
+                die("<p style='color:red;'>Error: Please log in to add a class.</p>");
             }
 
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -86,59 +86,72 @@
                     $enrollCap = $offering['enroll_cap'];
                     $enrolledStudents = $offering['enrolled_students'];
 
-                    // Check if class is full
-                    if ($enrolledStudents >= $enrollCap) {
-                        echo "<p style='color:red;'>This class is full. Please choose another class.</p>";
+                    // Check if the student is already enrolled in the same course
+                    $alreadyEnrolledQuery = "
+                        SELECT * 
+                        FROM students_classes sc
+                        INNER JOIN section_offerings so ON sc.offering_code = so.offering_code
+                        WHERE sc.student_id = '$studentID' AND so.course_code = '$courseCode'
+                    ";
+                    $alreadyEnrolledResult = mysqli_query($conn, $alreadyEnrolledQuery);
+
+                    if (mysqli_num_rows($alreadyEnrolledResult) > 0) {
+                        echo "<p style='color:red;'>You are already enrolled in this course.</p>";
                     } else {
-                        // Check if student has already taken the course
-                        $alreadyTakenQuery = "
-                            SELECT grade 
-                            FROM past_enrollments 
-                            WHERE student_id = '$studentID' AND course_code = '$courseCode'
-                        ";
-                        $alreadyTakenResult = mysqli_query($conn, $alreadyTakenQuery);
-
-                        $canEnroll = true;
-                        if (mysqli_num_rows($alreadyTakenResult) > 0) {
-                            $grade = mysqli_fetch_assoc($alreadyTakenResult)['grade'];
-                            if ($grade > 0) {
-                                echo "<p style='color:red;'>You have already passed this course and cannot re-enroll.</p>";
-                                $canEnroll = false;
-                            } elseif ($grade == 0) {
-                                echo "<p style='color:blue;'>You are retaking this course.</p>";
-                                $canEnroll = true;
-                            }
-                        }
-
-                        // Proceed if eligible
-                        if ($canEnroll) {
-                            $checkEnrollmentQuery = "
-                                SELECT * 
-                                FROM students_classes 
-                                WHERE student_id = '$studentID' AND offering_code = '$offeringCode'
+                        // Check if the class is full
+                        if ($enrolledStudents >= $enrollCap) {
+                            echo "<p style='color:red;'>This class is full. Please choose another class.</p>";
+                        } else {
+                            // Check if the student has already passed the course
+                            $alreadyTakenQuery = "
+                                SELECT grade 
+                                FROM past_enrollments 
+                                WHERE student_id = '$studentID' AND course_code = '$courseCode'
                             ";
-                            $enrollmentResult = mysqli_query($conn, $checkEnrollmentQuery);
+                            $alreadyTakenResult = mysqli_query($conn, $alreadyTakenQuery);
 
-                            if (mysqli_num_rows($enrollmentResult) == 0) {
-                                // Enroll student and update enrolled count
-                                $insertQuery = "
-                                    INSERT INTO students_classes (student_id, offering_code) 
-                                    VALUES ('$studentID', '$offeringCode')
-                                ";
-                                if (mysqli_query($conn, $insertQuery)) {
-                                    $updateEnrollmentQuery = "
-                                        UPDATE section_offerings 
-                                        SET enrolled_students = enrolled_students + 1 
-                                        WHERE offering_code = '$offeringCode'
-                                    ";
-                                    mysqli_query($conn, $updateEnrollmentQuery);
-
-                                    echo "<p style='color:green;'>Class added successfully!</p>";
-                                } else {
-                                    echo "<p style='color:red;'>Error adding class: " . mysqli_error($conn) . "</p>";
+                            $canEnroll = true;
+                            if (mysqli_num_rows($alreadyTakenResult) > 0) {
+                                $grade = mysqli_fetch_assoc($alreadyTakenResult)['grade'];
+                                if ($grade > 0) {
+                                    echo "<p style='color:red;'>You have already passed this course and cannot re-enroll.</p>";
+                                    $canEnroll = false;
+                                } elseif ($grade == 0) {
+                                    echo "<p style='color:blue;'>You are retaking this course.</p>";
+                                    $canEnroll = true;
                                 }
-                            } else {
-                                echo "<p style='color:red;'>You are already enrolled in this class.</p>";
+                            }
+
+                            // Proceed if eligible
+                            if ($canEnroll) {
+                                $checkEnrollmentQuery = "
+                                    SELECT * 
+                                    FROM students_classes 
+                                    WHERE student_id = '$studentID' AND offering_code = '$offeringCode'
+                                ";
+                                $enrollmentResult = mysqli_query($conn, $checkEnrollmentQuery);
+
+                                if (mysqli_num_rows($enrollmentResult) == 0) {
+                                    // Enroll student and update enrolled count
+                                    $insertQuery = "
+                                        INSERT INTO students_classes (student_id, offering_code) 
+                                        VALUES ('$studentID', '$offeringCode')
+                                    ";
+                                    if (mysqli_query($conn, $insertQuery)) {
+                                        $updateEnrollmentQuery = "
+                                            UPDATE section_offerings 
+                                            SET enrolled_students = enrolled_students + 1 
+                                            WHERE offering_code = '$offeringCode'
+                                        ";
+                                        mysqli_query($conn, $updateEnrollmentQuery);
+
+                                        echo "<p style='color:green;'>Class added successfully!</p>";
+                                    } else {
+                                        echo "<p style='color:red;'>Error adding class: " . mysqli_error($conn) . "</p>";
+                                    }
+                                } else {
+                                    echo "<p style='color:red;'>You are already enrolled in this class.</p>";
+                                }
                             }
                         }
                     }
@@ -152,13 +165,13 @@
             <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" style="display: flex; align-items: center; gap: 10px;">
                 <label for="offeringCode">Class code to add:</label>
                 <input type="text" name="offeringCode" placeholder="ex: 1234" required>
-                <button type="submit" class="main-button addclass-btn">Add Class</button> 
+                <button type="submit" class="main-button addclass-btn" style="background-color: #507c93;">Add Class</button> 
             </form>
         </div>
 
         <div style="width: 100%; text-align: center;">
             <h2 class="sub-header">Your Current Classes</h2>
-            <table style="margin: 0 auto; width: 80%;">
+            <table style="margin: 0 auto; width: 80%; border-collapse: collapse; text-align: center;">
                 <tr>
                     <th>Code</th>
                     <th>Class</th>
@@ -199,7 +212,7 @@
                         echo "</tr>";
                     }
                 } else {
-                    echo "<p>Have Not Enrolled Any Classes</p>";
+                    echo "<tr><td colspan='10' style='text-align:center;'>No classes enrolled.</td></tr>";
                 }
 
                 $conn->close();
