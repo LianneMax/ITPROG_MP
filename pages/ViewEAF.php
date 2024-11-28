@@ -107,23 +107,27 @@
             WHERE sc.student_id = $student_id AND pe.course_code IS NULL";
 
             $conn->query($insertQuery);
-
-            // Remove dropped subjects from past_enrollments
-            // If the student drops a class (it no longer exists in students_classes), remove it from past_enrollments
-            $dropQuery = "
-            DELETE pe 
-            FROM past_enrollments pe
-            LEFT JOIN students_classes sc ON pe.student_id = sc.student_id
-            INNER JOIN section_offerings so ON sc.offering_code = so.offering_code
-            WHERE pe.student_id = $student_id 
-            AND NOT EXISTS (
-                SELECT 1
-                FROM students_classes sc_check
-                INNER JOIN section_offerings so_check ON sc_check.offering_code = so_check.offering_code
-                WHERE sc_check.student_id = $student_id
-                AND so_check.course_code = pe.course_code
-            )";
-
+            
+            if (isset($_SESSION['new_class_added'])) {
+                // Remove dropped subjects from past_enrollments
+                // If the student drops a class (it no longer exists in students_classes), remove it from past_enrollments
+                $dropQuery = "
+                DELETE pe
+                FROM past_enrollments pe
+                LEFT JOIN students_classes sc ON pe.student_id = sc.student_id
+                INNER JOIN section_offerings so ON sc.offering_code = so.offering_code
+                WHERE pe.student_id = $student_id
+                AND pe.grade IS NULL
+                AND NOT EXISTS (
+                    SELECT 1
+                    FROM students_classes sc_check
+                    INNER JOIN section_offerings so_check ON sc_check.offering_code = so_check.offering_code
+                    WHERE sc_check.student_id = $student_id
+                    AND so_check.course_code = pe.course_code
+                )";
+            }
+            
+            
             $conn->query($dropQuery);
         }
         ?>
@@ -170,6 +174,7 @@
     <h1 class="itmosys-header">ITmosys</h1>
 </div>
 
+        <!-- Main Content -->
         <div class="content">
             <div class="viewEAF_container">
                 <h2 class="header2">View Student EAF</h2>
