@@ -80,7 +80,7 @@
                 $_SESSION['enrollment_confirmed'] = true;
                     
                 // Reset new class added flag after confirmation
-                $_SESSION['new_class_added'] = false;
+                $_SESSION['new_class_added'] = true;
             } else {
                 // If execution fails, print error message
                 echo "Error moving subjects: " . $stmt->error;
@@ -88,13 +88,6 @@
         } else {
             echo "<p>Your total units exceed the limit of 18 units. Please adjust your enrolled courses.</p>";
         }
-
-        // Add new class logic (after the student adds a class)
-        if (isset($_POST['addClass'])) {
-            // Assuming new class is added here (the logic for adding a class to `students_classes` would go here)
-            $_SESSION['new_class_added'] = true;
-        }
-
         // Sync past_enrollments with current classes if enrollment is already confirmed
         if (isset($_SESSION['enrollment_confirmed'])) {
             // Insert new classes that aren't in past_enrollments
@@ -107,27 +100,20 @@
             WHERE sc.student_id = $student_id AND pe.course_code IS NULL";
 
             $conn->query($insertQuery);
-            
-            if (isset($_SESSION['new_class_added'])) {
-                // Remove dropped subjects from past_enrollments
-                // If the student drops a class (it no longer exists in students_classes), remove it from past_enrollments
-                $dropQuery = "
-                DELETE pe
-                FROM past_enrollments pe
-                LEFT JOIN students_classes sc ON pe.student_id = sc.student_id
+
+            // Remove dropped subjects from past_enrollments
+            $dropQuery = "
+            DELETE pe
+            FROM past_enrollments pe
+            WHERE pe.student_id = $student_id
+            AND pe.grade IS NULL
+            AND NOT EXISTS (
+                SELECT 1
+                FROM students_classes sc
                 INNER JOIN section_offerings so ON sc.offering_code = so.offering_code
-                WHERE pe.student_id = $student_id
-                AND pe.grade IS NULL
-                AND NOT EXISTS (
-                    SELECT 1
-                    FROM students_classes sc_check
-                    INNER JOIN section_offerings so_check ON sc_check.offering_code = so_check.offering_code
-                    WHERE sc_check.student_id = $student_id
-                    AND so_check.course_code = pe.course_code
-                )";
-            }
-            
-            
+                WHERE sc.student_id = $student_id
+                AND so.course_code = pe.course_code
+            )";
             $conn->query($dropQuery);
         }
         ?>
