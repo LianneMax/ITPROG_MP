@@ -1,15 +1,14 @@
 <html>
 <head>
     <title>Login Page</title>
-    <!-- Link Font Awesome for icons -->
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/style.css">
-
 </head>
 <body class="login_body">
 
-    <!-- Maintenance Icon -->
-    <i class="fas fa-tools maintenance_icon" onclick="window.location.href='AdminLoginPage.php'" title="Maintenance"></i>
+        <i class="fas fa-tools maintenance_icon" onclick="window.location.href='AdminLoginPage.php'" title="Maintenance" 
+           style="font-size: 40px; position: absolute; top: 20px; right: 20px; color: #305a6d; cursor: pointer;"></i>
 
     <h1 class="login_title">Welcome to ITmosys</h1>
 

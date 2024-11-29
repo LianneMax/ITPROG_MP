@@ -328,19 +328,3 @@ td {
     width: 100%; /* Full width of the parent container */
 }
 /* End of Login CSS */
-
-
-/* Styles for the Maintenance Icon */
-.maintenance_icon {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    font-size: 24px; /* Icon size */
-    color: #455468; /* Red color */
-    cursor: pointer;
-    transition: color 0.3s ease;
-}
-
-.maintenance_icon:hover {
-    color: #3d434b; /* Darker red on hover */
-}
