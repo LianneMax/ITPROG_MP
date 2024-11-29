@@ -8,10 +8,9 @@
         PENDING: View current profs
  -->
 
-<html>
+ <html>
 <head>
     <title>Admin | Add Professors</title>
-    
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/navigation.css">
     <link rel="stylesheet" href="../assets/css/admin.css">
@@ -57,29 +56,62 @@
 
 <!-- Main Content -->
 <div class="content">
-    <div class="container">
-        <h2 class="title-header">Upload Professor XML File</h2>
-        <div class="separator"></div>
-        <!-- Form for uploading XML -->
-        <form action="admin_process_profs.php" method="post" enctype="multipart/form-data">
-            <div class="file-input-container">
-                <label for="xml">XML File:</label>
-                <input type="file" id="xml" name="xml" required>
-                <button type="submit" class="main-button admin-button">Upload</button>
-            </div>
-        </form>
+<div class="AdminContainer">
+    <h2 class="title-header">Upload Professor XML File</h2>
+    <div class="separator"></div>
+    <!-- Form for uploading XML -->
+    <form action="admin_process_profs.php" method="post" enctype="multipart/form-data">
+        <div class="file-input-container">
+            <label for="xml">XML File:</label>
+            <input type="file" id="xml" name="xml" required>
+            <button type="submit" class="main-button admin-button">Upload</button>
+        </div>
+    </form>
+
+    <!-- Display all professors -->
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Professor Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                include "../includes/dbconfig.php";
+                $conn = new mysqli($servername, $username, $password, $dbname);
+
+                if ($conn->connect_error) {
+                    die("Connection failed: " . $conn->connect_error);
+                }
+
+                $query = "SELECT prof_fullname FROM professors";
+                $result = $conn->query($query);
+
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        echo "<tr><td>" . htmlspecialchars($row['prof_fullname']) . "</td></tr>";
+                    }
+                } else {
+                    echo "<tr><td>No professors found.</td></tr>";
+                }
+
+                    $conn->close();
+                    ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
-<!-- Display all professors -->
-<?php
-    include 'display_tables.php';
-    // displayOfferings($conn);
-?>
 
 <script src="../includes/main.js"></script>
 </body>
 </html>
+
+
+
+
 
 
 

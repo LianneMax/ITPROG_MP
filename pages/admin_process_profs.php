@@ -8,7 +8,7 @@
         - View current profs
  -->
 
-<html>
+ <html>
 <head>
     <title>Process New Professors</title>
     <link rel="stylesheet" href="../assets/css/admin.css"> <!-- Link to the CSS file -->
@@ -70,7 +70,7 @@
         <table>
             <thead>
                 <tr>
-                    <th>prof_fullname</th>
+                    <th>Professor Name</th>
                 </tr>
             </thead>
             <tbody>
@@ -91,9 +91,8 @@
         $prof_fullname = $conn->real_escape_string($professor['prof_fullname']);
 
         // Insert professor details into `professors` table
-        $insertQuery = "INSERT INTO professors (prof_fullname) 
-                        VALUES ('$prof_fullname')";
-                             
+        $insertQuery = "INSERT INTO professors (prof_fullname) VALUES ('$prof_fullname')";
+
         if (!mysqli_query($conn, $insertQuery)) {
             echo "<p class='error-message'>Error adding professor '$prof_fullname': " . mysqli_error($conn) . "</p>";
             continue;
@@ -107,5 +106,6 @@
     ?>
 </body>
 </html>
+
 
 
