@@ -1,5 +1,5 @@
 <!-- 
-    admin_add_course.php
+    admin_create_course.php
     Create courses via uploading well-formed xml files
 
     Last updated: November 30, 2024 | 2:11AM by Lianne Balbastro

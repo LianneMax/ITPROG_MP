@@ -1,5 +1,5 @@
 <!-- 
-    admin_create_offerings.php
+    admin_create_profs.php
     Create course offerings via uploading well-formed xml files
 
     Last updated: November 30, 2024 | 2:59AM by Lianne Balbastro
