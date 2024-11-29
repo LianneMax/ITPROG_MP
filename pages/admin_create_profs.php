@@ -1,17 +1,16 @@
 <!-- 
-    admin_add_course.php
-    Create courses via uploading well-formed xml files
+    admin_create_offerings.php
+    Create course offerings via uploading well-formed xml files
 
-    Last updated: November 28, 2024 by Lianne Balbastro
+    Last updated: November 30, 2024 | 4:30PM by Jeremiah Ang
 
     TODO: 
-        PENDING - Find a way to efficiently implement "Add Profs" & "Add Offerings"
-        PENDING - View All Courses Option for admin
+        PENDING: View current profs
  -->
 
 <html>
 <head>
-    <title>Admin | Add Courses</title>
+    <title>Admin | Add Professors</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/navigation.css">
     <link rel="stylesheet" href="../assets/css/admin.css">
@@ -58,10 +57,10 @@
 <!-- Main Content -->
 <div class="content">
     <div class="container">
-        <h2 class="title-header">Upload Courses XML File</h2>
+        <h2 class="title-header">Upload Professor XML File</h2>
         <div class="separator"></div>
         <!-- Form for uploading XML -->
-        <form action="admin_process_courses.php" method="post" enctype="multipart/form-data">
+        <form action="admin_process_profs.php" method="post" enctype="multipart/form-data">
             <div class="file-input-container">
                 <label for="xml">XML File:</label>
                 <input type="file" id="xml" name="xml" required>

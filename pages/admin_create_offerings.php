@@ -1,6 +1,6 @@
 <!-- 
     admin_create_offerings.php
-    This page accepts XML file uploads for adding course offerings
+    Create course offerings via uploading well-formed xml files
 
     Last updated: November 29, 2024 | 3:27PM by Jeremiah Ang
 
