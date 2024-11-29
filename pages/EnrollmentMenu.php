@@ -1,6 +1,7 @@
 <html>
 <head>
     <title>ENROLLMENT</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
@@ -27,7 +28,9 @@
     </div>
 
     <!-- Logout button -->
-    <button class="main-button logout-btn" onclick="window.location.href='LogoutPage.php'">Logout</button>
+    <i class="fas fa-sign-out-alt logout_icon" onclick="window.location.href='LogoutPage.php'" title="Logout" 
+   style="font-size: 40px; position: absolute; bottom: 20px; right: 20px; color: #a34849; cursor: pointer;"></i>
+
 
 </body>
 </html>

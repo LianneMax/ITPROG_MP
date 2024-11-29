@@ -3,25 +3,17 @@
     Central menu for admin options
     This will be the first page the admin sees after logging in
 
-    Last updated: November 29, 2024, 2:13PM by Jeremiah Ang
+    Last updated: November 30, 2024, 3:30AMAM by Lianne Balbastro
 
     TODO: 
-        PENDING - Fix admenu-btn in admin.css (buttons dont have gaps between themselves)
+        DONE: Fix admenu-btn in admin.css (buttons dont have gaps between themselves)
  -->
-<!-- 
-    admin_menu.php
-    Central menu for admin options
-    This will be the first page the admin sees after logging in.
-
-    Last updated: November 29, 2024, 2:13PM by Jeremiah Ang
--->
 <html>
 <head>
     <title>Admin Menu</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="stylesheet" href="../assets/css/navigation.css">
     <link rel="stylesheet" href="../assets/css/admin.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
 
@@ -48,7 +40,9 @@
 </div>
 
     <!-- Logout button -->
-    <button class="main-button AdminLogout-btn" onclick="window.location.href='LogoutPage.php'">Logout</button>
+    <i class="fas fa-sign-out-alt logout_icon" onclick="window.location.href='LogoutPage.php'" title="Logout" 
+   style="font-size: 40px; position: absolute; bottom: 20px; right: 20px; color: #a34849; cursor: pointer;"></i>
+
 
 
 </body>
