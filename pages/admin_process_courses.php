@@ -1,6 +1,6 @@
 <!-- 
         
-    This page inserts the XML File Contents if valid 
+    This page inserts the Course XML File Contents if valid 
 
     Last updated: November 28, 2024, by Lianne Balbastro
 
@@ -12,7 +12,7 @@
 
 <html>
 <head>
-    <title>Admin Page</title>
+    <title>Process Courses</title>
     <link rel="stylesheet" href="../assets/css/admin.css"> <!-- Link to the CSS file -->
 </head>
 <body>

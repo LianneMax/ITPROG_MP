@@ -1,17 +1,16 @@
 <!-- 
-    admin_add_course.php
-    Upload XML files to this page (for adding new courses)
+    admin_create_offerings.php
+    This page accepts XML file uploads for adding course offerings
 
-    Last updated: November 28, 2024 by Lianne Balbastro
+    Last updated: November 29, 2024 | 3:27PM by Jeremiah Ang
 
     TODO: 
-        PENDING - Find a way to efficiently implement "Add Profs" & "Add Offerings"
-        PENDING - View All Courses Option for admin
+        PENDING: View current offerings option for admin
  -->
 
 <html>
 <head>
-    <title>Admin | Add Courses</title>
+    <title>Admin | Add Course Offerings</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/navigation.css">
     <link rel="stylesheet" href="../assets/css/admin.css">
@@ -58,10 +57,10 @@
 <!-- Main Content -->
 <div class="content">
     <div class="container">
-        <h2 class="title-header">Upload Courses XML File</h2>
+        <h2 class="title-header">Upload Course Offerings XML File</h2>
         <div class="separator"></div>
         <!-- Form for uploading XML -->
-        <form action="admin_process_courses.php" method="post" enctype="multipart/form-data">
+        <form action="admin_process_offerings.php" method="post" enctype="multipart/form-data">
             <div class="file-input-container">
                 <label for="xml">XML File:</label>
                 <input type="file" id="xml" name="xml" required>

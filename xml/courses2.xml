@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE courses [
+    <!ELEMENT courses (course+)>
+    <!ELEMENT course (course_title, units, co_requisite?, prerequisite*)>
+    <!ELEMENT course_title (#PCDATA)>
+    <!ELEMENT units (#PCDATA)>
+    <!ELEMENT co_requisite (#PCDATA)>
+    <!ELEMENT prerequisite (#PCDATA)>
+
+<!-- course_code should use any string value and must be required. -->
+    <!ATTLIST course course_code CDATA #REQUIRED>
+]>
+
+<courses>
+    <course course_code="ITCMSY2">
+        <course_title>Virtualization and Cloud Computing</course_title>
+        <prerequisite>ITSYSAD</prerequisite>
+	<prerequisite>LBYSYAD</prerequisite>
+        <units>3</units>
+    </course>
+
+    <course course_code="ITISDEV">
+        <course_title>Business Application Development</course_title>
+        <units>3</units>
+    </course>
+
+</courses>
