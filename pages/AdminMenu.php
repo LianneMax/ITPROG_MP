@@ -40,7 +40,7 @@
 
     <!-- Buttons for Admin Menu -->
     <div class="admenu-btn">
-        <button class="main-button admin-button" onclick="window.location.href='admin_add_courses.php'">Create Courses</button>
+        <button class="main-button admin-button" onclick="window.location.href='admin_create_courses.php'">Create Courses</button>
         <button class="main-button admin-button" onclick="window.location.href='admin_create_offerings.php'">Create Offerings</button>
         <button class="main-button admin-button" onclick="window.location.href='admin_create_profs.php'">Create Profs</button>
         <button class="main-button admin-button" onclick="window.location.href='admin_summary_report.php'">Summary Report</button>
