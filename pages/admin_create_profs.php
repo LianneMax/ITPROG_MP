@@ -11,6 +11,7 @@
 <html>
 <head>
     <title>Admin | Add Professors</title>
+    
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/navigation.css">
     <link rel="stylesheet" href="../assets/css/admin.css">
@@ -69,6 +70,12 @@
         </form>
     </div>
 </div>
+
+<!-- Display all professors -->
+<?php
+    include 'display_tables.php';
+    // displayOfferings($conn);
+?>
 
 <script src="../includes/main.js"></script>
 </body>

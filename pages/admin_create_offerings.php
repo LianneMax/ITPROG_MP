@@ -2,10 +2,11 @@
     admin_create_offerings.php
     Create course offerings via uploading well-formed xml files
 
-    Last updated: November 29, 2024 | 3:27PM by Jeremiah Ang
+    Last updated: November 29, 2024 | 9:41PM by Jeremiah Ang
 
     TODO: 
-        PENDING: View current offerings option for admin
+        DONE: View current offerings feature
+        PENDING: Fix position of OFFERINGS table
  -->
 
 <html>
@@ -66,9 +67,31 @@
                 <input type="file" id="xml" name="xml" required>
                 <button type="submit" class="main-button admin-button">Upload</button>
             </div>
+
+        <!-- Display all offerings -->
+        <div class="table-container">
+        <?php
+            include "../includes/dbconfig.php";
+            session_start();
+
+            // Create connection
+            $conn = new mysqli($servername, $username, $password, $dbname);
+
+            // Check connection
+            if ($conn->connect_error) {
+                die("Connection failed: " . $conn->connect_error);
+            }
+            
+            include 'display_tables.php';
+            displayOfferings($conn);
+        ?>
+        </div>
+       
         </form>
     </div>
 </div>
+
+
 
 <script src="../includes/main.js"></script>
 </body>

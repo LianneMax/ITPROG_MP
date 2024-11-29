@@ -2,11 +2,12 @@
     admin_add_course.php
     Create courses via uploading well-formed xml files
 
-    Last updated: November 28, 2024 by Lianne Balbastro
+    Last updated: November 29, 2024 | 9:41PM by Jeremiah Ang
 
     TODO: 
         PENDING - Find a way to efficiently implement "Add Profs" & "Add Offerings"
-        PENDING - View All Courses Option for admin
+        DONE - View All Courses feature
+        PENDING - Fix position of courses table
  -->
 
 <html>
@@ -66,6 +67,25 @@
                 <label for="xml">XML File:</label>
                 <input type="file" id="xml" name="xml" required>
                 <button type="submit" class="main-button admin-button">Upload</button>
+            </div>
+
+            <!-- Display all offerings (Need to fix position of table) -->
+            <div class="table-container">
+            <?php
+                include "../includes/dbconfig.php";
+                session_start();
+
+                // Create connection
+                $conn = new mysqli($servername, $username, $password, $dbname);
+
+                // Check connection
+                if ($conn->connect_error) {
+                    die("Connection failed: " . $conn->connect_error);
+                }
+                
+                include 'display_tables.php';
+                displayCourses($conn);
+            ?>
             </div>
         </form>
     </div>
