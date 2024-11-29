@@ -2,11 +2,14 @@
     admin_create_offerings.php
     Create course offerings via uploading well-formed xml files
 
-    Last updated: November 29, 2024 | 9:41PM by Jeremiah Ang
+    Last updated: November 30, 2024 | 3:00AM by Lianne Balbastro
 
     TODO: 
+        **Polish SQL Error handling**
+
+        PENDING: Manual Input Option
         DONE: View current offerings feature
-        PENDING: Fix position of OFFERINGS table
+        DONE: Fix position of OFFERINGS table
  -->
 
 <html>
@@ -58,7 +61,7 @@
 <!-- Main Content -->
 <div class="content">
     <div class="AdminContainer">
-        <h2 class="title-header">Upload Course Offerings XML File</h2>
+        <h2 class="title-header">Create Offerings</h2>
         <div class="separator"></div>
         <!-- Form for uploading XML -->
         <form action="admin_process_offerings.php" method="post" enctype="multipart/form-data">

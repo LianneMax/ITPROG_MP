@@ -6,8 +6,10 @@
 
     TODO: 
         **Polish SQL Error handling**
-        DONE - Fix User interface (Pls put UI elements in one include file, to avoid copy pasting sidebars, buttons, etc)
-        DONE - Sidebar must contain admin-specific options
+        
+        PENDING: Manual Input Option
+        DONE: Fix User interface (Pls put UI elements in one include file, to avoid copy pasting sidebars, buttons, etc)
+        DONE: Sidebar must contain admin-specific options
  -->
 
 <html>

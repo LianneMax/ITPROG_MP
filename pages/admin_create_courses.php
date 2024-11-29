@@ -5,9 +5,11 @@
     Last updated: November 30, 2024 | 2:11AM by Lianne Balbastro
 
     TODO: 
-        PENDING - Find a way to efficiently implement "Add Profs" & "Add Offerings"
-        DONE - View All Courses feature
-        DONE - Fix position of courses table
+        **Polish SQL Error handling**
+
+        PENDING: Manual Input Option
+        DONE: View All Courses feature
+        DONE: Fix position of courses table
  -->
 
 <html>
@@ -59,7 +61,7 @@
 <!-- Main Content -->
 <div class="content">
     <div class="AdminContainer">
-        <h2 class="title-header">Upload Courses XML File</h2>
+        <h2 class="title-header">Create Courses</h2>
         <div class="separator"></div>
 
         <!-- File Input Container -->

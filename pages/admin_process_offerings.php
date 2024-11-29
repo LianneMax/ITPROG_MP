@@ -5,7 +5,9 @@
     Last updated: November 29, 2024 | 3:27PM by Jeremiah Ang
 
     TODO: 
-        
+        **Polish SQL Error handling**
+    
+        PENDING: Manual Input Option
  -->
 
 <html>

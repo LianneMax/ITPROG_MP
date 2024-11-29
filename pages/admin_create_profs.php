@@ -2,10 +2,14 @@
     admin_create_offerings.php
     Create course offerings via uploading well-formed xml files
 
-    Last updated: November 30, 2024 | 4:30PM by Jeremiah Ang
+    Last updated: November 30, 2024 | 2:59AM by Lianne Balbastro
 
     TODO: 
-        PENDING: View current profs
+        **Polish SQL Error handling**
+        
+        PENDING: Manual Input Option        
+        DONE: View current profs
+
  -->
 
  <html>
@@ -57,7 +61,7 @@
 <!-- Main Content -->
 <div class="content">
 <div class="AdminContainer">
-    <h2 class="title-header">Upload Professor XML File</h2>
+    <h2 class="title-header">Create Professors</h2>
     <div class="separator"></div>
     <!-- Form for uploading XML -->
     <form action="admin_process_profs.php" method="post" enctype="multipart/form-data">

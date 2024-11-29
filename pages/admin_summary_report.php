@@ -28,7 +28,7 @@
 <!-- Sidebar -->
 <div id="sidebar" class="sidebar admin-sidebar">
     <div class="separator" style="margin-top: 50px;"></div>
-    <button class="sidebar-btn" onclick="window.location.href='admin_add_courses.php'">
+    <button class="sidebar-btn" onclick="window.location.href='admin_create_courses.php'">
         <i class="fas fa-book"></i>
         <span class="link-text">Create Courses</span>
     </button>

@@ -2,10 +2,15 @@
     admin_process_professors.php
     This page inserts the professor XML File Contents if valid 
 
-    Last updated: November 29, 2024 | 4:30PM by Jeremiah Ang
+    Last updated: November 30, 2024 | 3:04AM by Lianne Balbastro
 
     TODO: 
-        - View current profs
+    
+        **Polish SQL Error handling**
+        
+        PENDING: Manual Input Option
+        DONE: View current profs
+
  -->
 
  <html>
