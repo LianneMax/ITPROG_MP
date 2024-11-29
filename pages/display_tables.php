@@ -2,15 +2,15 @@
     display_tables.php
     Functions for displaying full db tables
 
-    Last updated: November 29, 2024 | 9:44PM by Jeremiah Ang
+    Last updated: November 30, 2024 | 3:15AM by Lianne Balbastro
 
     TODO: 
         DONE: View all courses
         DONE: View all offerings
-        PENDING: View current profs
+        DONE: View current profs
  -->
 
-<?php
+ <?php
 /**
  * This function displays all the courses, including their prerequisites.
  */
@@ -29,11 +29,9 @@ function displayCourses($conn){
         <th>PREREQUISITE</th>
     </tr>
 
-    <tr>
     <?php
     if ($result->num_rows > 0) {
         // Success: Show table
-
         while($row = $result->fetch_assoc()){
             echo "<tr>";
             $course_code = $row["course_code"];
@@ -41,37 +39,31 @@ function displayCourses($conn){
             echo "<td>" . $row["course_code"] . "</td>";
             echo "<td>" . $row["course_title"] . "</td>";
             echo "<td>" . $row["units"] . "</td>";
-            echo "<td>" . (isset($row["co_requisite"]) ? $row["co_requisite"] :  "") . "</td>";
+            echo "<td>" . (isset($row["co_requisite"]) ? $row["co_requisite"] : "") . "</td>";
 
             // Handle prerequisites
             $prereq_query = "SELECT prerequisite FROM prerequisites WHERE course_code = '$course_code'"; 
             $prereq_result = $conn->query($prereq_query); 
             
             $prerequisites = []; 
-            if ($prereq_result->num_rows > 0) 
+            if ($prereq_result->num_rows > 0) {
                 while ($prereq_row = $prereq_result->fetch_assoc()) { 
                     $prerequisites[] = htmlspecialchars($prereq_row['prerequisite']); 
-                }	 
+                }
+            }
   
             echo "<td>" . implode(", ", $prerequisites) . "</td>";
+            echo "</tr>";
         }
-
-    }
-
-    else {
+    } else {
         // Failure: Show error message
-        echo "<p style='color:red;'>No offerings available.</p>";
+        echo "<tr><td colspan='5' style='color:red;'>No courses available.</td></tr>";
     }
-    $conn->close();
+    ?>
+    </table>
+    <?php
+}
 
-}      
-?>
-</table>
-        
-
-
-
-<?php
 /**
  * This function displays all the course offerings.
  */
@@ -95,39 +87,62 @@ function displayOfferings($conn){
         <th>Room</th>
     </tr>
 
-    <tr>
     <?php
     if ($result->num_rows > 0) {
         // Success: Show table
-        echo "<p>$result->num_rows offerings available!</p>";
-
         while($row = $result->fetch_assoc()){
-        ?>
-            <?php 
             $color = ($row["enrolled_students"] != $row["enroll_cap"]) ? 'green' : '#00bfff';
-            ?>
-            <td><?php echo "<font color=$color><b>".$row["offering_code"]."</b></font>";?></td>
-            <td><?php echo "<font color=$color><b>".$row["course_code"]."</b></font>";?></td>
-            <td><?php echo "<font color=$color><b>".$row["section"]."</b></font>";?></td>
-            <td><?php echo $row["class_days"];?></td>
-            <td><?php echo $row["class_start_time"];?></td>
-            <td><?php echo $row["class_end_time"];?></td>
-            <td><?php echo $row["enroll_cap"];?></td>
-            <td><?php echo $row["enrolled_students"];?></td>
-            <td><?php echo $row["professor"];?></td>
-            <td><?php echo $row["room"];?></td>
-            </tr>
-
-        <?php
+            echo "<tr>";
+            echo "<td><font color=$color><b>" . $row["offering_code"] . "</b></font></td>";
+            echo "<td><font color=$color><b>" . $row["course_code"] . "</b></font></td>";
+            echo "<td><font color=$color><b>" . $row["section"] . "</b></font></td>";
+            echo "<td>" . $row["class_days"] . "</td>";
+            echo "<td>" . $row["class_start_time"] . "</td>";
+            echo "<td>" . $row["class_end_time"] . "</td>";
+            echo "<td>" . $row["enroll_cap"] . "</td>";
+            echo "<td>" . $row["enrolled_students"] . "</td>";
+            echo "<td>" . $row["professor"] . "</td>";
+            echo "<td>" . $row["room"] . "</td>";
+            echo "</tr>";
         }
-        ?>
-        </table>
-        
-    <?php
     } else {
         // Failure: Show error message
-        echo "<p style='color:red;'>No offerings available.</p>";
+        echo "<tr><td colspan='10' style='color:red;'>No offerings available.</td></tr>";
     }
-    $conn->close();
-}      
+    ?>
+    </table>
+    <?php
+}
+
+/**
+ * This function displays all professors.
+ */
+function displayProfs($conn){
+    // Query to fetch all professors
+    $sql = "SELECT prof_fullname FROM professors";
+    $result = $conn->query($sql);
+    ?>
+
+    <table>
+    <tr>
+        <th>Professor Name</th>
+    </tr>
+
+    <?php
+    if ($result->num_rows > 0) {
+        // Success: Display table rows
+        while($row = $result->fetch_assoc()){
+            echo "<tr>";
+            echo "<td>" . htmlspecialchars($row["prof_fullname"]) . "</td>";
+            echo "</tr>";
+        }
+    } else {
+        // Failure: Show error message
+        echo "<tr><td style='color:red;'>No professors found.</td></tr>";
+    }
+    ?>
+    </table>
+    <?php
+}
 ?>
+

@@ -6,13 +6,13 @@
 
     TODO: 
         **Polish SQL Error handling**
-        
+
         PENDING: Manual Input Option        
         DONE: View current profs
 
  -->
 
- <html>
+<html>
 <head>
     <title>Admin | Add Professors</title>
     <link rel="stylesheet" href="../assets/css/style.css">
@@ -74,44 +74,37 @@
 
     <!-- Display all professors -->
     <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>Professor Name</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                include "../includes/dbconfig.php";
-                $conn = new mysqli($servername, $username, $password, $dbname);
+        <?php
+            include "../includes/dbconfig.php";
+            include 'display_tables.php';
 
-                if ($conn->connect_error) {
-                    die("Connection failed: " . $conn->connect_error);
-                }
+            // Start the session (if not already started)
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
 
-                $query = "SELECT prof_fullname FROM professors";
-                $result = $conn->query($query);
+            // Create database connection
+            $conn = new mysqli($servername, $username, $password, $dbname);
 
-                if ($result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
-                        echo "<tr><td>" . htmlspecialchars($row['prof_fullname']) . "</td></tr>";
-                    }
-                } else {
-                    echo "<tr><td>No professors found.</td></tr>";
-                }
+            // Check database connection
+            if ($conn->connect_error) {
+                die("Connection failed: " . $conn->connect_error);
+            }
 
-                    $conn->close();
-                    ?>
-                </tbody>
-            </table>
-        </div>
+            // Use the displayProfs function from display_tables.php
+            displayProfs($conn);
+
+            // Close the database connection
+            $conn->close();
+        ?>
     </div>
 </div>
-
+</div>
 
 <script src="../includes/main.js"></script>
 </body>
 </html>
+
 
 
 
