@@ -32,7 +32,7 @@
 }
 
 /* Button Styling for Admin */
-.main-button.admin-button {
+.main-button.admin-button, .admenu-btn {
     background-color: #a79488; 
     color: white;
     font-family: 'Montserrat', sans-serif;
@@ -47,6 +47,16 @@
 
 .main-button.admin-button:hover {
     background-color: #7b6659; 
+}
+
+/* Admin Menu button container styling */
+/* Added on Nov 29, 2024 | 2:15PM */
+.admenu-btn {
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+    gap: 10px; 
+    margin: 0 auto; 
 }
 
 /* File Input Container Styling */
@@ -90,7 +100,7 @@
 }
 
 /* Container Styling */
-.container {
+.container{
     background-color: white;
     padding: 20px;
     border-radius: 8px;
@@ -167,8 +177,3 @@ table td {
     margin: 20px auto;
     text-align: center;
 }
-
-
-
-
-

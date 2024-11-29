@@ -62,7 +62,7 @@
         <h2 class="title-header">Upload Courses XML File</h2>
         <div class="separator"></div>
         <!-- Form for uploading XML -->
-        <form action="admin_process_course.php" method="post" enctype="multipart/form-data">
+        <form action="admin_process_courses.php" method="post" enctype="multipart/form-data">
             <div class="file-input-container">
                 <label for="xml">XML File:</label>
                 <input type="file" id="xml" name="xml" required>
