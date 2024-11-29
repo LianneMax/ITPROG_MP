@@ -12,7 +12,7 @@
 
     <div class="enrollment_container">
         <!-- Enrollment header in the top-left of the box -->
-        <h2 class="title-header">ENROLLMENT</h2>
+        <h2 class="title-header">ENROLLMENT MENU</h2>
 
         <!-- Line below the Enrollment header -->
         <div class="separator"></div>
