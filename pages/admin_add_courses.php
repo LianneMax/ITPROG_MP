@@ -2,12 +2,12 @@
     admin_add_course.php
     Create courses via uploading well-formed xml files
 
-    Last updated: November 29, 2024 | 9:41PM by Jeremiah Ang
+    Last updated: November 30, 2024 | 2:11AM by Lianne Balbastro
 
     TODO: 
         PENDING - Find a way to efficiently implement "Add Profs" & "Add Offerings"
         DONE - View All Courses feature
-        PENDING - Fix position of courses table
+        DONE - Fix position of courses table
  -->
 
 <html>
@@ -58,16 +58,18 @@
 
 <!-- Main Content -->
 <div class="content">
-    <div class="container">
+    <div class="AdminContainer">
         <h2 class="title-header">Upload Courses XML File</h2>
         <div class="separator"></div>
-        <!-- Form for uploading XML -->
-        <form action="admin_process_courses.php" method="post" enctype="multipart/form-data">
-            <div class="file-input-container">
+
+        <!-- File Input Container -->
+        <div class="file-input-container">
+            <form action="admin_process_courses.php" method="post" enctype="multipart/form-data">
                 <label for="xml">XML File:</label>
                 <input type="file" id="xml" name="xml" required>
                 <button type="submit" class="main-button admin-button">Upload</button>
-            </div>
+            </form>
+        </div>
 
             <!-- Display all offerings (Need to fix position of table) -->
             <div class="table-container">
