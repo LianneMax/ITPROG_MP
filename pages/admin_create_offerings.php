@@ -57,7 +57,7 @@
 
 <!-- Main Content -->
 <div class="content">
-    <div class="container">
+    <div class="AdminContainer">
         <h2 class="title-header">Upload Course Offerings XML File</h2>
         <div class="separator"></div>
         <!-- Form for uploading XML -->
@@ -67,35 +67,33 @@
                 <input type="file" id="xml" name="xml" required>
                 <button type="submit" class="main-button admin-button">Upload</button>
             </div>
+        </form>
 
         <!-- Display all offerings -->
         <div class="table-container">
-        <?php
-            include "../includes/dbconfig.php";
-            session_start();
+            <?php
+                include "../includes/dbconfig.php";
+                session_start();
 
-            // Create connection
-            $conn = new mysqli($servername, $username, $password, $dbname);
+                // Create connection
+                $conn = new mysqli($servername, $username, $password, $dbname);
 
-            // Check connection
-            if ($conn->connect_error) {
-                die("Connection failed: " . $conn->connect_error);
-            }
-            
-            include 'display_tables.php';
-            displayOfferings($conn);
-        ?>
+                // Check connection
+                if ($conn->connect_error) {
+                    die("Connection failed: " . $conn->connect_error);
+                }
+                
+                include 'display_tables.php';
+                displayOfferings($conn);
+            ?>
         </div>
-       
-        </form>
     </div>
 </div>
-
-
 
 <script src="../includes/main.js"></script>
 </body>
 </html>
+
 
 
 
