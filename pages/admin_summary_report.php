@@ -16,7 +16,7 @@
 <html>
 
     <head>
-        <title>Admin | Add Courses</title>
+        <title>Admin | Summary Report</title>
         <link rel="stylesheet" href="../assets/css/style.css">
         <link rel="stylesheet" href="../assets/css/navigation.css">
         <link rel="stylesheet" href="../assets/css/admin.css">
@@ -107,6 +107,7 @@
                 <!-- Stores the year, date, and month into a single string -->
                 <?php
                 $selection_done = 0;
+                $selected_date = '';
 
                 if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $year = $_POST['year'];
@@ -117,8 +118,6 @@
                     $selected_date = "$year-$month-$day";
                     $selection_done = 1;
                 }
-
-                $selected_date = '';
 
                 if ($selection_done==1) {
                     echo "<h2>Enrollment Summary Report for $selected_date</h2>";
@@ -144,7 +143,7 @@
                     WHERE date_enrolled = '$selected_date'
                     GROUP BY course_code
                 ";
-                
+
                 // Execute the query
                 $result = $conn->query($getSubjects);
 
