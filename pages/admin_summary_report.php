@@ -5,11 +5,12 @@
     Last updated: November 30, 2024 by Charles Duelas
 
     TODO: 
-        PENDING - make the sql query to retrieve the student count
-        PENDING - make the table to present the database values
-        PENDING - make the form to input chosen enrollment date
-        PENDING - display the chosen enrollment date by the user
-        PENDING - display the subjects enrolled in the chosen date
+        DONE - make enrollment date input form
+        DONE - make the sql query to retrieve the student count
+        DONE - make the table to present the database values
+        DONE - make the form to input chosen enrollment date
+        DONE - display the chosen enrollment date by the user
+        DONE - display the subjects enrolled in the chosen date
  -->
 
 <html>
@@ -64,7 +65,7 @@
         <div class="AdminContainer">
 
             <!-- Enrollment Date Selection -->
-            <h2>Select a Date</h2>
+            <h1>Select a Date</h1>
 
             <form method="post" action="">
                 <label for="year">Year:</label>
@@ -94,21 +95,79 @@
                     }
                     ?>
                 </select>
-                <input type="submit" class="AdminLogin_button" value="Submit">
+                
+                <div>
+                    <input type="submit" class="AdminLogin_button" value="Submit"> 
+                </div>
+                
             </form>
 
-            <?php
-            if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $year = $_POST['year'];
-                $month = $_POST['month'];
-                $day = $_POST['day'];
-                
-                echo "<h3>Selected Enrollment Date: $year-$month-$day</h3>";
-            }
-            ?>
+            <div class="table-container"> 
 
-            <!-- Enrollment Summary Table -->
-            <h2>Enrollment Summary Report for <?php echo "$year-$month-$day"; ?></h2>
+                <!-- Stores the year, date, and month into a single string -->
+                <?php
+                $selection_done = 0;
+
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                    $year = $_POST['year'];
+                    $month = $_POST['month'];
+                    $day = $_POST['day'];
+
+                    //Combining the selected date into one string
+                    $selected_date = "$year-$month-$day";
+                    $selection_done = 1;
+                }
+
+                $selected_date = '';
+
+                if ($selection_done==1) {
+                    echo "<h2>Enrollment Summary Report for $selected_date</h2>";
+                }
+                ?>
+
+                <!-- Enrollment Summary Table -->
+                <?php
+                include "../includes/dbconfig.php";
+                include 'display_tables.php';
+
+                // Create database connection
+                $conn = new mysqli($servername, $username, $password, $dbname);
+
+                // Check database connection
+                if ($conn->connect_error) {
+                    die("Connection failed: " . $conn->connect_error);
+                }
+
+                $getSubjects = "
+                    SELECT course_code, COUNT(DISTINCT student_id) AS unique_students_count
+                    FROM past_enrollments
+                    WHERE date_enrolled = '$selected_date'
+                    GROUP BY course_code
+                ";
+                
+                // Execute the query
+                $result = $conn->query($getSubjects);
+
+                // Display the result in a table
+                if ($selection_done==1) {
+                    if ($result->num_rows > 0) {
+                        echo "<table border='1'><tr><th>Course Code</th><th>Number of Unique Students</th></tr>";
+    
+                        while ($row = $result->fetch_assoc()) {
+                            echo "<tr><td>" . $row['course_code'] . "</td><td>" . $row['unique_students_count'] . "</td></tr>";
+                        }
+                        echo "</table>";
+                    } else {
+                        echo "No data found for the selected date.";
+                    }
+                } else if($selection_done==0){
+                    echo "Input desired enrollment date to view.";
+                }
+
+                // Close the database connection
+                $conn->close();
+                ?>
+            </div>
         </div>
     </body>
 </html>
