@@ -30,7 +30,7 @@ while ($row = $courseQuery->fetch_assoc()) {
     $courseDropdownOptions .= "<option value='" . htmlspecialchars($row['course_code']) . "'>" . htmlspecialchars($row['course_code']) . "</option>";
 }
 ?>
-<!DOCTYPE html>
+
 <html>
 <head>
     <title>Admin | Manage Courses</title>

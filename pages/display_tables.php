@@ -11,72 +11,26 @@
  -->
 
  <?php
-/**
- * This function displays all the courses, including their prerequisites.
- * Includes Edit and Delete actions for each row.
- */
-function displayCourses($conn){
-    $sql = "SELECT * FROM courses";
-    $result = $conn->query($sql);
-    ?>
+include "../includes/dbconfig.php";
 
-    <table>
-        <tr>
-            <th>COURSE CODE</th>
-            <th>COURSE TITLE</th>
-            <th>UNITS</th>
-            <th>COREQUISITE</th>
-            <th>PREREQUISITE</th>
-            <th>ACTIONS</th>
-        </tr>
+// Start the session (if not already started)
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-        <?php
-        if ($result->num_rows > 0) {
-            while($row = $result->fetch_assoc()){
-                echo "<tr>";
-                $course_code = $row["course_code"];
-                echo "<td>" . $row["course_code"] . "</td>";
-                echo "<td>" . $row["course_title"] . "</td>";
-                echo "<td>" . $row["units"] . "</td>";
-                echo "<td>" . (isset($row["co_requisite"]) ? $row["co_requisite"] : "") . "</td>";
+// Create database connection
+$conn = new mysqli($servername, $username, $password, $dbname);
 
-                // Handle prerequisites
-                $prereq_query = "SELECT prerequisite FROM prerequisites WHERE course_code = '$course_code'";
-                $prereq_result = $conn->query($prereq_query);
-
-                $prerequisites = [];
-                if ($prereq_result->num_rows > 0) {
-                    while ($prereq_row = $prereq_result->fetch_assoc()) {
-                        $prerequisites[] = htmlspecialchars($prereq_row['prerequisite']);
-                    }
-                }
-
-                echo "<td>" . implode(", ", $prerequisites) . "</td>";
-
-                // Add action buttons
-                echo "<td>
-                        <form method='POST' action='admin_process_courses.php' style='display: inline;'>
-                            <button type='submit' name='edit_course' value='$course_code' class='main-button admin-button'>Edit</button>
-                        </form>
-                        <form method='POST' action='admin_process_courses.php' style='display: inline;'>
-                            <button type='submit' name='delete_course' value='$course_code' class='main-button admin-button'>Delete</button>
-                        </form>
-                      </td>";
-                echo "</tr>";
-            }
-        } else {
-            echo "<tr><td colspan='6' style='color:red;'>No courses available.</td></tr>";
-        }
-        ?>
-    </table>
-    <?php
+// Check database connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
 
 /**
  * This function displays all the course offerings.
  * Includes Edit and Delete actions for each row.
  */
-function displayOfferings($conn){
+function displayOfferings($conn) {
     $sql = "SELECT * FROM section_offerings";
     $result = $conn->query($sql);
     ?>
@@ -98,29 +52,25 @@ function displayOfferings($conn){
 
         <?php
         if ($result->num_rows > 0) {
-            while($row = $result->fetch_assoc()){
+            while ($row = $result->fetch_assoc()) {
                 $color = ($row["enrolled_students"] != $row["enroll_cap"]) ? 'green' : '#00bfff';
                 echo "<tr>";
-                echo "<td><font color=$color><b>" . $row["offering_code"] . "</b></font></td>";
-                echo "<td><font color=$color><b>" . $row["course_code"] . "</b></font></td>";
-                echo "<td><font color=$color><b>" . $row["section"] . "</b></font></td>";
-                echo "<td>" . $row["class_days"] . "</td>";
-                echo "<td>" . $row["class_start_time"] . "</td>";
-                echo "<td>" . $row["class_end_time"] . "</td>";
-                echo "<td>" . $row["enroll_cap"] . "</td>";
-                echo "<td>" . $row["enrolled_students"] . "</td>";
-                echo "<td>" . $row["professor"] . "</td>";
-                echo "<td>" . $row["room"] . "</td>";
-
-                // Add action buttons
-                echo "<td>
-                        <form method='POST' action='admin_process_offerings.php' style='display: inline;'>
-                            <button type='submit' name='edit_offering' value='" . htmlspecialchars($row['offering_code']) . "' class='main-button admin-button'>Edit</button>
+                echo "<td><font color=$color><b>" . htmlspecialchars($row["offering_code"]) . "</b></font></td>";
+                echo "<td><font color=$color><b>" . htmlspecialchars($row["course_code"]) . "</b></font></td>";
+                echo "<td><font color=$color><b>" . htmlspecialchars($row["section"]) . "</b></font></td>";
+                echo "<td>" . htmlspecialchars($row["class_days"]) . "</td>";
+                echo "<td>" . htmlspecialchars($row["class_start_time"]) . "</td>";
+                echo "<td>" . htmlspecialchars($row["class_end_time"]) . "</td>";
+                echo "<td>" . htmlspecialchars($row["enroll_cap"]) . "</td>";
+                echo "<td>" . htmlspecialchars($row["enrolled_students"]) . "</td>";
+                echo "<td>" . htmlspecialchars($row["professor"]) . "</td>";
+                echo "<td>" . htmlspecialchars($row["room"]) . "</td>";
+                echo '<td>
+                        <form method="POST" action="admin_process_offerings.php" style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
+                            <button type="submit" name="edit_offering" value="' . htmlspecialchars($row['offering_code']) . '" class="main-button admin-button">Edit</button>
+                            <button type="submit" name="delete_offering" value="' . htmlspecialchars($row['offering_code']) . '" class="main-button admin-button">Delete</button>
                         </form>
-                        <form method='POST' action='admin_process_offerings.php' style='display: inline;'>
-                            <button type='submit' name='delete_offering' value='" . htmlspecialchars($row['offering_code']) . "' class='main-button admin-button'>Delete</button>
-                        </form>
-                      </td>";
+                      </td>';
                 echo "</tr>";
             }
         } else {
@@ -132,44 +82,59 @@ function displayOfferings($conn){
 }
 
 /**
- * This function displays all professors.
+ * This function displays all the courses, including their prerequisites.
  * Includes Edit and Delete actions for each row.
  */
-function displayProfs($conn){
-    $sql = "SELECT prof_id, prof_fullname FROM professors"; // Assuming prof_id exists
+function displayCourses($conn) {
+    $sql = "SELECT * FROM courses";
     $result = $conn->query($sql);
     ?>
 
     <table>
         <tr>
-            <th>Professor ID</th>
-            <th>Professor Name</th>
+            <th>COURSE CODE</th>
+            <th>COURSE TITLE</th>
+            <th>UNITS</th>
+            <th>COREQUISITE</th>
+            <th>PREREQUISITE</th>
             <th>ACTIONS</th>
         </tr>
 
         <?php
         if ($result->num_rows > 0) {
-            while($row = $result->fetch_assoc()){
+            while ($row = $result->fetch_assoc()) {
                 echo "<tr>";
-                echo "<td>" . htmlspecialchars($row["prof_id"]) . "</td>";
-                echo "<td>" . htmlspecialchars($row["prof_fullname"]) . "</td>";
+                $course_code = htmlspecialchars($row["course_code"]);
+                echo "<td>" . $course_code . "</td>";
+                echo "<td>" . htmlspecialchars($row["course_title"]) . "</td>";
+                echo "<td>" . htmlspecialchars($row["units"]) . "</td>";
+                echo "<td>" . htmlspecialchars($row["co_requisite"] ?? "None") . "</td>";
+
+                // Handle prerequisites
+                $prereq_query = "SELECT prerequisite FROM prerequisites WHERE course_code = '$course_code'";
+                $prereq_result = $conn->query($prereq_query);
+
+                $prerequisites = [];
+                if ($prereq_result->num_rows > 0) {
+                    while ($prereq_row = $prereq_result->fetch_assoc()) {
+                        $prerequisites[] = htmlspecialchars($prereq_row['prerequisite']);
+                    }
+                }
+                echo "<td>" . implode(", ", $prerequisites) . "</td>";
 
                 // Add action buttons
-                echo "<td>
-                        <form method='POST' action='admin_process_profs.php' style='display: inline;'>
-                            <button type='submit' name='edit_prof' value='" . htmlspecialchars($row['prof_id']) . "' class='main-button admin-button'>Edit</button>
+                echo '<td>
+                        <form method="POST" action="admin_process_courses.php" style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
+                            <button type="submit" name="edit_course" value="' . $course_code . '" class="main-button admin-button">Edit</button>
+                            <button type="submit" name="delete_course" value="' . $course_code . '" class="main-button admin-button">Delete</button>
                         </form>
-                        <form method='POST' action='admin_process_profs.php' style='display: inline;'>
-                            <button type='submit' name='delete_prof' value='" . htmlspecialchars($row['prof_id']) . "' class='main-button admin-button'>Delete</button>
-                        </form>
-                      </td>";
+                      </td>';
                 echo "</tr>";
             }
         } else {
-            echo "<tr><td colspan='3' style='color:red;'>No professors found.</td></tr>";
+            echo "<tr><td colspan='6' style='color:red;'>No courses available.</td></tr>";
         }
         ?>
     </table>
     <?php
 }
-?>

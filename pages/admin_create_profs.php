@@ -12,9 +12,27 @@
 
  -->
 
- <html>
+ <?php
+include "../includes/dbconfig.php";
+include "display_tables.php"; // Assuming displaytables.php contains the displayProfs function
+
+// Start the session (if not already started)
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Create database connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check database connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+?>
+
+<html>
 <head>
-    <title>Admin | Add Professors</title>
+    <title>Admin | Create Professors</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/navigation.css">
     <link rel="stylesheet" href="../assets/css/admin.css">
@@ -73,74 +91,30 @@
             </div>
         </form>
 
-            <!-- Manual Add/Edit/Delete -->
-            <div class="offerings-container">
+        <!-- Manual Add/Edit/Delete -->
+        <div class="offerings-container">
 
-            <!-- Add/Edit Course Form -->
-        <div class="form-container">
-            <h4>Add a New Professor</h4>
-            <form method="POST" action="admin_process_profs.php" style="display: flex; flex-direction: column; gap: 10px;">
-                <label for="prof_name">Professor Name:</label>
-                <input type="text" id="prof_name" name="prof_name" placeholder="Enter Professor's Name" required>
+            <!-- Add/Edit Professor Form -->
+            <div class="form-container">
+                <h4>Add a New Professor</h4>
+                <form method="POST" action="admin_process_profs.php" style="display: flex; flex-direction: column; gap: 10px;">
+                    <label for="prof_name">Professor Name:</label>
+                    <input type="text" id="prof_name" name="prof_name" placeholder="Enter Professor's Name" required>
+                    <button type="submit" name="add_prof" class="main-button admin-button">Add Professor</button>
+                </form>
+            </div>
 
-                <button type="submit" name="add_prof" class="main-button admin-button">Add Professor</button>
-            </form>
-        </div>
+            <!-- Display all professors -->
+            <div class="table-container">
+                <h4>Current Professors</h4>
+                <?php
+                // Call the displayProfs function to display the table
+                displayProfs($conn);
 
-        <!-- Display all professors -->
-        <div class="table-container">
-            <h4>Current Professors</h4>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Professor Name</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    include "../includes/dbconfig.php";
-
-                    // Start the session (if not already started)
-                    if (session_status() === PHP_SESSION_NONE) {
-                        session_start();
-                    }
-
-                    // Create database connection
-                    $conn = new mysqli($servername, $username, $password, $dbname);
-
-                    // Check database connection
-                    if ($conn->connect_error) {
-                        die("Connection failed: " . $conn->connect_error);
-                    }
-
-                    // Query to fetch all professors
-                    $sql = "SELECT * FROM professors";
-                    $result = $conn->query($sql);
-
-                    if ($result && $result->num_rows > 0) {
-                        while ($row = $result->fetch_assoc()) {
-                            $prof_name = htmlspecialchars($row['prof_fullname']);
-                            echo "<tr>";
-                            echo "<td>{$prof_name}</td>";
-                            echo "<td>
-                                    <form method='POST' action='admin_process_profs.php' style='display: flex; gap: 10px;'>
-                                        <input type='hidden' name='prof_name' value='{$prof_name}'>
-                                        <button type='submit' name='edit_prof' class='main-button admin-button'>Edit</button>
-                                        <button type='submit' name='delete_prof' class='main-button admin-button'>Delete</button>
-                                    </form>
-                                  </td>";
-                            echo "</tr>";
-                        }
-                    } else {
-                        echo "<tr><td colspan='2' style='color:red;'>No professors found.</td></tr>";
-                    }
-
-                    // Close the database connection
-                    $conn->close();
-                    ?>
-                </tbody>
-            </table>
+                // Close the database connection
+                $conn->close();
+                ?>
+            </div>
         </div>
     </div>
 </div>
@@ -148,6 +122,7 @@
 <script src="../includes/main.js"></script>
 </body>
 </html>
+
 
 
 

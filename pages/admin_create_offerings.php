@@ -11,6 +11,20 @@
         DONE: View current offerings feature
         DONE: Fix position of OFFERINGS table
  -->
+        
+<?php
+session_start();
+include "../includes/dbconfig.php";
+include "display_tables.php";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+?>
+
 <html>
 <head>
     <title>Admin | Add Course Offerings</title>
@@ -86,7 +100,16 @@
                     <label for="course_code">Course Code:</label>
                     <select id="course_code" name="course_code" required>
                         <option value="">Select a Course</option>
-                        <?php echo $courseDropdownOptions; ?>
+                        <?php
+                        // Generate dropdown options for courses
+                        $sqlCourses = "SELECT course_code FROM courses";
+                        $resultCourses = $conn->query($sqlCourses);
+                        if ($resultCourses && $resultCourses->num_rows > 0) {
+                            while ($course = $resultCourses->fetch_assoc()) {
+                                echo "<option value='" . htmlspecialchars($course['course_code']) . "'>" . htmlspecialchars($course['course_code']) . "</option>";
+                            }
+                        }
+                        ?>
                     </select>
 
                     <label for="section">Section:</label>
@@ -114,60 +137,21 @@
                 </form>
             </div>
 
-            <!-- Existing Offerings Table -->
+            <!-- Existing Courses Table -->
             <div class="table-container">
                 <h4>Current Offerings</h4>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Offering Code</th>
-                            <th>Course Code</th>
-                            <th>Section</th>
-                            <th>Days</th>
-                            <th>Start Time</th>
-                            <th>End Time</th>
-                            <th>Enroll Cap</th>
-                            <th>Enrolled Students</th>
-                            <th>Professor</th>
-                            <th>Room</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (count($offerings) > 0): ?>
-                            <?php foreach ($offerings as $offering): ?>
-                                <tr>
-                                    <td><?php echo htmlspecialchars($offering['offering_code']); ?></td>
-                                    <td><?php echo htmlspecialchars($offering['course_code']); ?></td>
-                                    <td><?php echo htmlspecialchars($offering['section']); ?></td>
-                                    <td><?php echo htmlspecialchars($offering['class_days']); ?></td>
-                                    <td><?php echo htmlspecialchars($offering['class_start_time']); ?></td>
-                                    <td><?php echo htmlspecialchars($offering['class_end_time']); ?></td>
-                                    <td><?php echo htmlspecialchars($offering['enroll_cap']); ?></td>
-                                    <td><?php echo htmlspecialchars($offering['enrolled_students']); ?></td>
-                                    <td><?php echo htmlspecialchars($offering['professor']); ?></td>
-                                    <td><?php echo htmlspecialchars($offering['room']); ?></td>
-                                    <td>
-                                        <form method="POST" action="admin_process_offerings.php">
-                                            <button type="submit" name="edit_offering" value="<?php echo htmlspecialchars($offering['offering_code']); ?>" class="main-button admin-button">Edit</button>
-                                            <button type="submit" name="delete_offering" value="<?php echo htmlspecialchars($offering['offering_code']); ?>" class="main-button admin-button">Delete</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <tr><td colspan="11">No offerings found.</td></tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
+                <?php
+                // Use the displayCourses function to render the table
+                displayOfferings($conn);
+                ?>
 
         </div>
     </div>
-    </div>
+</div>
 <script src="../includes/main.js"></script>
 </body>
 </html>
+
 
 
 
