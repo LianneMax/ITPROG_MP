@@ -128,7 +128,6 @@
                 <!-- Enrollment Summary Table -->
                 <?php
                 include "../includes/dbconfig.php";
-                include 'display_tables.php';
 
                 // Create database connection
                 $conn = new mysqli($servername, $username, $password, $dbname);
