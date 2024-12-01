@@ -11,7 +11,7 @@
         DONE: View All Courses feature
         DONE: Fix position of courses table
  -->
-<?php
+ <?php
 session_start();
 include "../includes/dbconfig.php";
 include "display_tables.php";
@@ -23,35 +23,70 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+$error_messages = [];
+$success_messages = [];
+
 // Check if the form was submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Check if it's the XML upload form
-
-    // Check if it's the manual course input form
     if (isset($_POST['save_course'])) {
         // Process the manual input
         $course_code = htmlspecialchars($_POST['course_code']);
         $course_title = htmlspecialchars($_POST['course_title']);
         $units = (int)$_POST['units'];
         $co_requisite = htmlspecialchars($_POST['co_requisite']);
-        $prerequisites = isset($_POST['prerequisites']) ? implode(",", $_POST['prerequisites']) : '';
+        $prerequisites = isset($_POST['prerequisites']) ? $_POST['prerequisites'] : [];
 
-        // Simplified query with sanitized inputs
-        $sql = "INSERT INTO courses (course_code, course_title, units, co_requisite)
-        VALUES ('$course_code', '$course_title', $units, '$co_requisite')";
-        
-        // Execute the query
-        if ($conn->query($sql) === TRUE) {
-        echo "New course added successfully.";
-        } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
+        try {
+            // Check if the course_code exists in the course_codes table
+            $checkQuery = "SELECT * FROM course_codes WHERE course_code = '$course_code'";
+            $result = $conn->query($checkQuery);
+
+            if ($result->num_rows === 0) {
+                // Insert the course_code into course_codes if it doesn't exist
+                $insertCodeQuery = "INSERT INTO course_codes (course_code) VALUES ('$course_code')";
+                $conn->query($insertCodeQuery);
+            }
+
+            // Insert the course into the courses table
+            $insertCourseQuery = "INSERT INTO courses (course_code, course_title, units, co_requisite)
+                                  VALUES ('$course_code', '$course_title', $units, " . ($co_requisite ? "'$co_requisite'" : "NULL") . ")";
+            $conn->query($insertCourseQuery);
+
+            // Insert prerequisites into the prerequisites table
+            foreach ($prerequisites as $prerequisite) {
+                // Ensure prerequisite exists in course_codes
+                $checkPrereqQuery = "SELECT * FROM course_codes WHERE course_code = '$prerequisite'";
+                $prereqResult = $conn->query($checkPrereqQuery);
+
+                if ($prereqResult->num_rows === 0) {
+                    // Add prerequisite to course_codes if it doesn't exist
+                    $insertPrereqCodeQuery = "INSERT INTO course_codes (course_code) VALUES ('$prerequisite')";
+                    $conn->query($insertPrereqCodeQuery);
+                }
+
+                // Insert the prerequisite into the prerequisites table
+                $insertPrerequisiteQuery = "INSERT INTO prerequisites (course_code, prerequisite)
+                                            VALUES ('$course_code', '$prerequisite')";
+                $conn->query($insertPrerequisiteQuery);
+            }
+
+            $success_messages[] = "New course '$course_code' added successfully.";
+        } catch (mysqli_sql_exception $e) {
+            // Check for duplicate entry error
+            if ($e->getCode() === 1062) {
+                $error_messages[] = "Duplicate entry: The course code '$course_code' already exists. Please use a unique code.";
+            } else {
+                $error_messages[] = "Error: Could not add course '$course_code' - " . $e->getMessage();
+            }
         }
     }
 }
 
+
+
 // Fetch courses for dropdown options
 $courseDropdownOptions = "";
-$courseQuery = $conn->query("SELECT course_code FROM courses");
+$courseQuery = $conn->query("SELECT course_code FROM course_codes");
 while ($row = $courseQuery->fetch_assoc()) {
     $courseDropdownOptions .= "<option value='" . htmlspecialchars($row['course_code']) . "'>" . htmlspecialchars($row['course_code']) . "</option>";
 }
@@ -109,6 +144,23 @@ while ($row = $courseQuery->fetch_assoc()) {
         <h2 class="title-header">Manage Courses</h2>
         <div class="separator"></div>
 
+        <!-- Display Messages -->
+        <?php if (!empty($error_messages)): ?>
+            <div class="error-messages">
+                <?php foreach ($error_messages as $error): ?>
+                    <p class="error-message"><?php echo $error; ?></p>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!empty($success_messages)): ?>
+            <div class="success-messages">
+                <?php foreach ($success_messages as $success): ?>
+                    <p class="success-message"><?php echo $success; ?></p>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+
         <!-- XML Upload -->
         <form action="admin_process_courses.php" method="post" enctype="multipart/form-data">
             <div class="file-input-container">
@@ -120,11 +172,8 @@ while ($row = $courseQuery->fetch_assoc()) {
 
         <!-- Manual Add/Edit/Delete -->
         <div class="offerings-container">
-
-            <!-- Add/Edit Course Form -->
             <div class="form-container">
                 <form method="POST" action="">
-                    <!-- Submit to same file --> 
                     <h4>Add/Edit Course</h4>
                     <label for="course_code">Course Code:</label>
                     <input type="text" id="course_code" name="course_code" required>
@@ -157,10 +206,7 @@ while ($row = $courseQuery->fetch_assoc()) {
             <!-- Existing Courses Table -->
             <div class="table-container">
                 <h4>Current Courses</h4>
-                <?php
-                // Use the displayCourses function to render the table
-                displayCourses($conn);
-                ?>
+                <?php displayCourses($conn); ?>
             </div>
         </div>
     </div>
@@ -168,6 +214,7 @@ while ($row = $courseQuery->fetch_assoc()) {
 <script src="../includes/main.js"></script>
 </body>
 </html>
+
 
 
 

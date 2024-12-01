@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="../assets/css/admin.css"> <!-- Link to the CSS file -->
 </head>
 <body>
+
     <?php
     include "../includes/dbconfig.php";
     session_start();
@@ -30,118 +31,171 @@
         die("Connection failed: " . $conn->connect_error);
     }
 
-    // Check if the request method is POST
-    if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-        exit("POST request method required");
+    // Initialize session-based messages
+    if (!isset($_SESSION['error_messages'])) {
+        $_SESSION['error_messages'] = [];
+    }
+    if (!isset($_SESSION['success_messages'])) {
+        $_SESSION['success_messages'] = [];
     }
 
-    // Check if files are uploaded
-    if (empty($_FILES)) {
-        exit("$_FILES is empty. Enable file_uploads (file_uploads=On) in C:\\xampp\\php\\php.ini");
-    }
+    // Table to display uploaded XML data
+    $xmlTable = "";
 
-    // Check for file upload errors
-    if ($_FILES["xml"]["error"] !== UPLOAD_ERR_OK) {
-        switch ($_FILES["xml"]["error"]) {
-            case UPLOAD_ERR_PARTIAL:
-                exit("File only partially uploaded");
-            case UPLOAD_ERR_NO_FILE:
-                exit("No file was uploaded");
-            case UPLOAD_ERR_CANT_WRITE:
-                exit("Failed to write file");
-            case UPLOAD_ERR_NO_TMP_DIR:
-                exit("Temp folder not found");
-            default:
-                exit("Unknown file error");
-        }
-    }
+    // Handle POST requests
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        if (isset($_POST['delete_course'])) {
+            $course_code = htmlspecialchars($_POST['delete_course']);
+            try {
+                // Check if the course is a prerequisite for another course
+                $checkPrereq = "SELECT * FROM prerequisites WHERE prerequisite = '$course_code'";
+                $prereqResult = $conn->query($checkPrereq);
 
-    // Restrict file type to XML only
-    $mime_types = ["text/xml", "application/xml"];
-    if (!in_array($_FILES["xml"]["type"], $mime_types)) {
-        exit("Invalid file type");
-    }
+                if ($prereqResult->num_rows > 0) {
+                    $_SESSION['error_messages'][] = "Course '$course_code' cannot be deleted because it is a prerequisite for other courses.";
+                } else {
+                    // Check if the course has section offerings
+                    $checkOfferings = "SELECT * FROM section_offerings WHERE course_code = '$course_code'";
+                    $offeringsResult = $conn->query($checkOfferings);
 
-    // Copy the file path
-    $filepath = $_FILES["xml"]["tmp_name"];
+                    if ($offeringsResult->num_rows > 0) {
+                        $_SESSION['error_messages'][] = "Course '$course_code' cannot be deleted because it has existing section offerings.";
+                    } else {
+                        // Delete the course from prerequisites, courses, and optionally course_codes
+                        $conn->query("DELETE FROM prerequisites WHERE course_code = '$course_code'");
+                        $conn->query("DELETE FROM courses WHERE course_code = '$course_code'");
+                        $conn->query("DELETE FROM course_codes WHERE course_code = '$course_code'");
 
-    // Load the XML file
-    $xml = simplexml_load_file($filepath) or die("Error: cannot create object!");
-
-    ?>
-    <!-- Table of XML Contents -->
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>COURSE CODE</th>
-                    <th>COURSE TITLE</th>
-                    <th>UNITS</th>
-                    <th>COREQUISITE</th>
-                    <th>PREREQUISITE</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                foreach ($xml->course as $course) {
-                    echo "<tr>";
-                    echo "<td>" . htmlspecialchars($course['course_code']) . "</td>";
-                    echo "<td>" . htmlspecialchars($course->course_title) . "</td>";
-                    echo "<td>" . htmlspecialchars($course->units) . "</td>";
-                    echo "<td>" . (isset($course->co_requisite) ? htmlspecialchars($course->co_requisite) : "") . "</td>";
-
-                    // Handle prerequisites
-                    $prerequisites = [];
-                    foreach ($course->prerequisite as $prereq) {
-                        $prerequisites[] = htmlspecialchars($prereq);
+                        $_SESSION['success_messages'][] = "Course '$course_code' deleted successfully!";
                     }
-                    echo "<td>" . implode(", ", $prerequisites) . "</td>";
-                    echo "</tr>";
                 }
-                ?>
-            </tbody>
-        </table>
-    </div>
-
-    <?php
-    // Loop through each course and insert into the database
-    foreach ($xml->course as $course) {
-        $course_code = $conn->real_escape_string($course['course_code']);
-        $course_title = $conn->real_escape_string($course->course_title);
-        $units = (int)$course->units;
-        $co_requisite = isset($course->co_requisite) ? $conn->real_escape_string($course->co_requisite) : null;
-
-        // Insert course code into `course_codes` table
-        $insertQuery = "INSERT IGNORE INTO course_codes (course_code) VALUES ('$course_code')";
-        if (!mysqli_query($conn, $insertQuery)) {
-            echo "<p class='error-message'>Error adding course code: " . mysqli_error($conn) . "</p>";
-        }
-
-        // Insert course details into `courses` table
-        $insertQuery = "INSERT INTO courses (course_code, course_title, units, co_requisite) 
-                        VALUES ('$course_code', '$course_title', $units, " . ($co_requisite ? "'$co_requisite'" : "NULL") . ")";
-        if (!mysqli_query($conn, $insertQuery)) {
-            echo "<p class='error-message'>Error adding course: " . mysqli_error($conn) . "</p>";
-            continue;
-        }
-
-        // Insert prerequisites into `prerequisites` table
-        foreach ($course->prerequisite as $prereq) {
-            $prerequisite = $conn->real_escape_string($prereq);
-            $insertQuery = "INSERT INTO prerequisites (course_code, prerequisite) 
-                            VALUES ('$course_code', '$prerequisite')";
-            if (!mysqli_query($conn, $insertQuery)) {
-                echo "<p class='error-message'>Error adding prerequisite: " . mysqli_error($conn) . "</p>";
+            } catch (mysqli_sql_exception $e) {
+                $_SESSION['error_messages'][] = "Error deleting course '$course_code': " . $e->getMessage();
             }
+
+            // Redirect to the same page to prevent resubmission
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit();
         }
 
-        echo "<p class='success-message'>Course and prerequisites for '$course_code' added successfully!</p>";
+        if (isset($_FILES["xml"])) {
+            // XML file processing as in the original code
+            if ($_FILES["xml"]["error"] === UPLOAD_ERR_OK) {
+                $mime_types = ["text/xml", "application/xml"];
+                if (in_array($_FILES["xml"]["type"], $mime_types)) {
+                    $filepath = $_FILES["xml"]["tmp_name"];
+                    $xml = simplexml_load_file($filepath) or die("Error: Cannot create object!");
+
+                    $xmlTable = '<div class="table-container">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>COURSE CODE</th>
+                                                <th>COURSE TITLE</th>
+                                                <th>UNITS</th>
+                                                <th>COREQUISITE</th>
+                                                <th>PREREQUISITE</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>';
+                    foreach ($xml->course as $course) {
+                        $course_code = $conn->real_escape_string($course['course_code']);
+                        $course_title = $conn->real_escape_string($course->course_title);
+                        $units = (int)$course->units;
+                        $co_requisite = isset($course->co_requisite) ? $conn->real_escape_string($course->co_requisite) : null;
+
+                        // Handle prerequisites
+                        $prerequisites = [];
+                        foreach ($course->prerequisite as $prereq) {
+                            $prerequisites[] = $conn->real_escape_string($prereq);
+                        }
+
+                        // Display table row
+                        $xmlTable .= "<tr>
+                                        <td>" . htmlspecialchars($course_code) . "</td>
+                                        <td>" . htmlspecialchars($course_title) . "</td>
+                                        <td>" . htmlspecialchars($units) . "</td>
+                                        <td>" . htmlspecialchars($co_requisite ?? '') . "</td>
+                                        <td>" . htmlspecialchars(implode(", ", $prerequisites)) . "</td>
+                                      </tr>";
+
+                        try {
+                            // Insert course code into course_codes
+                            $conn->query("INSERT IGNORE INTO course_codes (course_code) VALUES ('$course_code')");
+
+                            // Insert course details into courses table
+                            $conn->query("INSERT INTO courses (course_code, course_title, units, co_requisite) 
+                                          VALUES ('$course_code', '$course_title', $units, " . ($co_requisite ? "'$co_requisite'" : "NULL") . ")");
+
+                            // Insert prerequisites
+                            foreach ($prerequisites as $prerequisite) {
+                                $conn->query("INSERT INTO prerequisites (course_code, prerequisite) 
+                                              VALUES ('$course_code', '$prerequisite')");
+                            }
+
+                            $_SESSION['success_messages'][] = "Course '$course_code' and its details were added successfully!";
+                        } catch (mysqli_sql_exception $e) {
+                            // Check for duplicate entry error
+                            if ($e->getCode() === 1062) {
+                                $_SESSION['error_messages'][] = "Duplicate entry for course code '$course_code'. Please use a unique course code.";
+                            } else {
+                                $_SESSION['error_messages'][] = "Error adding course '$course_code': " . $e->getMessage();
+                            }
+                        }
+                    }
+                    $xmlTable .= '</tbody></table></div>';
+                } else {
+                    $_SESSION['error_messages'][] = "Invalid file type. Only XML files are allowed.";
+                }
+            } else {
+                $_SESSION['error_messages'][] = "Error uploading file. Please try again.";
+            }
+
+            // Redirect to the same page to prevent resubmission
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit();
+        }
     }
 
-    // Close the connection
+    // Display error messages
+    if (!empty($_SESSION['error_messages'])) {
+        echo '<div class="error-messages">';
+        foreach ($_SESSION['error_messages'] as $error) {
+            echo "<p class='error-message'>$error</p>";
+        }
+        echo '</div>';
+        $_SESSION['error_messages'] = [];
+    }
+
+    // Display success messages
+    if (!empty($_SESSION['success_messages'])) {
+        echo '<div class="success-messages">';
+        foreach ($_SESSION['success_messages'] as $success) {
+            echo "<p class='success-message'>$success</p>";
+        }
+        echo '</div>';
+        $_SESSION['success_messages'] = [];
+    }
+
+    // Display XML table
+    echo $xmlTable;
+
     $conn->close();
     ?>
+
+    <!-- Back Button -->
+    <div class="back-button">
+        <button onclick="window.history.back();" class="main-button admin-button">Back</button>
+    </div>
 </body>
 </html>
+
+
+
+
+
+
+
+
 
 
