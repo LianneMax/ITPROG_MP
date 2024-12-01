@@ -62,6 +62,7 @@
         </div>
 
         <!-- Main Body -->
+    <div class="content">
         <div class="AdminContainer">
 
             <!-- Enrollment Date Selection -->
@@ -168,5 +169,7 @@
                 ?>
             </div>
         </div>
+    </div>
+    <script src="../includes/main.js"></script>
     </body>
 </html>

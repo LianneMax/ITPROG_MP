@@ -11,10 +11,10 @@
         DONE: View All Courses feature
         DONE: Fix position of courses table
  -->
-
- <?php
+<?php
 session_start();
 include "../includes/dbconfig.php";
+include "display_tables.php";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -23,29 +23,17 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Fetch courses for manual course management dropdowns
+// Fetch courses for dropdown options
 $courseDropdownOptions = "";
 $courseQuery = $conn->query("SELECT course_code FROM courses");
 while ($row = $courseQuery->fetch_assoc()) {
     $courseDropdownOptions .= "<option value='" . htmlspecialchars($row['course_code']) . "'>" . htmlspecialchars($row['course_code']) . "</option>";
 }
-
-// Fetch existing courses for the table
-$courses = [];
-$courseTableQuery = $conn->query("
-    SELECT c.course_code, c.course_title, c.units, c.co_requisite, GROUP_CONCAT(p.prerequisite) AS prerequisites 
-    FROM courses c 
-    LEFT JOIN prerequisites p ON c.course_code = p.course_code 
-    GROUP BY c.course_code
-");
-while ($row = $courseTableQuery->fetch_assoc()) {
-    $courses[] = $row;
-}
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin | Add Courses</title>
+    <title>Admin | Manage Courses</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/navigation.css">
     <link rel="stylesheet" href="../assets/css/admin.css">
@@ -96,87 +84,70 @@ while ($row = $courseTableQuery->fetch_assoc()) {
         <div class="separator"></div>
 
         <!-- XML Upload -->
-        <div class="file-input-container">
-            <form action="admin_process_courses.php" method="post" enctype="multipart/form-data">
+        <form action="admin_process_courses.php" method="post" enctype="multipart/form-data">
+            <div class="file-input-container">
                 <label for="xml">XML File:</label>
-                <input type="file" id="xml" name="xml">
+                <input type="file" id="xml" name="xml" required>
                 <button type="submit" class="main-button admin-button">Upload</button>
-            </form>
-        </div>
+            </div>
+        </form>
 
         <!-- Manual Add/Edit/Delete -->
-        <div class="table-container">
+        <div class="offerings-container">
 
             <!-- Add/Edit Course Form -->
-            <form method="POST" action="admin_process_courses.php">
-                <h4>Add/Edit Course</h4>
-                <label for="course_code">Course Code:</label>
-                <input type="text" id="course_code" name="course_code" required><br><br>
+            <div class="form-container">
+                <form method="POST" action="admin_process_courses.php">
+                    <h4>Add/Edit Course</h4>
+                    <label for="course_code">Course Code:</label>
+                    <input type="text" id="course_code" name="course_code" required>
 
-                <label for="course_title">Course Title:</label>
-                <input type="text" id="course_title" name="course_title" required><br><br>
+                    <label for="course_title">Course Title:</label>
+                    <input type="text" id="course_title" name="course_title" required>
 
-                <label for="units">Units:</label>
-                <select id="units" name="units" required>
-                    <?php for ($i = 1; $i <= 6; $i++): ?>
-                        <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
-                    <?php endfor; ?>
-                </select><br><br>
+                    <label for="units">Units:</label>
+                    <select id="units" name="units" required>
+                        <?php for ($i = 1; $i <= 6; $i++): ?>
+                            <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+                        <?php endfor; ?>
+                    </select>
 
-                <label for="co_requisite">Co-requisite:</label>
-                <select id="co_requisite" name="co_requisite">
-                    <option value="">None</option>
-                    <?php echo $courseDropdownOptions; ?>
-                </select><br><br>
+                    <label for="co_requisite">Co-requisite:</label>
+                    <select id="co_requisite" name="co_requisite">
+                        <option value="">None</option>
+                        <?php echo $courseDropdownOptions; ?>
+                    </select>
 
-                <label for="prerequisites">Prerequisites:</label>
-                <select id="prerequisites" name="prerequisites[]" multiple>
-                    <?php echo $courseDropdownOptions; ?>
-                </select><br><br>
+                    <label for="prerequisites">Prerequisites:</label>
+                    <select id="prerequisites" name="prerequisites[]" multiple>
+                        <?php echo $courseDropdownOptions; ?>
+                    </select>
 
-                <button type="submit" name="save_course" class="main-button admin-button">Save Course</button>
-            </form>
+                    <button type="submit" name="save_course" class="main-button admin-button" style="grid-column: span 2;">Save Course</button>
+                </form>
+            </div>
 
             <!-- Existing Courses Table -->
-            <h4>Current Courses</h4>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Course Code</th>
-                        <th>Title</th>
-                        <th>Units</th>
-                        <th>Co-requisite</th>
-                        <th>Prerequisites</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (count($courses) > 0): ?>
-                        <?php foreach ($courses as $course): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($course['course_code']); ?></td>
-                                <td><?php echo htmlspecialchars($course['course_title']); ?></td>
-                                <td><?php echo htmlspecialchars($course['units']); ?></td>
-                                <td><?php echo htmlspecialchars($course['co_requisite'] ?: "None"); ?></td>
-                                <td><?php echo htmlspecialchars($course['prerequisites'] ?: "None"); ?></td>
-                                <td style="width: 200px;">
-                                    <form method="POST" action="admin_process_courses.php" style="display: flex; justify-content: center; gap: 10px;">
-                                    <button type="submit" name="edit_course" value="<?php echo htmlspecialchars($course['course_code']); ?>" class="main-button admin-button">Edit</button>
-                                    <button type="submit" name="delete_course" value="<?php echo htmlspecialchars($course['course_code']); ?>" class="main-button admin-button">Delete</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr><td colspan="6">No courses found.</td></tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
+            <div class="table-container">
+                <h4>Current Courses</h4>
+                <?php
+                // Use the displayCourses function to render the table
+                displayCourses($conn);
+                ?>
+            </div>
         </div>
     </div>
 </div>
+<script src="../includes/main.js"></script>
 </body>
 </html>
+
+
+
+
+
+
+
 
     
 
