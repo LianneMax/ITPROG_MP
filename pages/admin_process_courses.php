@@ -185,7 +185,7 @@
 
     <!-- Back Button -->
     <div class="back-button">
-        <button onclick="window.history.back();" class="main-button admin-button">Back</button>
+    <button onclick="window.location.href='admin_create_courses.php'" class="main-button admin-button">Back</button>
     </div>
 </body>
 </html>
