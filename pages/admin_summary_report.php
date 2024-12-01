@@ -66,7 +66,7 @@
         <div class="AdminContainer">
 
             <!-- Enrollment Date Selection -->
-            <h1>Select a Date</h1>
+            <h2>Select a Date</h2>
 
             <form method="post" action="">
                 <label for="year">Year:</label>
@@ -121,7 +121,7 @@
                 }
 
                 if ($selection_done==1) {
-                    echo "<h2>Enrollment Summary Report for $selected_date</h2>";
+                    echo "<h3>Enrollment Summary Report for $selected_date</h3>";
                 }
                 ?>
 
