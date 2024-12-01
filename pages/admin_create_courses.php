@@ -151,7 +151,7 @@ while ($row = $courseQuery->fetch_assoc()) {
                     </select>
 
                     <button type="submit" name="save_course" class="main-button admin-button" style="grid-column: span 2;">Save Course</button>
-                </f>
+                </form>
             </div>
 
             <!-- Existing Courses Table -->

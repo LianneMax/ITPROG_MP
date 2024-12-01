@@ -27,54 +27,36 @@ if ($conn->connect_error) {
 }
 
 /**
- * This function displays all the course offerings.
+ * This function displays all the professors.
  * Includes Edit and Delete actions for each row.
  */
-function displayOfferings($conn) {
-    $sql = "SELECT * FROM section_offerings";
+function displayProfs($conn) {
+    $sql = "SELECT * FROM professors";
     $result = $conn->query($sql);
     ?>
 
     <table>
         <tr>
-            <th>Code</th>
-            <th>Class</th>
-            <th>Section</th>
-            <th>Class Days</th>
-            <th>Class Start Time</th>
-            <th>Class End Time</th>
-            <th>Enroll Cap</th>
-            <th>Enrolled</th>
-            <th>Professor</th>
-            <th>Room</th>
+            <th>Professor Name</th>
             <th>ACTIONS</th>
         </tr>
 
         <?php
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-                $color = ($row["enrolled_students"] != $row["enroll_cap"]) ? 'green' : '#00bfff';
+                $prof_name = htmlspecialchars($row["prof_fullname"]);
                 echo "<tr>";
-                echo "<td><font color=$color><b>" . htmlspecialchars($row["offering_code"]) . "</b></font></td>";
-                echo "<td><font color=$color><b>" . htmlspecialchars($row["course_code"]) . "</b></font></td>";
-                echo "<td><font color=$color><b>" . htmlspecialchars($row["section"]) . "</b></font></td>";
-                echo "<td>" . htmlspecialchars($row["class_days"]) . "</td>";
-                echo "<td>" . htmlspecialchars($row["class_start_time"]) . "</td>";
-                echo "<td>" . htmlspecialchars($row["class_end_time"]) . "</td>";
-                echo "<td>" . htmlspecialchars($row["enroll_cap"]) . "</td>";
-                echo "<td>" . htmlspecialchars($row["enrolled_students"]) . "</td>";
-                echo "<td>" . htmlspecialchars($row["professor"]) . "</td>";
-                echo "<td>" . htmlspecialchars($row["room"]) . "</td>";
+                echo "<td>" . $prof_name . "</td>";
                 echo '<td>
-                        <form method="POST" action="admin_process_offerings.php" style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
-                            <button type="submit" name="edit_offering" value="' . htmlspecialchars($row['offering_code']) . '" class="main-button admin-button">Edit</button>
-                            <button type="submit" name="delete_offering" value="' . htmlspecialchars($row['offering_code']) . '" class="main-button admin-button">Delete</button>
+                        <form method="POST" action="" style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
+                            <button type="submit" name="edit_prof" value="' . $prof_name . '" class="main-button admin-button">Edit</button>
+                            <button type="submit" name="delete_prof" value="' . $prof_name . '" class="main-button admin-button">Delete</button>
                         </form>
                       </td>';
                 echo "</tr>";
             }
         } else {
-            echo "<tr><td colspan='11' style='color:red;'>No offerings available.</td></tr>";
+            echo "<tr><td colspan='2' style='color:red;'>No professors available.</td></tr>";
         }
         ?>
     </table>
@@ -138,3 +120,59 @@ function displayCourses($conn) {
     </table>
     <?php
 }
+
+/**
+ * This function displays all the course offerings.
+ * Includes Edit and Delete actions for each row.
+ */
+function displayOfferings($conn) {
+    $sql = "SELECT * FROM section_offerings";
+    $result = $conn->query($sql);
+    ?>
+
+    <table>
+        <tr>
+            <th>Code</th>
+            <th>Class</th>
+            <th>Section</th>
+            <th>Class Days</th>
+            <th>Class Start Time</th>
+            <th>Class End Time</th>
+            <th>Enroll Cap</th>
+            <th>Enrolled</th>
+            <th>Professor</th>
+            <th>Room</th>
+            <th>ACTIONS</th>
+        </tr>
+
+        <?php
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $color = ($row["enrolled_students"] != $row["enroll_cap"]) ? 'green' : '#00bfff';
+                echo "<tr>";
+                echo "<td><font color=$color><b>" . htmlspecialchars($row["offering_code"]) . "</b></font></td>";
+                echo "<td><font color=$color><b>" . htmlspecialchars($row["course_code"]) . "</b></font></td>";
+                echo "<td><font color=$color><b>" . htmlspecialchars($row["section"]) . "</b></font></td>";
+                echo "<td>" . htmlspecialchars($row["class_days"]) . "</td>";
+                echo "<td>" . htmlspecialchars($row["class_start_time"]) . "</td>";
+                echo "<td>" . htmlspecialchars($row["class_end_time"]) . "</td>";
+                echo "<td>" . htmlspecialchars($row["enroll_cap"]) . "</td>";
+                echo "<td>" . htmlspecialchars($row["enrolled_students"]) . "</td>";
+                echo "<td>" . htmlspecialchars($row["professor"]) . "</td>";
+                echo "<td>" . htmlspecialchars($row["room"]) . "</td>";
+                echo '<td>
+                        <form method="POST" action="admin_process_offerings.php" style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
+                            <button type="submit" name="edit_offering" value="' . htmlspecialchars($row['offering_code']) . '" class="main-button admin-button">Edit</button>
+                            <button type="submit" name="delete_offering" value="' . htmlspecialchars($row['offering_code']) . '" class="main-button admin-button">Delete</button>
+                        </form>
+                      </td>';
+                echo "</tr>";
+            }
+        } else {
+            echo "<tr><td colspan='11' style='color:red;'>No offerings available.</td></tr>";
+        }
+        ?>
+    </table>
+    <?php
+}
+?>
