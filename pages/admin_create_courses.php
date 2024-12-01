@@ -23,6 +23,32 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Check if the form was submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Check if it's the XML upload form
+
+    // Check if it's the manual course input form
+    if (isset($_POST['save_course'])) {
+        // Process the manual input
+        $course_code = htmlspecialchars($_POST['course_code']);
+        $course_title = htmlspecialchars($_POST['course_title']);
+        $units = (int)$_POST['units'];
+        $co_requisite = htmlspecialchars($_POST['co_requisite']);
+        $prerequisites = isset($_POST['prerequisites']) ? implode(",", $_POST['prerequisites']) : '';
+
+        // Simplified query with sanitized inputs
+        $sql = "INSERT INTO courses (course_code, course_title, units, co_requisite)
+        VALUES ('$course_code', '$course_title', $units, '$co_requisite')";
+        
+        // Execute the query
+        if ($conn->query($sql) === TRUE) {
+        echo "New course added successfully.";
+        } else {
+        echo "Error: " . $sql . "<br>" . $conn->error;
+        }
+    }
+}
+
 // Fetch courses for dropdown options
 $courseDropdownOptions = "";
 $courseQuery = $conn->query("SELECT course_code FROM courses");
@@ -97,7 +123,8 @@ while ($row = $courseQuery->fetch_assoc()) {
 
             <!-- Add/Edit Course Form -->
             <div class="form-container">
-                <form method="POST" action="admin_process_courses.php">
+                <form method="POST" action="">
+                    <!-- Submit to same file --> 
                     <h4>Add/Edit Course</h4>
                     <label for="course_code">Course Code:</label>
                     <input type="text" id="course_code" name="course_code" required>
@@ -124,7 +151,7 @@ while ($row = $courseQuery->fetch_assoc()) {
                     </select>
 
                     <button type="submit" name="save_course" class="main-button admin-button" style="grid-column: span 2;">Save Course</button>
-                </form>
+                </f>
             </div>
 
             <!-- Existing Courses Table -->
