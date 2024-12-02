@@ -140,7 +140,7 @@ function displayOfferings($conn) {
             <th>Enrolled</th>
             <th>Professor</th>
             <th>Room</th>
-            <th>ACTIONS</th>
+            <th>Actions</th>
         </tr>
 
         <?php
@@ -160,7 +160,8 @@ function displayOfferings($conn) {
                 echo "<td>" . htmlspecialchars($row["room"]) . "</td>";
                 echo '<td>
                         <form method="POST" action="admin_process_offerings.php" style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
-                            <button type="submit" name="delete_offering" value="' . htmlspecialchars($row['offering_code']) . '" class="main-button admin-button">Delete</button>
+                            <input type="hidden" name="offering_code" value="' . htmlspecialchars($row['offering_code']) . '">
+                            <button type="submit" name="delete_offering" class="main-button admin-button">Delete</button>
                         </form>
                       </td>';
                 echo "</tr>";

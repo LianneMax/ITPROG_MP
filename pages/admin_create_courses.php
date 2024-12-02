@@ -26,91 +26,6 @@ if ($conn->connect_error) {
 $error_messages = [];
 $success_messages = [];
 
-// Handle XML upload
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_FILES["xml"])) {
-    if ($_FILES["xml"]["error"] === UPLOAD_ERR_OK) {
-        $mime_types = ["text/xml", "application/xml"];
-        if (in_array($_FILES["xml"]["type"], $mime_types)) {
-            $filepath = $_FILES["xml"]["tmp_name"];
-            $xml = simplexml_load_file($filepath) or die("Error: Cannot create object!");
-
-            foreach ($xml->course as $course) {
-                $course_code = $conn->real_escape_string($course['course_code']);
-                $course_title = $conn->real_escape_string($course->course_title);
-                $units = (int)$course->units;
-                $co_requisite = isset($course->co_requisite) ? $conn->real_escape_string($course->co_requisite) : null;
-                $prerequisites = [];
-
-                foreach ($course->prerequisite as $prereq) {
-                    $prerequisites[] = $conn->real_escape_string($prereq);
-                }
-
-                try {
-                    // Add course code to `course_codes` if not exists
-                    $conn->query("INSERT IGNORE INTO course_codes (course_code) VALUES ('$course_code')");
-
-                    // Insert course details
-                    $conn->query("INSERT INTO courses (course_code, course_title, units, co_requisite) 
-                                  VALUES ('$course_code', '$course_title', $units, " . ($co_requisite ? "'$co_requisite'" : "NULL") . ")");
-
-                    // Insert prerequisites
-                    foreach ($prerequisites as $prerequisite) {
-                        $conn->query("INSERT INTO prerequisites (course_code, prerequisite) 
-                                      VALUES ('$course_code', '$prerequisite')");
-                    }
-
-                    $success_messages[] = "Course '$course_code' and its details were added successfully!";
-                } catch (mysqli_sql_exception $e) {
-                    if ($e->getCode() === 1062) {
-                        $error_messages[] = "Duplicate entry: Course code '$course_code' already exists.";
-                    } else {
-                        $error_messages[] = "Error adding course '$course_code': " . $e->getMessage();
-                    }
-                }
-            }
-        } else {
-            $error_messages[] = "Invalid file type. Only XML files are allowed.";
-        }
-    } else {
-        $error_messages[] = "Error uploading file. Please try again.";
-    }
-}
-
-// Handle manual course addition
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_course'])) {
-    $course_code = htmlspecialchars($_POST['course_code']);
-    $course_title = htmlspecialchars($_POST['course_title']);
-    $units = (int)$_POST['units'];
-    $co_requisite = htmlspecialchars($_POST['co_requisite']);
-    $prerequisites = isset($_POST['prerequisites']) ? $_POST['prerequisites'] : [];
-
-    try {
-        // Check if course code exists
-        $checkQuery = "SELECT * FROM course_codes WHERE course_code = '$course_code'";
-        $result = $conn->query($checkQuery);
-
-        if ($result->num_rows === 0) {
-            $conn->query("INSERT INTO course_codes (course_code) VALUES ('$course_code')");
-        }
-
-        $conn->query("INSERT INTO courses (course_code, course_title, units, co_requisite) 
-                      VALUES ('$course_code', '$course_title', $units, " . ($co_requisite ? "'$co_requisite'" : "NULL") . ")");
-
-        foreach ($prerequisites as $prerequisite) {
-            $conn->query("INSERT INTO prerequisites (course_code, prerequisite) 
-                          VALUES ('$course_code', '$prerequisite')");
-        }
-
-        $success_messages[] = "New course '$course_code' added successfully.";
-    } catch (mysqli_sql_exception $e) {
-        if ($e->getCode() === 1062) {
-            $error_messages[] = "Duplicate entry: The course code '$course_code' already exists.";
-        } else {
-            $error_messages[] = "Error: Could not add course '$course_code' - " . $e->getMessage();
-        }
-    }
-}
-
 // Fetch courses for dropdown options
 $courseDropdownOptions = "";
 $courseQuery = $conn->query("SELECT course_code FROM course_codes");
@@ -119,6 +34,7 @@ while ($row = $courseQuery->fetch_assoc()) {
 }
 ?>
 
+<!DOCTYPE html>
 <html>
 <head>
     <title>Admin | Manage Courses</title>
@@ -128,11 +44,6 @@ while ($row = $courseQuery->fetch_assoc()) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
-
-<!-- Hamburger Menu Button -->
-<div id="hamburger" class="hamburger">
-    <i class="fas fa-bars"></i>
-</div>
 
 <!-- Sidebar -->
 <div id="sidebar" class="sidebar admin-sidebar">
@@ -154,7 +65,6 @@ while ($row = $courseQuery->fetch_assoc()) {
         <span class="link-text">Summary Report</span>
     </button>
     <div class="separator" style="margin-top: 10px;"></div>
-    <!-- Logout Button -->
     <button class="logout-btn" onclick="window.location.href='LogoutPage.php'">
         <i class="fas fa-sign-out-alt"></i>
     </button>
@@ -171,17 +81,9 @@ while ($row = $courseQuery->fetch_assoc()) {
         <h2 class="title-header">Manage Courses</h2>
         <div class="separator"></div>
 
-        <?php if (!empty($error_messages)): ?>
-            <div class="error-messages"><?php foreach ($error_messages as $error): ?><p class="error-message"><?php echo $error; ?></p><?php endforeach; ?></div>
-        <?php endif; ?>
-
-        <?php if (!empty($success_messages)): ?>
-            <div class="success-messages"><?php foreach ($success_messages as $success): ?><p class="success-message"><?php echo $success; ?></p><?php endforeach; ?></div>
-        <?php endif; ?>
-
-        <form action="" method="post" enctype="multipart/form-data">
+        <form action="admin_process_courses.php" method="post" enctype="multipart/form-data">
             <div class="file-input-container">
-                <label for="xml">XML File:</label>
+                <label for="xml">Upload XML File:</label>
                 <input type="file" id="xml" name="xml" required>
                 <button type="submit" class="main-button admin-button">Upload</button>
             </div>
@@ -229,9 +131,11 @@ while ($row = $courseQuery->fetch_assoc()) {
         </div>
     </div>
 </div>
+
 <script src="../includes/main.js"></script>
 </body>
 </html>
+
 
 
 
