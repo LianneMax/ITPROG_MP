@@ -139,10 +139,11 @@
 /* Container Styling */
 .AdminContainer {
     background-color: white;
+    width: 1500px;
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-    margin: 200px auto 20px auto; /* Adjust the margin-top and other margins */
+    margin: 300px auto 20px auto; /* Adjust the margin-top and other margins */
     margin-left: 70px;
     text-align: left;
 }
@@ -152,7 +153,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
+    width: 90%;
     margin: 0 auto;
 }
 
@@ -204,7 +205,7 @@
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    max-width: 1000px; /* Adjust width */
+    width: 100% ;
     margin: 20px auto;
     text-align: center;
     overflow-y: auto; /* Enable vertical scrolling */
@@ -400,3 +401,24 @@ table td {
     width: 100%; /* Full width of the parent container */
 }
 /* End of Login CSS */
+
+/* Checkbox container for prerequisites */
+.checkbox-container {
+    display: flex;
+    flex-wrap: wrap; /* Allows checkboxes to wrap to the next line */
+    gap: 10px; /* Adds spacing between checkboxes */
+    max-width: 100%; /* Prevents the container from exceeding the screen width */
+    max-height: 200px; /* Sets a limit on the height */
+    overflow-y: auto; /* Enables vertical scrolling */
+    background-color: #f9f9f9;
+    padding: 15px; /* Adds inner spacing */
+    border-radius: 8px;
+}
+
+.checkbox-item {
+    
+    align-items: center; /* Center align text and checkbox */
+    gap: 5px; /* Space between checkbox and label */
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+}

@@ -28,7 +28,7 @@ if ($conn->connect_error) {
 
 /**
  * This function displays all the professors.
- * Includes Edit and Delete actions for each row.
+ * Includes Delete actions for each row.
  */
 function displayProfs($conn) {
     $sql = "SELECT * FROM professors";
@@ -49,7 +49,6 @@ function displayProfs($conn) {
                 echo "<td>" . $prof_name . "</td>";
                 echo '<td>
                         <form method="POST" action="" style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
-                            <button type="submit" name="edit_prof" value="' . $prof_name . '" class="main-button admin-button">Edit</button>
                             <button type="submit" name="delete_prof" value="' . $prof_name . '" class="main-button admin-button">Delete</button>
                         </form>
                       </td>';
@@ -65,7 +64,7 @@ function displayProfs($conn) {
 
 /**
  * This function displays all the courses, including their prerequisites.
- * Includes Edit and Delete actions for each row.
+ * Includes Delete actions for each row.
  */
 function displayCourses($conn) {
     $sql = "SELECT * FROM courses";
@@ -104,10 +103,9 @@ function displayCourses($conn) {
                 }
                 echo "<td>" . implode(", ", $prerequisites) . "</td>";
 
-                // Add action buttons
+                // Add action button for delete only
                 echo '<td>
                         <form method="POST" action="admin_process_courses.php" style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
-                            <button type="submit" name="edit_course" value="' . $course_code . '" class="main-button admin-button">Edit</button>
                             <button type="submit" name="delete_course" value="' . $course_code . '" class="main-button admin-button">Delete</button>
                         </form>
                       </td>';
@@ -123,7 +121,7 @@ function displayCourses($conn) {
 
 /**
  * This function displays all the course offerings.
- * Includes Edit and Delete actions for each row.
+ * Includes Delete actions for each row.
  */
 function displayOfferings($conn) {
     $sql = "SELECT * FROM section_offerings";
@@ -162,7 +160,6 @@ function displayOfferings($conn) {
                 echo "<td>" . htmlspecialchars($row["room"]) . "</td>";
                 echo '<td>
                         <form method="POST" action="admin_process_offerings.php" style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
-                            <button type="submit" name="edit_offering" value="' . htmlspecialchars($row['offering_code']) . '" class="main-button admin-button">Edit</button>
                             <button type="submit" name="delete_offering" value="' . htmlspecialchars($row['offering_code']) . '" class="main-button admin-button">Delete</button>
                         </form>
                       </td>';
@@ -176,3 +173,4 @@ function displayOfferings($conn) {
     <?php
 }
 ?>
+
