@@ -11,15 +11,23 @@ body {
     overflow-x: hidden;
 }
 
-/* Content Styling */
-.content.shifted {
-    margin-left: 60px;    background-color: white;
+.content {
+    margin-left: 80px; /* Default sidebar collapsed width */
+    background: none;
     padding: 2%;
     border-radius: 10px;
-    transition: margin-left 0.2s ease;
-    z-index:0;
+    transition: margin-left 0.3s ease; /* Match the transition timing */
+    z-index: 0;
 }
 
+.content.shifted {
+    margin-left: 280px;
+    background: none;
+    padding: 2%;
+    border-radius: 10px;
+    transition: margin-left 0.3s ease;
+    z-index: 0;
+}
 /* Sidebar Styling */
 .sidebar {
     height: 100vh;
@@ -29,7 +37,7 @@ body {
     left: 0;
     background-color: #5b8ba4;
     padding-top: 20px;
-    transition: width 0.3 ease;
+    transition: all 0.3s ease;
     z-index: 1000;
     border-top-right-radius: 30px;
     border-bottom-right-radius: 30px;
