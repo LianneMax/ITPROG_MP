@@ -9,7 +9,6 @@
     
         PENDING: Manual Input Option
  -->
-
  <html>
 <head>
     <title>Process Course Offerings</title>
@@ -32,7 +31,7 @@
     $success_messages = [];
     $uploadedTable = ""; // Store the uploaded table HTML
 
-    // Handle POST requests for adding/editing/deleting offerings or uploading XML
+    // Handle POST requests for adding/deleting offerings or uploading XML
     if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // Handle XML Upload
         if (isset($_FILES["xml"])) {
@@ -42,7 +41,6 @@
                     $filepath = $_FILES["xml"]["tmp_name"];
                     $xml = simplexml_load_file($filepath) or die("Error: Cannot create object!");
 
-                    // Build the table from XML
                     $uploadedTable = '<div class="table-container">
                                         <table>
                                             <thead>
@@ -71,7 +69,6 @@
                         $professor = $conn->real_escape_string($offering->professor);
                         $room = $conn->real_escape_string($offering->room);
 
-                        // Add the table row
                         $uploadedTable .= "<tr>
                                             <td>" . htmlspecialchars($offering_code) . "</td>
                                             <td>" . htmlspecialchars($course_code) . "</td>
@@ -84,17 +81,12 @@
                                             <td>" . htmlspecialchars($room) . "</td>
                                           </tr>";
 
-                        // Insert into database
-                        try {
-                            $insertQuery = "INSERT INTO section_offerings (offering_code, course_code, section, class_days, class_start_time, class_end_time, enroll_cap, professor, room) 
-                                            VALUES ('$offering_code', '$course_code', '$section', '$class_days', '$class_start_time', '$class_end_time', $enroll_cap, '$professor', '$room')";
-                            if ($conn->query($insertQuery)) {
-                                $success_messages[] = "Offering '$offering_code' added successfully!";
-                            } else {
-                                $error_messages[] = "Error adding offering '$offering_code': " . $conn->error;
-                            }
-                        } catch (Exception $e) {
-                            $error_messages[] = "Error processing offering '$offering_code': " . $e->getMessage();
+                        $insertQuery = "INSERT INTO section_offerings (offering_code, course_code, section, class_days, class_start_time, class_end_time, enroll_cap, professor, room) 
+                                        VALUES ('$offering_code', '$course_code', '$section', '$class_days', '$class_start_time', '$class_end_time', $enroll_cap, '$professor', '$room')";
+                        if ($conn->query($insertQuery)) {
+                            $success_messages[] = "Offering '$offering_code' added successfully!";
+                        } else {
+                            $error_messages[] = "Error adding offering '$offering_code': " . $conn->error;
                         }
                     }
                     $uploadedTable .= '</tbody></table></div>';
@@ -106,34 +98,10 @@
             }
         }
 
-        // Handle Edit Offering
-        if (isset($_POST["edit_offering"])) {
-            $offering_code = $conn->real_escape_string($_POST["offering_code"]);
-            $course_code = $conn->real_escape_string($_POST["course_code"]);
-            $section = $conn->real_escape_string($_POST["section"]);
-            $class_days = $conn->real_escape_string($_POST["class_days"]);
-            $class_start_time = $conn->real_escape_string($_POST["class_start_time"]);
-            $class_end_time = $conn->real_escape_string($_POST["class_end_time"]);
-            $enroll_cap = (int)$_POST["enroll_cap"];
-            $professor = $conn->real_escape_string($_POST["professor"]);
-            $room = $conn->real_escape_string($_POST["room"]);
-
-            // Update the offering in the database
-            $updateQuery = "UPDATE section_offerings SET course_code = '$course_code', section = '$section', class_days = '$class_days', 
-                            class_start_time = '$class_start_time', class_end_time = '$class_end_time', enroll_cap = $enroll_cap, 
-                            professor = '$professor', room = '$room' WHERE offering_code = '$offering_code'";
-            if ($conn->query($updateQuery)) {
-                $success_messages[] = "Offering '$offering_code' updated successfully!";
-            } else {
-                $error_messages[] = "Error updating offering '$offering_code': " . $conn->error;
-            }
-        }
-
         // Handle Delete Offering
         if (isset($_POST["delete_offering"])) {
             $offering_code = $conn->real_escape_string($_POST["delete_offering"]);
 
-            // Delete offering from the database
             $deleteQuery = "DELETE FROM section_offerings WHERE offering_code = '$offering_code'";
             if ($conn->query($deleteQuery)) {
                 $success_messages[] = "Offering '$offering_code' deleted successfully!";
@@ -177,12 +145,12 @@
     <!-- Uploaded XML Table -->
     <?php echo $uploadedTable; ?>
 
-    <!-- Manual Edit Offering -->
+    <!-- Manual Add Offering -->
     <div class="form-container">
         <form method="POST" action="">
-            <h4>Edit Offering</h4>
+            <h4>Add Offering</h4>
             <label for="offering_code">Offering Code:</label>
-            <input type="text" id="offering_code" name="offering_code" required>
+            <input type="text" id="offering_code" name="offering_code" pattern="\d+" title="Offering code must be numeric" required>
 
             <label for="course_code">Course Code:</label>
             <select id="course_code" name="course_code" required>
@@ -193,7 +161,14 @@
             <input type="text" id="section" name="section" required>
 
             <label for="class_days">Class Days:</label>
-            <input type="text" id="class_days" name="class_days" required>
+            <div class="checkbox-container">
+                <input type="checkbox" name="class_days[]" value="M"> M
+                <input type="checkbox" name="class_days[]" value="T"> T
+                <input type="checkbox" name="class_days[]" value="W"> W
+                <input type="checkbox" name="class_days[]" value="TH"> TH
+                <input type="checkbox" name="class_days[]" value="F"> F
+                <input type="checkbox" name="class_days[]" value="S"> S
+            </div>
 
             <label for="class_start_time">Class Start Time:</label>
             <input type="time" id="class_start_time" name="class_start_time" required>
@@ -212,16 +187,13 @@
             <label for="room">Room:</label>
             <input type="text" id="room" name="room" required>
 
-            <button type="submit" name="edit_offering" class="main-button admin-button">Update Offering</button>
+            <button type="submit" name="add_offering" class="main-button admin-button">Add Offering</button>
         </form>
-    </div>
-
-    <!-- Back Button -->
-    <div class="back-button">
-        <button onclick="window.location.href='admin_create_offerings.php'" class="main-button admin-button">Back</button>
     </div>
 </body>
 </html>
+
+
 
 
 

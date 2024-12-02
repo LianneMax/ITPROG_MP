@@ -89,25 +89,23 @@ if ($conn->connect_error) {
         <!-- Manual Add/Edit/Delete -->
         <div class="offerings-container">
 
-            <!-- Add/Edit Offering Form -->
+         <!-- Manual Add Offering -->
+         <div class="offerings-container">
             <div class="form-container">
                 <form method="POST" action="admin_process_offerings.php">
-                    <h4>Add/Edit Offering</h4>
+                    <h4>Add Offering</h4>
 
                     <label for="offering_code">Offering Code:</label>
-                    <input type="text" id="offering_code" name="offering_code" required>
+                    <input type="text" id="offering_code" name="offering_code" pattern="\d+" title="Must be numeric" required>
 
                     <label for="course_code">Course Code:</label>
                     <select id="course_code" name="course_code" required>
                         <option value="">Select a Course</option>
                         <?php
-                        // Generate dropdown options for courses
                         $sqlCourses = "SELECT course_code FROM courses";
                         $resultCourses = $conn->query($sqlCourses);
-                        if ($resultCourses && $resultCourses->num_rows > 0) {
-                            while ($course = $resultCourses->fetch_assoc()) {
-                                echo "<option value='" . htmlspecialchars($course['course_code']) . "'>" . htmlspecialchars($course['course_code']) . "</option>";
-                            }
+                        while ($course = $resultCourses->fetch_assoc()) {
+                            echo "<option value='" . htmlspecialchars($course['course_code']) . "'>" . htmlspecialchars($course['course_code']) . "</option>";
                         }
                         ?>
                     </select>
@@ -116,7 +114,14 @@ if ($conn->connect_error) {
                     <input type="text" id="section" name="section" required>
 
                     <label for="class_days">Class Days:</label>
-                    <input type="text" id="class_days" name="class_days" required>
+                    <div class="checkbox-container">
+                        <input type="checkbox" name="class_days[]" value="M"> M
+                        <input type="checkbox" name="class_days[]" value="T"> T
+                        <input type="checkbox" name="class_days[]" value="W"> W
+                        <input type="checkbox" name="class_days[]" value="TH"> TH
+                        <input type="checkbox" name="class_days[]" value="F"> F
+                        <input type="checkbox" name="class_days[]" value="S"> S
+                    </div>
 
                     <label for="class_start_time">Start Time:</label>
                     <input type="time" id="class_start_time" name="class_start_time" required>
@@ -128,15 +133,22 @@ if ($conn->connect_error) {
                     <input type="number" id="enroll_cap" name="enroll_cap" min="1" required>
 
                     <label for="professor">Professor:</label>
-                    <input type="text" id="professor" name="professor" required>
+                    <select id="professor" name="professor" required>
+                        <?php
+                        $sqlProfessors = "SELECT prof_fullname FROM professors";
+                        $resultProfessors = $conn->query($sqlProfessors);
+                        while ($professor = $resultProfessors->fetch_assoc()) {
+                            echo "<option value='" . htmlspecialchars($professor['prof_fullname']) . "'>" . htmlspecialchars($professor['prof_fullname']) . "</option>";
+                        }
+                        ?>
+                    </select>
 
                     <label for="room">Room:</label>
                     <input type="text" id="room" name="room" required>
 
-                    <button type="submit" name="save_offering" class="main-button admin-button" style="grid-column: span 2;">Save Offering</button>
+                    <button type="submit" name="save_offering" class="main-button admin-button" style="grid-column: span 2;">Add Offering</button>
                 </form>
             </div>
-
             <!-- Existing Courses Table -->
             <div class="table-container">
                 <h4>Current Offerings</h4>
