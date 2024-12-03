@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
-<body class="login_body">
+<body class="login-body">
 
         <i class="fas fa-tools maintenance_icon" onclick="window.location.href='LoginPage.php'" title="Maintenance" 
            style="font-size: 40px; position: absolute; top: 20px; right: 20px; color: #55453b; cursor: pointer;"></i>

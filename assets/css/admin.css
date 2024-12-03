@@ -4,7 +4,7 @@
     position: absolute;
     top: 10px;
     font-size: 36px;
-    font-family: 'Montserrat';
+    font-family: fantasy;
     color: #b39f92;
     margin-top: 150px;
     z-index: 1;
@@ -326,7 +326,7 @@ table td {
     position: absolute;
     top: 10px;
     font-size: 36px;
-    font-family: fantasy;
+    font-family: 'Montserrat';
     color: #5b8ba4;
     margin-top: 150px;
     z-index: 1;

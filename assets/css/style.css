@@ -236,17 +236,18 @@ td {
     flex-direction: column;
 }
 
-.login_body {
-    background-image: url('for loop justinn.png');
+.login-body {
+    background-image: url('../pages/Background.png'); /* Use absolute path */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     font-family: 'Montserrat', Times New Roman, serif;
-    background-color: #f4f4f4;
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #f0f0f0;
     position: relative;
 }
 
@@ -254,7 +255,7 @@ td {
     position: absolute;
     top: 10px;
     font-size: 36px;
-    font-family: 'Montserrat';
+    font-family: fantasy;
     color: #5b8ba4;
     margin-top: 150px;
     z-index: 1;
