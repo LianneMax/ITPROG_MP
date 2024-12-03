@@ -13,28 +13,24 @@
  -->
 
  <?php
+session_start();
 include "../includes/dbconfig.php";
 include "display_tables.php";
 
-// Create database connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Check database connection
+// Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Display success or error messages if set in the session
-session_start();
-if (isset($_SESSION['message'])) {
-    echo $_SESSION['message'];
-    unset($_SESSION['message']);
-}
+$error_messages = [];
+$success_messages = [];
 ?>
 
 <html>
 <head>
-    <title>Admin | Create Professors</title>
+    <title>Admin | Manage Professors</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/navigation.css">
     <link rel="stylesheet" href="../assets/css/admin.css">
@@ -81,7 +77,7 @@ if (isset($_SESSION['message'])) {
 <!-- Main Content -->
 <div class="content">
     <div class="AdminContainer">
-        <h2 class="title-header">Create Professors</h2>
+        <h2 class="title-header">Manage Professors</h2>
         <div class="separator"></div>
 
         <!-- XML Upload Form -->

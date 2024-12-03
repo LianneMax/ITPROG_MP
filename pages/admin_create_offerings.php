@@ -69,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["save_offering"])) {
 
 <html>
 <head>
-    <title>Admin | Add Course Offerings</title>
+    <title>Admin | Manage Offerings</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/navigation.css">
     <link rel="stylesheet" href="../assets/css/admin.css">

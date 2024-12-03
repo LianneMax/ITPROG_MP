@@ -11,6 +11,7 @@
         DONE: View All Courses feature
         DONE: Fix position of courses table
  -->
+
  <?php
 session_start();
 include "../includes/dbconfig.php";
@@ -44,6 +45,11 @@ while ($row = $courseQuery->fetch_assoc()) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
+
+<!-- Hamburger Menu Button -->
+<div id="hamburger" class="hamburger">
+    <i class="fas fa-bars"></i>
+</div>
 
 <!-- Sidebar -->
 <div id="sidebar" class="sidebar admin-sidebar">
@@ -92,7 +98,7 @@ while ($row = $courseQuery->fetch_assoc()) {
         <div class="offerings-container">
             <div class="form-container">
                 <form method="POST" action="">
-                    <h4>Add/Edit Course</h4>
+                    <h4>Add Course</h4>
                     <label for="course_code">Course Code:</label>
                     <input type="text" id="course_code" name="course_code" required>
                     <label for="course_title">Course Title:</label>
