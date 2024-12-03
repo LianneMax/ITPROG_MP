@@ -48,8 +48,9 @@ function displayProfs($conn) {
                 echo "<tr>";
                 echo "<td>" . $prof_name . "</td>";
                 echo '<td>
-                        <form method="POST" action="" style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
-                            <button type="submit" name="delete_prof" value="' . $prof_name . '" class="main-button admin-button">Delete</button>
+                        <form method="POST" action="admin_process_profs.php" style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
+                            <input type="hidden" name="prof_name" value="' . $prof_name . '">
+                            <button type="submit" name="delete_prof" class="main-button admin-button">Delete</button>
                         </form>
                       </td>';
                 echo "</tr>";

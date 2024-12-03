@@ -24,42 +24,11 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Handle form submissions
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_FILES['xml'])) {
-        // Handle XML upload
-        $xmlFile = $_FILES['xml']['tmp_name'];
-        if (file_exists($xmlFile)) {
-            $xml = simplexml_load_file($xmlFile);
-            foreach ($xml->professor as $prof) {
-                $prof_name = $conn->real_escape_string(trim($prof->prof_fullname));
-                $sql = "INSERT INTO professors (prof_fullname) VALUES ('$prof_name')
-                        ON DUPLICATE KEY UPDATE prof_fullname = VALUES(prof_fullname)";
-                $conn->query($sql);
-            }
-            echo "<div class='success-message'>XML file uploaded successfully!</div>";
-        } else {
-            echo "<div class='error-message'>Failed to upload XML file.</div>";
-        }
-    } elseif (isset($_POST['add_prof'])) {
-        // Add professor manually
-        $prof_name = $conn->real_escape_string(trim($_POST['prof_name']));
-        $sql = "INSERT INTO professors (prof_fullname) VALUES ('$prof_name')";
-        if ($conn->query($sql) === TRUE) {
-            echo "<div class='success-message'>Professor added successfully!</div>";
-        } else {
-            echo "<div class='error-message'>Error: " . $conn->error . "</div>";
-        }
-    } elseif (isset($_POST['delete_prof'])) {
-        // Delete professor
-        $prof_name = $conn->real_escape_string(trim($_POST['prof_name']));
-        $sql = "DELETE FROM professors WHERE prof_fullname = '$prof_name'";
-        if ($conn->query($sql) === TRUE) {
-            echo "<div class='success-message'>Professor deleted successfully!</div>";
-        } else {
-            echo "<div class='error-message'>Error: " . $conn->error . "</div>";
-        }
-    }
+// Display success or error messages if set in the session
+session_start();
+if (isset($_SESSION['message'])) {
+    echo $_SESSION['message'];
+    unset($_SESSION['message']);
 }
 ?>
 
@@ -116,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="separator"></div>
 
         <!-- XML Upload Form -->
-        <form action="" method="post" enctype="multipart/form-data">
+        <form action="admin_process_profs.php" method="post" enctype="multipart/form-data">
             <div class="file-input-container">
                 <label for="xml">XML File:</label>
                 <input type="file" id="xml" name="xml" required>
@@ -124,12 +93,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </form>
 
-        <!-- Manual Add/Edit/Delete -->
+        <!-- Manual Add -->
         <div class="offerings-container">   
 
         <!-- Add Professor Form -->
         <div class="form-container">
-            <form method="POST" action="">
+            <form method="POST" action="admin_process_profs.php">
                 <h4>Add Professor</h4>
                 <label for="prof_name">Professor Name:</label>
                 <input type="text" id="prof_name" name="prof_name" placeholder="Enter Professor's Name" required>
@@ -151,6 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script src="../includes/main.js"></script>
 </body>
 </html>
+
 
 
 

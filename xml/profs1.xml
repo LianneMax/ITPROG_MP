@@ -9,8 +9,10 @@
 ]>
 
 <professors>
-    <professor prof_fullname="Charles Xavier"></professor>
-
-    <professor prof_fullname="Erik Lehnsherr"></professor>
-
+    <professor>
+        <prof_fullname>Charles Xavier</prof_fullname>
+    </professor>
+    <professor>
+        <prof_fullname>Tony Stark</prof_fullname>
+    </professor>
 </professors>

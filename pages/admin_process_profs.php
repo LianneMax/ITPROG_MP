@@ -13,104 +13,159 @@
 
  -->
 
- <html>
+ <?php
+session_start();
+include "../includes/dbconfig.php";
+
+// Create database connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Initialize messages and table variable
+$_SESSION['message'] = "";
+$uploadedTable = "";
+
+// Handle XML upload if a file is provided
+if (isset($_FILES['xml']) && $_FILES['xml']['error'] !== UPLOAD_ERR_NO_FILE) {
+    if ($_FILES['xml']['error'] === UPLOAD_ERR_OK) {
+        $mime_types = ["text/xml", "application/xml"];
+        if (in_array($_FILES['xml']['type'], $mime_types)) {
+            $xmlFile = $_FILES['xml']['tmp_name'];
+            if (file_exists($xmlFile)) {
+                $xml = simplexml_load_file($xmlFile);
+
+                // Check if XML is valid
+                if ($xml && isset($xml->professor)) {
+                    // Start building the table
+                    $uploadedTable = '<table>
+                                        <thead>
+                                            <tr>
+                                                <th>Professor Name</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>';
+
+                    foreach ($xml->professor as $prof) {
+                        // Ensure the professor has a name
+                        $prof_name = isset($prof->prof_fullname) ? trim((string)$prof->prof_fullname) : "";
+
+                        // Add the professor name to the table
+                        $uploadedTable .= "<tr><td>" . htmlspecialchars($prof_name) . "</td></tr>";
+
+                        if (!empty($prof_name)) {
+                            $escaped_prof_name = $conn->real_escape_string($prof_name);
+
+                            // Check for duplicates in the database
+                            $checkDuplicateQuery = "SELECT * FROM professors WHERE prof_fullname = '$escaped_prof_name'";
+                            $duplicateResult = $conn->query($checkDuplicateQuery);
+
+                            if ($duplicateResult && $duplicateResult->num_rows > 0) {
+                                $_SESSION['message'] .= "<div class='error-message'>Duplicate entry: Professor '$prof_name' already exists in the database.</div>";
+                            } else {
+                                // Insert into database
+                                $sql = "INSERT INTO professors (prof_fullname) VALUES ('$escaped_prof_name')";
+                                if ($conn->query($sql) === TRUE) {
+                                    $_SESSION['message'] .= "<div class='success-message'>Professor '$prof_name' added successfully!</div>";
+                                } else {
+                                    $_SESSION['message'] .= "<div class='error-message'>Error adding professor '$prof_name': " . $conn->error . "</div>";
+                                }
+                            }
+                        } else {
+                            $_SESSION['message'] .= "<div class='error-message'>Invalid or empty professor name in XML file.</div>";
+                        }
+                    }
+
+                    $uploadedTable .= '</tbody></table>';
+                } else {
+                    $_SESSION['message'] = "<div class='error-message'>Invalid XML structure.</div>";
+                }
+            } else {
+                $_SESSION['message'] = "<div class='error-message'>Failed to upload XML file. File does not exist.</div>";
+            }
+        } else {
+            $_SESSION['message'] = "<div class='error-message'>Invalid file type. Only XML files are allowed.</div>";
+        }
+    } else {
+        $_SESSION['message'] = "<div class='error-message'>Error uploading file. Please try again.</div>";
+    }
+}
+
+// Handle manual add
+if (isset($_POST['add_prof']) && isset($_POST['prof_name'])) {
+    $prof_name = $conn->real_escape_string(trim($_POST['prof_name']));
+    if (!empty($prof_name)) {
+        $sql = "INSERT INTO professors (prof_fullname) VALUES ('$prof_name')";
+        if ($conn->query($sql) === TRUE) {
+            $_SESSION['message'] .= "<div class='success-message'>Professor '$prof_name' added successfully!</div>";
+        } else {
+            $_SESSION['message'] .= "<div class='error-message'>Error: " . $conn->error . "</div>";
+        }
+    } else {
+        $_SESSION['message'] .= "<div class='error-message'>Professor name cannot be empty.</div>";
+    }
+}
+
+// Handle professor deletion
+if (isset($_POST['delete_prof']) && isset($_POST['prof_name'])) {
+    $prof_name = $conn->real_escape_string(trim($_POST['prof_name']));
+
+    // Check if the professor is assigned to any course offerings
+    $checkAssignmentsQuery = "SELECT * FROM section_offerings WHERE professor = '$prof_name'";
+    $assignmentsResult = $conn->query($checkAssignmentsQuery);
+
+    if ($assignmentsResult && $assignmentsResult->num_rows > 0) {
+        $_SESSION['message'] .= "<div class='error-message'>Cannot delete professor '$prof_name'. They are assigned to one or more course offerings.</div>";
+    } else {
+        // Proceed to delete the professor
+        $deleteQuery = "DELETE FROM professors WHERE prof_fullname = '$prof_name'";
+        if ($conn->query($deleteQuery) === TRUE) {
+            $_SESSION['message'] .= "<div class='success-message'>Professor '$prof_name' deleted successfully!</div>";
+        } else {
+            $_SESSION['message'] .= "<div class='error-message'>Error deleting professor '$prof_name': " . $conn->error . "</div>";
+        }
+    }
+}
+
+?>
+<html>
 <head>
-    <title>Process New Professors</title>
-    <link rel="stylesheet" href="../assets/css/admin.css"> <!-- Link to the CSS file -->
+    <title>Process Professors</title>
+    <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
 <body>
-    <?php
-    include "../includes/dbconfig.php";
-    session_start();
+    <!-- Display Messages -->
+    <?php if (!empty($_SESSION['message'])): ?>
+        <div>
+            <?php 
+                echo $_SESSION['message']; 
+                unset($_SESSION['message']);
+            ?>
+        </div>
+    <?php endif; ?>
 
-    // Create connection
-    $conn = new mysqli($servername, $username, $password, $dbname);
+    <!-- Uploaded XML Table -->
+    <?php if (!empty($uploadedTable)): ?>
+        <div class="table-container">
+            <?php echo $uploadedTable; ?>
+        </div>
+    <?php endif; ?>
 
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-
-    // Check if the request method is POST
-    if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-        exit("POST request method required");
-    }
-
-    // Check if files are uploaded
-    if (empty($_FILES)) {
-        exit("$_FILES is empty. Enable file_uploads (file_uploads=On) in C:\\xampp\\php\\php.ini");
-    }
-
-    // Check for file upload errors
-    if ($_FILES["xml"]["error"] !== UPLOAD_ERR_OK) {
-        switch ($_FILES["xml"]["error"]) {
-            case UPLOAD_ERR_PARTIAL:
-                exit("File only partially uploaded");
-            case UPLOAD_ERR_NO_FILE:
-                exit("No file was uploaded");
-            case UPLOAD_ERR_CANT_WRITE:
-                exit("Failed to write file");
-            case UPLOAD_ERR_NO_TMP_DIR:
-                exit("Temp folder not found");
-            default:
-                exit("Unknown file error");
-        }
-    }
-
-    // Restrict file type to XML only
-    $mime_types = ["text/xml", "application/xml"];
-    if (!in_array($_FILES["xml"]["type"], $mime_types)) {
-        exit("Invalid file type");
-    }
-
-    // Copy the file path
-    $filepath = $_FILES["xml"]["tmp_name"];
-
-    // Load the XML file
-    $xml = simplexml_load_file($filepath) or die("Error: cannot create object!");
-
-    ?>
-    <!-- Table of XML Contents -->
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>Professor Name</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                foreach ($xml->professor as $professor) {
-                    echo "<tr>";
-                    echo "<td>" . htmlspecialchars($professor['prof_fullname']) . "</td>";
-                    echo "</tr>";
-                }
-                ?>
-            </tbody>
-        </table>
+    <!-- Back Button -->
+    <div class="back-button">
+        <button onclick="window.location.href='admin_create_profs.php'" class="main-button admin-button">Back</button>
     </div>
-
-    <?php
-    // Loop through each professor and insert into the database
-    foreach ($xml->professor as $professor) {
-        $prof_fullname = $conn->real_escape_string($professor['prof_fullname']);
-
-        // Insert professor details into `professors` table
-        $insertQuery = "INSERT INTO professors (prof_fullname) VALUES ('$prof_fullname')";
-
-        if (!mysqli_query($conn, $insertQuery)) {
-            echo "<p class='error-message'>Error adding professor '$prof_fullname': " . mysqli_error($conn) . "</p>";
-            continue;
-        }
-
-        echo "<p class='success-message'>Prof. '$prof_fullname' added successfully!</p>";
-    }
-
-    // Close the connection
-    $conn->close();
-    ?>
 </body>
 </html>
+
+
+
+
+
+
 
 
 
