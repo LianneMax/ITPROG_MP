@@ -105,8 +105,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (isset($_POST["delete_offering"])) {
         $offering_code = $conn->real_escape_string($_POST["offering_code"]);
 
-        $deleteQuery = "DELETE FROM section_offerings WHERE offering_code = '$offering_code'";
-        if ($conn->query($deleteQuery)) {
+        // Check if the offering exists in `students_classes`
+        $checkDependencies = "SELECT * FROM students_classes WHERE offering_code = '$offering_code'";
+        $dependencyResult = $conn->query($checkDependencies);
+
+        if ($dependencyResult && $dependencyResult->num_rows > 0) {
+            // Delete dependencies from `students_classes`
+            $deleteDependenciesQuery = "DELETE FROM students_classes WHERE offering_code = '$offering_code'";
+            if ($conn->query($deleteDependenciesQuery)) {
+                $success_messages[] = "Dependencies for offering '$offering_code' deleted successfully from 'students_classes'.";
+            } else {
+                $error_messages[] = "Error deleting dependencies for offering '$offering_code': " . $conn->error;
+            }
+        }
+
+        // Attempt to delete the offering itself
+        $deleteOfferingQuery = "DELETE FROM section_offerings WHERE offering_code = '$offering_code'";
+        if ($conn->query($deleteOfferingQuery)) {
             $success_messages[] = "Offering '$offering_code' deleted successfully!";
         } else {
             $error_messages[] = "Error deleting offering '$offering_code': " . $conn->error;
@@ -147,6 +162,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </div>
 </body>
 </html>
+
+
 
 
 

@@ -12,7 +12,7 @@
         DONE: Fix position of OFFERINGS table
  -->
         
-<?php
+ <?php
 session_start();
 include "../includes/dbconfig.php";
 include "display_tables.php";
@@ -22,6 +22,40 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
+}
+
+$error_messages = [];
+$success_messages = [];
+
+// Handle Manual Offering Addition
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["save_offering"])) {
+    $offering_code = $conn->real_escape_string($_POST["offering_code"]);
+    $course_code = $conn->real_escape_string($_POST["course_code"]);
+    $section = $conn->real_escape_string($_POST["section"]);
+    $class_days = isset($_POST["class_days"]) ? implode(", ", $_POST["class_days"]) : "";
+    $class_start_time = $conn->real_escape_string($_POST["class_start_time"]);
+    $class_end_time = $conn->real_escape_string($_POST["class_end_time"]);
+    $enroll_cap = (int)$_POST["enroll_cap"];
+    $professor = $conn->real_escape_string($_POST["professor"]);
+    $room = $conn->real_escape_string($_POST["room"]);
+
+    // Check for duplicate offering code
+    $checkDuplicateQuery = "SELECT offering_code FROM section_offerings WHERE offering_code = '$offering_code'";
+    $duplicateResult = $conn->query($checkDuplicateQuery);
+
+    if ($duplicateResult && $duplicateResult->num_rows > 0) {
+        $error_messages[] = "Duplicate entry: Offering code '$offering_code' already exists.";
+    } else {
+        // Insert into database
+        $insertQuery = "INSERT INTO section_offerings (offering_code, course_code, section, class_days, class_start_time, class_end_time, enroll_cap, professor, room) 
+                        VALUES ('$offering_code', '$course_code', '$section', '$class_days', '$class_start_time', '$class_end_time', $enroll_cap, '$professor', '$room')";
+
+        if ($conn->query($insertQuery)) {
+            $success_messages[] = "Offering '$offering_code' added successfully!";
+        } else {
+            $error_messages[] = "Error adding offering '$offering_code': " . $conn->error;
+        }
+    }
 }
 ?>
 
@@ -77,6 +111,23 @@ if ($conn->connect_error) {
         <h2 class="title-header">Manage Offerings</h2>
         <div class="separator"></div>
 
+        <!-- Display Messages -->
+        <?php if (!empty($error_messages)): ?>
+            <div class="error-messages">
+                <?php foreach ($error_messages as $error): ?>
+                    <p class="error-message"><?php echo $error; ?></p>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!empty($success_messages)): ?>
+            <div class="success-messages">
+                <?php foreach ($success_messages as $success): ?>
+                    <p class="success-message"><?php echo $success; ?></p>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+
         <!-- XML Upload -->
         <form action="admin_process_offerings.php" method="post" enctype="multipart/form-data">
             <div class="file-input-container">
@@ -86,13 +137,10 @@ if ($conn->connect_error) {
             </div>
         </form>
 
-        <!-- Manual Add/Edit/Delete -->
+        <!-- Manual Add Offering -->
         <div class="offerings-container">
-
-         <!-- Manual Add Offering -->
-         <div class="offerings-container">
             <div class="form-container">
-                <form method="POST" action="admin_process_offerings.php">
+                <form method="POST" action="">
                     <h4>Add Offering</h4>
 
                     <label for="offering_code">Offering Code:</label>
@@ -149,20 +197,21 @@ if ($conn->connect_error) {
                     <button type="submit" name="save_offering" class="main-button admin-button" style="grid-column: span 2;">Add Offering</button>
                 </form>
             </div>
-            <!-- Existing Courses Table -->
+            <!-- Current Offerings Table -->
             <div class="table-container">
                 <h4>Current Offerings</h4>
                 <?php
-                // Use the displayCourses function to render the table
                 displayOfferings($conn);
                 ?>
-
+            </div>
         </div>
     </div>
 </div>
 <script src="../includes/main.js"></script>
 </body>
 </html>
+
+
 
 
 
