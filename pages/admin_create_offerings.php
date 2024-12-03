@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["save_offering"])) {
     $offering_code = $conn->real_escape_string($_POST["offering_code"]);
     $course_code = $conn->real_escape_string($_POST["course_code"]);
     $section = $conn->real_escape_string($_POST["section"]);
-    $class_days = isset($_POST["class_days"]) ? implode(", ", $_POST["class_days"]) : "";
+    $class_days = isset($_POST["class_days"]) ? implode("", $_POST["class_days"]) : ""; // Concatenate selected days
     $class_start_time = $conn->real_escape_string($_POST["class_start_time"]);
     $class_end_time = $conn->real_escape_string($_POST["class_end_time"]);
     $enroll_cap = (int)$_POST["enroll_cap"];
@@ -40,20 +40,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["save_offering"])) {
     $room = $conn->real_escape_string($_POST["room"]);
 
     // Check for duplicate offering code
-    $checkDuplicateQuery = "SELECT offering_code FROM section_offerings WHERE offering_code = '$offering_code'";
-    $duplicateResult = $conn->query($checkDuplicateQuery);
+    $checkDuplicateCodeQuery = "SELECT offering_code FROM section_offerings WHERE offering_code = '$offering_code'";
+    $duplicateCodeResult = $conn->query($checkDuplicateCodeQuery);
 
-    if ($duplicateResult && $duplicateResult->num_rows > 0) {
+    if ($duplicateCodeResult && $duplicateCodeResult->num_rows > 0) {
         $error_messages[] = "Duplicate entry: Offering code '$offering_code' already exists.";
     } else {
-        // Insert into database
-        $insertQuery = "INSERT INTO section_offerings (offering_code, course_code, section, class_days, class_start_time, class_end_time, enroll_cap, professor, room) 
-                        VALUES ('$offering_code', '$course_code', '$section', '$class_days', '$class_start_time', '$class_end_time', $enroll_cap, '$professor', '$room')";
+        // Check for duplicate section globally (not tied to course)
+        $checkDuplicateSectionQuery = "SELECT section FROM section_offerings WHERE section = '$section'";
+        $duplicateSectionResult = $conn->query($checkDuplicateSectionQuery);
 
-        if ($conn->query($insertQuery)) {
-            $success_messages[] = "Offering '$offering_code' added successfully!";
+        if ($duplicateSectionResult && $duplicateSectionResult->num_rows > 0) {
+            $error_messages[] = "Duplicate section: Section '$section' already exists and cannot be reused.";
         } else {
-            $error_messages[] = "Error adding offering '$offering_code': " . $conn->error;
+            // Insert into database
+            $insertQuery = "INSERT INTO section_offerings (offering_code, course_code, section, class_days, class_start_time, class_end_time, enroll_cap, professor, room) 
+                            VALUES ('$offering_code', '$course_code', '$section', '$class_days', '$class_start_time', '$class_end_time', $enroll_cap, '$professor', '$room')";
+
+            if ($conn->query($insertQuery)) {
+                $success_messages[] = "Offering '$offering_code' added successfully!";
+            } else {
+                $error_messages[] = "Error adding offering '$offering_code': " . $conn->error;
+            }
         }
     }
 }
@@ -166,7 +174,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["save_offering"])) {
                         <input type="checkbox" name="class_days[]" value="M"> M
                         <input type="checkbox" name="class_days[]" value="T"> T
                         <input type="checkbox" name="class_days[]" value="W"> W
-                        <input type="checkbox" name="class_days[]" value="TH"> TH
+                        <input type="checkbox" name="class_days[]" value="H"> H
                         <input type="checkbox" name="class_days[]" value="F"> F
                         <input type="checkbox" name="class_days[]" value="S"> S
                     </div>
@@ -210,6 +218,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["save_offering"])) {
 <script src="../includes/main.js"></script>
 </body>
 </html>
+
+
+
+
 
 
 
