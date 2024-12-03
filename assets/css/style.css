@@ -237,7 +237,7 @@ td {
 }
 
 .login-body {
-    background-image: url('../pages/Background.png'); /* Use absolute path */
+    background-image: url('pages/Background.jpg'); /* Adjusted relative path */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

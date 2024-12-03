@@ -15,11 +15,8 @@
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
-<body>
+<body style="background-image: url('../pages/Server.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
 
-<!-- Top Panel -->
-<div class="top-panel admin-top-panel">
-    <h1 class="itmosys-header">ITmosys | Admin</h1>
 </div>
 
 <!-- Main Container -->
@@ -41,7 +38,7 @@
 
     <!-- Logout button -->
     <i class="fas fa-sign-out-alt logout_icon" onclick="window.location.href='LogoutPage.php'" title="Logout" 
-   style="font-size: 40px; position: absolute; bottom: 20px; right: 20px; color: #a34849; cursor: pointer;"></i>
+   style="font-size: 40px; position: absolute; bottom: 20px; right: 20px; color: #FFFFFF; cursor: pointer;"></i>
 
 
 

@@ -4,11 +4,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
-<body>
+<body style="background-image: url('../pages/Client.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
 
-    <!-- Top Panel with ITmosys centered -->
-    <div class="top-panel" style="background-color: #507c93;">
-    <h1 class="itmosys-header">ITmosys</h1>
+
 </div>
 
     <div class="enrollment_container">
@@ -29,7 +27,7 @@
 
     <!-- Logout button -->
     <i class="fas fa-sign-out-alt logout_icon" onclick="window.location.href='LogoutPage.php'" title="Logout" 
-   style="font-size: 40px; position: absolute; bottom: 20px; right: 20px; color: #a34849; cursor: pointer;"></i>
+   style="font-size: 40px; position: absolute; bottom: 20px; right: 20px; color: #FFFFFF; cursor: pointer;"></i>
 
 
 </body>

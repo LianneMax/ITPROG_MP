@@ -6,12 +6,11 @@
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
-<body class="login-body">
+<body style="background-image: url('../pages/Server.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
 
         <i class="fas fa-tools maintenance_icon" onclick="window.location.href='LoginPage.php'" title="Maintenance" 
            style="font-size: 40px; position: absolute; top: 20px; right: 20px; color: #55453b; cursor: pointer;"></i>
-
-    <h1 class="admin_title">Welcome to ITmosys</h1>
+    
 
     <div class="login_container">
         <h2 class="login_subtitle">ADMIN LOGIN</h2>
