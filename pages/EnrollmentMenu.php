@@ -1,3 +1,38 @@
+<?php
+session_start();
+include "../includes/dbconfig.php";
+
+// Check if the student is logged in
+if (!isset($_SESSION['student_id'])) {
+    header("Location: login.php"); // Redirect to login page if not logged in
+    exit();
+}
+
+// Fetch the student's name from the database
+$student_id = $_SESSION['student_id'];
+$student_name = "Student"; // Default name in case query fails
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+$sql = "SELECT CONCAT(student_firstname, ' ', student_lastname) AS fullname FROM students WHERE student_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $student_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $student_name = $row['fullname'];
+}
+
+$stmt->close();
+$conn->close();
+?>
+
+<!DOCTYPE html>
 <html>
 <head>
     <title>ENROLLMENT</title>
@@ -6,12 +41,9 @@
 </head>
 <body style="background-image: url('../pages/Client.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
 
-
-</div>
-
     <div class="enrollment_container">
-        <!-- Enrollment header in the top-left of the box -->
-        <h2 class="title-header">ENROLLMENT MENU</h2>
+        <!-- Enrollment header with the student's name -->
+        <h2 class="title-header">Welcome, <?php echo htmlspecialchars($student_name); ?>!</h2>
 
         <!-- Line below the Enrollment header -->
         <div class="separator"></div>
@@ -27,9 +59,7 @@
 
     <!-- Logout button -->
     <i class="fas fa-sign-out-alt logout_icon" onclick="window.location.href='LogoutPage.php'" title="Logout" 
-   style="font-size: 50px; position: absolute; bottom: 20px; right: 20px; color: #FFFFFF; cursor: pointer;"></i>
-
+       style="font-size: 50px; position: absolute; bottom: 20px; right: 20px; color: #FFFFFF; cursor: pointer;"></i>
 
 </body>
 </html>
-

@@ -1,16 +1,4 @@
-<!-- 
-    display_tables.php
-    Functions for displaying full db tables
-
-    Last updated: November 30, 2024 | 3:15AM by Lianne Balbastro
-
-    TODO: 
-        DONE: View all courses
-        DONE: View all offerings
-        DONE: View current profs
- -->
-
- <?php
+<?php
 include "../includes/dbconfig.php";
 
 // Start the session (if not already started)
