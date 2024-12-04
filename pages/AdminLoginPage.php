@@ -64,10 +64,8 @@
                 <form method="post" action="" class="login_form">
                 <label for="admin_id" class="login_label">Admin ID:</label>
                 <input type="text" id="admin_id" name="admin_id" class="login_input" required>
-                <br><br>
                 <label for="password" class="login_label">Password:</label>
                 <input type="password" id="password" name="password" class="login_input" required>
-                <br><br>
                 <button type="submit" class="AdminLogin_button">Sign In</button>
             </form>
         </div>

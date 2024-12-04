@@ -13,7 +13,7 @@
 
 
     <div class="login_container">
-        <h2 class="login_subtitle">LOGIN ka na SIS</h2>
+        <h2 class="login_subtitle">LOGIN</h2>
 
         <div class="login_separator"></div>
 
@@ -64,10 +64,8 @@
             <form method="post" action="" class="login_form">
                 <label for="student_id" class="login_label">Student ID:</label>
                 <input type="text" id="student_id" name="student_id" class="login_input" required>
-                <br><br>
                 <label for="password" class="login_label">Password:</label>
                 <input type="password" id="password" name="password" class="login_input" required>
-                <br><br>
                 <button type="submit" class="login_button">Sign In</button>
             </form>
         </div>
