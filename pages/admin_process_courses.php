@@ -1,17 +1,4 @@
-<!-- 
-        
-    This page inserts the Course XML File Contents if valid 
-
-    Last updated: November 28, 2024, by Lianne Balbastro
-
-    TODO: 
-        **Polish SQL Error handling**
-        
-        PENDING: Manual Input Option
-        DONE: Fix User interface (Pls put UI elements in one include file, to avoid copy pasting sidebars, buttons, etc)
-        DONE: Sidebar must contain admin-specific options
- -->
- <?php
+<?php
 session_start();
 include "../includes/dbconfig.php";
 
@@ -30,54 +17,59 @@ $uploadedTable = ""; // Store the uploaded XML table
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_FILES["xml"])) {
     if ($_FILES["xml"]["error"] === UPLOAD_ERR_OK) {
         $filepath = $_FILES["xml"]["tmp_name"];
-        $xml = simplexml_load_file($filepath) or die("Error: Cannot create object!");
 
-        $uploadedTable .= '<div class="table-container">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>COURSE CODE</th>
-                                        <th>COURSE TITLE</th>
-                                        <th>UNITS</th>
-                                        <th>COREQUISITE</th>
-                                        <th>PREREQUISITES</th>
-                                    </tr>
-                                </thead>
-                                <tbody>';
+        $xml = @simplexml_load_file($filepath);
 
-        foreach ($xml->course as $course) {
-            $course_code = htmlspecialchars($course['course_code']);
-            $course_title = htmlspecialchars($course->course_title);
-            $units = (int)$course->units;
-            $co_requisite = isset($course->co_requisite) ? htmlspecialchars($course->co_requisite) : "None";
+        if ($xml === false) {
+            $error_messages[] = "Invalid file type. Only XML files are allowed.";
+        } else {
+            $uploadedTable .= '<div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>COURSE CODE</th>
+                                            <th>COURSE TITLE</th>
+                                            <th>UNITS</th>
+                                            <th>COREQUISITE</th>
+                                            <th>PREREQUISITES</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>';
 
-            $prerequisites = [];
-            foreach ($course->prerequisite as $prereq) {
-                $prerequisites[] = htmlspecialchars($prereq);
-            }
+            foreach ($xml->course as $course) {
+                $course_code = htmlspecialchars($course['course_code']);
+                $course_title = htmlspecialchars($course->course_title);
+                $units = (int)$course->units;
+                $co_requisite = isset($course->co_requisite) ? htmlspecialchars($course->co_requisite) : "None";
 
-            $uploadedTable .= "<tr>
-                                <td>$course_code</td>
-                                <td>$course_title</td>
-                                <td>$units</td>
-                                <td>$co_requisite</td>
-                                <td>" . implode(", ", $prerequisites) . "</td>
-                              </tr>";
-
-            try {
-                $conn->query("INSERT IGNORE INTO course_codes (course_code) VALUES ('$course_code')");
-                $conn->query("INSERT INTO courses (course_code, course_title, units, co_requisite) 
-                              VALUES ('$course_code', '$course_title', $units, " . ($co_requisite ? "'$co_requisite'" : "NULL") . ")");
-                foreach ($prerequisites as $prerequisite) {
-                    $conn->query("INSERT INTO prerequisites (course_code, prerequisite) VALUES ('$course_code', '$prerequisite')");
+                $prerequisites = [];
+                foreach ($course->prerequisite as $prereq) {
+                    $prerequisites[] = htmlspecialchars($prereq);
                 }
-                $success_messages[] = "Course '$course_code' added successfully!";
-            } catch (Exception $e) {
-                $error_messages[] = "Error processing course '$course_code': " . $e->getMessage();
-            }
-        }
 
-        $uploadedTable .= '</tbody></table></div>';
+                $uploadedTable .= "<tr>
+                                    <td>$course_code</td>
+                                    <td>$course_title</td>
+                                    <td>$units</td>
+                                    <td>$co_requisite</td>
+                                    <td>" . implode(", ", $prerequisites) . "</td>
+                                  </tr>";
+
+                try {
+                    $conn->query("INSERT IGNORE INTO course_codes (course_code) VALUES ('$course_code')");
+                    $conn->query("INSERT INTO courses (course_code, course_title, units, co_requisite) 
+                                  VALUES ('$course_code', '$course_title', $units, " . ($co_requisite ? "'$co_requisite'" : "NULL") . ")");
+                    foreach ($prerequisites as $prerequisite) {
+                        $conn->query("INSERT INTO prerequisites (course_code, prerequisite) VALUES ('$course_code', '$prerequisite')");
+                    }
+                    $success_messages[] = "Course '$course_code' added successfully!";
+                } catch (Exception $e) {
+                    $error_messages[] = "Error processing course '$course_code': " . $e->getMessage();
+                }
+            }
+
+            $uploadedTable .= '</tbody></table></div>';
+        }
     } else {
         $error_messages[] = "Error uploading file.";
     }
@@ -115,11 +107,56 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["delete_course"])) {
 }
 ?>
 
-<!DOCTYPE html>
 <html>
 <head>
-    <title>Process Courses</title>
+    <title>Admin | Manage Courses</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/navigation.css">
     <link rel="stylesheet" href="../assets/css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+
+<!-- Hamburger Menu Button -->
+<div id="hamburger" class="hamburger">
+    <i class="fas fa-bars"></i>
+</div>
+
+<!-- Sidebar -->
+<div id="sidebar" class="sidebar admin-sidebar">
+    <div class="separator" style="margin-top: 50px;"></div>
+    <button class="sidebar-btn" onclick="window.location.href='admin_create_courses.php'">
+        <i class="fas fa-book"></i>
+        <span class="link-text">Create Courses</span>
+    </button>
+    <button class="sidebar-btn" onclick="window.location.href='admin_create_offerings.php'">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <span class="link-text">Create Offerings</span>
+    </button>
+    <button class="sidebar-btn" onclick="window.location.href='admin_create_profs.php'">
+        <i class="fas fa-user-tie"></i>
+        <span class="link-text">Create Professors</span>
+    </button>
+    <button class="sidebar-btn" onclick="window.location.href='admin_summary_report.php'">
+        <i class="fas fa-chart-bar"></i>
+        <span class="link-text">Summary Report</span>
+    </button>
+    <div class="separator" style="margin-top: 10px;"></div>
+    <button class="logout-btn" onclick="window.location.href='LogoutPage.php'">
+        <i class="fas fa-sign-out-alt"></i>
+    </button>
+</div>
+
+<!-- Top Panel -->
+<div class="top-panel admin-top-panel">
+    <h1 class="itmosys-header">ITmosys | Admin</h1>
+</div>
+
+<!-- Main Content -->
+<div class="content">
+    <div class="AdminContainer">
+        <h2 class="title-header">Manage Courses</h2>
+        <div class="separator"></div>
 </head>
 <body>
     <?php if (!empty($error_messages)): ?>
@@ -146,20 +183,4 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["delete_course"])) {
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
