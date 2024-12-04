@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE professors [
+    <!ELEMENT professors (professor+)>
+
+    <!ELEMENT professor (prof_fullname)>
+
+<!-- professor_code should use any string value and must be required. -->
+    <!ATTLIST professor prof_fullname CDATA #REQUIRED>
+]>
+
+<professors>
+    <professor>
+        <prof_fullname>Naruto</prof_fullname>
+    </professor>
+</professors>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE courses [
+    <!ELEMENT courses (course+)>
+    <!ELEMENT course (course_title, units, co_requisite?, prerequisite*)>
+    <!ELEMENT course_title (#PCDATA)>
+    <!ELEMENT units (#PCDATA)>
+    <!ELEMENT co_requisite (#PCDATA)>
+    <!ELEMENT prerequisite (#PCDATA)>
+
+<!-- course_code should use any string value and must be required. -->
+    <!ATTLIST course course_code CDATA #REQUIRED>
+]>
+
+<courses>
+    <course course_code="CCINFOM">
+        <course_title>Information Management</course_title>
+        <units>3</units>
+        <co_requisite>ITCMSY1</co_requisite>
+        <prerequisite>ITNET01</prerequisite>
+        <prerequisite>LBYITN1</prerequisite> 
+    </course>
+
+    
+    <course course_code="CCPROG1">
+        <course_title>Logic Formulation</course_title>
+        <units>3</units>
+    </course>
+
+</courses>

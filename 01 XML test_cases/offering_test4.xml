@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE offerings [
+    <!ELEMENT offerings (offering+)>
+
+    <!ELEMENT offering (course_code, section, class_days, class_start_time, class_end_time, 
+                        enroll_cap,  professor, room)>
+
+    <!ELEMENT course_code (#PCDATA)>
+    <!ELEMENT section (#PCDATA)>
+    <!ELEMENT class_days (#PCDATA)>
+    <!ELEMENT class_start_time (#PCDATA)>
+    <!ELEMENT class_end_time (#PCDATA)>
+    <!ELEMENT enroll_cap (#PCDATA)>
+    <!-- enrolled_students will be set to 0 automatically -->
+    <!ELEMENT professor (#PCDATA)>
+    <!ELEMENT room (#PCDATA)>
+
+<!-- offering_code should use any string value and must be required. -->
+    <!ATTLIST offering offering_code CDATA #REQUIRED>
+]>
+
+<offerings>
+    <offering offering_code="1900">
+        <course_code>CCINFOM</course_code>
+        <section>S10</section>
+        <class_days>TF</class_days>
+        <class_start_time>12:30</class_start_time>
+        <class_end_time>14:00</class_end_time>
+        <enroll_cap>20</enroll_cap>
+
+        <professor>Hiroki Asaba</professor>
+        <room>GK405</room>
+    </offering>
+
+</offerings>
