@@ -75,7 +75,7 @@ while ($row = $courseQuery->fetch_assoc()) {
 }
 ?>
 
-<!DOCTYPE html>
+
 <html>
 <head>
     <title>Admin | Manage Courses</title>

@@ -98,11 +98,20 @@ if (isset($_FILES['xml']) && $_FILES['xml']['error'] !== UPLOAD_ERR_NO_FILE) {
 if (isset($_POST['add_prof']) && isset($_POST['prof_name'])) {
     $prof_name = $conn->real_escape_string(trim($_POST['prof_name']));
     if (!empty($prof_name)) {
-        $sql = "INSERT INTO professors (prof_fullname) VALUES ('$prof_name')";
-        if ($conn->query($sql) === TRUE) {
-            $_SESSION['message'] .= "<div class='success-message'>Professor '$prof_name' added successfully!</div>";
+        // Check for duplicates in the database
+        $checkDuplicateQuery = "SELECT * FROM professors WHERE prof_fullname = '$prof_name'";
+        $duplicateResult = $conn->query($checkDuplicateQuery);
+
+        if ($duplicateResult && $duplicateResult->num_rows > 0) {
+            $_SESSION['message'] .= "<div class='error-message'>Duplicate entry: Professor '$prof_name' already exists in the database.</div>";
         } else {
-            $_SESSION['message'] .= "<div class='error-message'>Error: " . $conn->error . "</div>";
+            // Insert into the database
+            $sql = "INSERT INTO professors (prof_fullname) VALUES ('$prof_name')";
+            if ($conn->query($sql) === TRUE) {
+                $_SESSION['message'] .= "<div class='success-message'>Professor '$prof_name' added successfully!</div>";
+            } else {
+                $_SESSION['message'] .= "<div class='error-message'>Error: " . $conn->error . "</div>";
+            }
         }
     } else {
         $_SESSION['message'] .= "<div class='error-message'>Professor name cannot be empty.</div>";
