@@ -147,7 +147,7 @@ while ($row = $courseQuery->fetch_assoc()) {
         <!-- XML Upload Form -->
         <form action="admin_process_courses.php" method="post" enctype="multipart/form-data">
             <div class="file-input-container">
-                <label for="xml">Upload XML File:</label>
+                <label for="xml">XML File:</label>
                 <input type="file" id="xml" name="xml" required>
                 <button type="submit" class="main-button admin-button">Upload</button>
             </div>
