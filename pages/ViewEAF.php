@@ -62,6 +62,7 @@
             $sum = 0;
         }
 
+        // Check if total units are less than or equal to 18
         if ($sum <= 18) {
             // SQL query to insert records from student_classes to past_classes
             // Insert into past_enrollments, but ignore duplicates
@@ -74,22 +75,21 @@
 
             $stmt = $conn->prepare($copyQuery);
 
-            // Execute the statement
+            // Execute the statement only if the sum is valid (<= 18)
             if ($stmt->execute()) {
                 // Set enrollmentConfirmed to true on successful enrollment
                 $_SESSION['enrollment_confirmed'] = true;
-                    
-                // Reset new class added flag after confirmation
-                $_SESSION['new_class_added'] = true;
             } else {
                 // If execution fails, print error message
                 echo "Error moving subjects: " . $stmt->error;
             }
         } else {
             echo "<p>Your total units exceed the limit of 18 units. Please adjust your enrolled courses.</p>";
+            $_SESSION['enrollment_confirmed'] = false;
         }
+
         // Sync past_enrollments with current classes if enrollment is already confirmed
-        if (isset($_SESSION['enrollment_confirmed'])) {
+        if ($_SESSION['enrollment_confirmed']) {
             // Insert new classes that aren't in past_enrollments
             $insertQuery = "
             INSERT INTO past_enrollments (student_id, course_code, date_enrolled, section, class_days, class_start_time, class_end_time, professor, room, grade)
