@@ -1,13 +1,37 @@
-<!-- 
-    admin_menu.php
-    Central menu for admin options
-    This will be the first page the admin sees after logging in
+<?php
+session_start();
+include "../includes/dbconfig.php";
 
-    Last updated: November 30, 2024, 3:30AMAM by Lianne Balbastro
+// Check if the admin is logged in
+if (!isset($_SESSION['admin_id'])) {
+    header("Location: login.php"); // Redirect to login page if not logged in
+    exit();
+}
 
-    TODO: 
-        DONE: Fix admenu-btn in admin.css (buttons dont have gaps between themselves)
- -->
+// Fetch the admin's name from the database
+$admin_id = $_SESSION['admin_id'];
+$admin_name = "Admin"; // Default name in case query fails
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+$sql = "SELECT CONCAT(admin_firstname, ' ', admin_lastname) AS fullname FROM admins WHERE admin_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $admin_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $admin_name = $row['fullname'];
+}
+
+$stmt->close();
+$conn->close();
+?>
+
 <html>
 <head>
     <title>Admin Menu</title>
@@ -17,12 +41,10 @@
 </head>
 <body style="background-image: url('../pages/Server.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
 
-</div>
-
 <!-- Main Container -->
 <div class="enrollment_container">
     <!-- Admin Menu Header -->
-    <h2 class="title-header">ADMIN MENU</h2>
+    <h2 class="title-header">Welcome, <?php echo htmlspecialchars($admin_name); ?>!</h2>
 
     <!-- Separator -->
     <div class="separator"></div>
@@ -36,11 +58,9 @@
     </div>
 </div>
 
-    <!-- Logout button -->
-    <i class="fas fa-sign-out-alt logout_icon" onclick="window.location.href='LogoutPage.php'" title="Logout" 
-   style="font-size: 40px; position: absolute; bottom: 20px; right: 20px; color: #FFFFFF; cursor: pointer;"></i>
-
-
+<!-- Logout button -->
+<i class="fas fa-sign-out-alt logout_icon" onclick="window.location.href='LogoutPage.php'" title="Logout" 
+   style="font-size: 50px; position: absolute; bottom: 20px; right: 20px; color: #FFFFFF; cursor: pointer;"></i>
 
 </body>
 </html>

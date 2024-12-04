@@ -27,7 +27,7 @@
 
     <!-- Logout button -->
     <i class="fas fa-sign-out-alt logout_icon" onclick="window.location.href='LogoutPage.php'" title="Logout" 
-   style="font-size: 40px; position: absolute; bottom: 20px; right: 20px; color: #FFFFFF; cursor: pointer;"></i>
+   style="font-size: 50px; position: absolute; bottom: 20px; right: 20px; color: #FFFFFF; cursor: pointer;"></i>
 
 
 </body>
